@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qfiledialog.h"
+#include "qmessagebox.h"
 
 #include "files.h"
 #include "highlighter.h"
@@ -35,7 +36,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//  Open
+//  Open Binary
 void MainWindow::open(QString file){
 
     if (file != ""){
@@ -48,6 +49,7 @@ void MainWindow::open(QString file){
 
     }
 }
+// Select Binary
 void MainWindow::on_actionOpen_triggered()
 {
     QString file = QFileDialog::getOpenFileName(this, tr("Open File"), currentDirectory, tr("All (*)"));
@@ -69,4 +71,35 @@ void MainWindow::highlightCurrentLine(){
 
    ui->codeBrowser->setExtraSelections(extraSelections);
 
+}
+
+/*
+ * Window
+*/
+void MainWindow::on_actionProject_triggered()
+{
+    QString aboutStr = "ObjGui - GUI for objdump\n"
+                       "Project page:\n"
+                       "https://github.com/jubal-R/ObjGui";
+    QMessageBox::information(this, tr("About ObjGui"), aboutStr,QMessageBox::Close);
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Exit", "Are you sure you want to exit?", QMessageBox::Yes|QMessageBox::No);
+
+        if (reply == QMessageBox::Yes) {
+          QApplication::quit();
+        }
+}
+
+void MainWindow::on_actionFullscreen_triggered()
+{
+    if(MainWindow::isFullScreen())
+        {
+            MainWindow::showNormal();
+        }else{
+            MainWindow::showFullScreen();
+        }
 }

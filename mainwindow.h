@@ -20,6 +20,12 @@ private slots:
     void on_actionOpen_triggered();
     void open(QString file);
 
+    void on_actionProject_triggered();
+
+    void on_actionExit_triggered();
+
+    void on_actionFullscreen_triggered();
+
 private:
     Ui::MainWindow *ui;
 };
