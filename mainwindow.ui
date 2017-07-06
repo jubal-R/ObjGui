@@ -42,7 +42,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QListWidget" name="listWidget">
+       <widget class="QListWidget" name="sectionList">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -50,7 +50,9 @@
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(213, 213, 213);</string>
+         <string notr="true">background-color: rgb(245, 245, 245);
+border-color: rgb(53, 53, 53);
+font: 75 italic 11pt &quot;Noto Sans&quot;;</string>
         </property>
        </widget>
       </item>

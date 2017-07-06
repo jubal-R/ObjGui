@@ -3,9 +3,14 @@
 #include "qfiledialog.h"
 #include "qmessagebox.h"
 
+// For debugging
+#include "iostream"
+
 #include "files.h"
 #include "highlighter.h"
 #include "objdumper.h"
+
+using namespace std;
 
 Files files;
 ObjDumper objDumper;
@@ -46,6 +51,15 @@ void MainWindow::open(QString file){
         ui->symbolsBrowser->setText(objDumper.getSymbolsTable(file));
         ui->relocationsBrowser->setText(objDumper.getRelocationEntries(file));
         ui->stringsBrowser->setText(objDumper.getStrings(file));
+
+        // Clear old function/section list from sidebar
+        while (ui->sectionList->count() > 0){
+            ui->sectionList->takeItem(0);
+        }
+
+        // Populate function/section list in sidebar
+        QStringList sections = objDumper.getFunctionsList(objDumper.getDisassembly(file));
+        ui->sectionList->addItems(sections);
 
     }
 }

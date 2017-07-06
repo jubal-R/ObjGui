@@ -13,6 +13,7 @@ public:
     QString getSymbolsTable(QString file);
     QString getRelocationEntries(QString file);
     QString getStrings(QString file);
+    QStringList getFunctionsList(QString dump);
 };
 
 #endif // OBJDUMPER_H

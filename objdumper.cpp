@@ -1,5 +1,6 @@
 #include "objdumper.h"
 #include "QString"
+#include "QStringList"
 #include <stdlib.h>
 #include <fstream>
 #include <iostream>
@@ -36,6 +37,30 @@ QString ObjDumper::getDump(QString args, QString file){
     }
 
     return QString::fromStdString(oss.str());
+}
+
+QStringList ObjDumper::getFunctionsList(QString dump){
+    QStringList output;
+    QString tmp = "";
+
+    for(int i = 0; i < dump.length(); i++){
+        if(dump.at(i) == QChar('<')){
+            i++;
+            // Build function string
+            while(i < dump.length()-1 && dump.at(i) != QChar('>')){
+                tmp.append(dump.at(i));
+                i++;
+            }
+            i++;    // Move to next char
+            // If char after '>' is ':' add to list
+            if(dump.at(i) == QChar(':')){
+                output << tmp;
+            }
+            // Clear tmp
+            tmp = "";
+        }
+    }
+    return output;
 }
 
 QString ObjDumper::getDisassembly(QString file){
