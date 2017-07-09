@@ -28,6 +28,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("ObjGUI");
 
+    // Style
+    QString style = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
+          "QTabBar::tab {color: font-size:9pt; padding: 1px 5px;}";
+   ui->tabWidget->setStyleSheet(style);
+
     disHighlighter = new Highlighter("dis", "default", ui->codeBrowser->document());
     symbolsHighlighter = new Highlighter("sym", "default", ui->symbolsBrowser->document());
     relocationsHighlighter = new Highlighter("sym", "default", ui->relocationsBrowser->document());
@@ -117,3 +122,4 @@ void MainWindow::on_actionFullscreen_triggered()
             MainWindow::showFullScreen();
         }
 }
+

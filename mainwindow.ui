@@ -20,6 +20,9 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <property name="leftMargin">
      <number>0</number>
@@ -42,22 +45,74 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QListWidget" name="sectionList">
-        <property name="maximumSize">
-         <size>
-          <width>150</width>
-          <height>16777215</height>
-         </size>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>0</number>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(245, 245, 245);
+        <property name="sizeConstraint">
+         <enum>QLayout::SetFixedSize</enum>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>50</weight>
+            <italic>false</italic>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Sections</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QListWidget" name="sectionList">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(245, 245, 245);
 border-color: rgb(53, 53, 53);
 font: 75 italic 11pt &quot;Noto Sans&quot;;</string>
-        </property>
-       </widget>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QTabWidget" name="tabWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="tabShape">
+         <enum>QTabWidget::Rounded</enum>
+        </property>
         <property name="currentIndex">
          <number>0</number>
         </property>
@@ -84,9 +139,8 @@ font: 75 italic 11pt &quot;Noto Sans&quot;;</string>
           <item row="0" column="0">
            <widget class="QTextBrowser" name="codeBrowser">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(230, 230, 230);
-border-color: rgb(53, 53, 53);
-font: 12pt &quot;Anonymous Pro&quot;;</string>
+             <string notr="true">font: 12pt &quot;Anonymous Pro&quot;;
+background-color: rgb(250, 250, 250);</string>
             </property>
             <property name="cursorWidth">
              <number>0</number>
@@ -127,7 +181,7 @@ font: 12pt &quot;Anonymous Pro&quot;;</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(230, 230, 230);</string>
+             <string notr="true">background-color: rgb(250, 250, 250);</string>
             </property>
            </widget>
           </item>
@@ -162,7 +216,7 @@ font: 12pt &quot;Anonymous Pro&quot;;</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(230, 230, 230);</string>
+             <string notr="true">background-color: rgb(250, 250, 250);</string>
             </property>
            </widget>
           </item>
@@ -197,8 +251,39 @@ font: 12pt &quot;Anonymous Pro&quot;;</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(230, 230, 230);
+             <string notr="true">background-color: rgb(250, 250, 250);
 color: rgb(29, 160, 185);</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="settings_tab">
+         <property name="styleSheet">
+          <string notr="true">font: 11pt &quot;Noto Sans&quot;;</string>
+         </property>
+         <attribute name="title">
+          <string>Settings</string>
+         </attribute>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="1" column="0">
+           <widget class="QComboBox" name="comboBox">
+            <item>
+             <property name="text">
+              <string>intel</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>att</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Syntax</string>
             </property>
            </widget>
           </item>
@@ -237,7 +322,14 @@ color: rgb(29, 160, 185);</string>
     <property name="title">
      <string>Preferences</string>
     </property>
-    <addaction name="actionSyntax"/>
+    <widget class="QMenu" name="menuSyntax">
+     <property name="title">
+      <string>Syntax</string>
+     </property>
+     <addaction name="actionIntel"/>
+     <addaction name="actionAtt"/>
+    </widget>
+    <addaction name="menuSyntax"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -245,8 +337,15 @@ color: rgb(29, 160, 185);</string>
     </property>
     <addaction name="actionProject"/>
    </widget>
+   <widget class="QMenu" name="menuSearch">
+    <property name="title">
+     <string>Search</string>
+    </property>
+    <addaction name="actionFind"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuSearch"/>
    <addaction name="menuPreferences"/>
    <addaction name="menuAbout"/>
   </widget>
@@ -261,11 +360,6 @@ color: rgb(29, 160, 185);</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
-   </property>
-  </action>
-  <action name="actionSyntax">
-   <property name="text">
-    <string>Syntax</string>
    </property>
   </action>
   <action name="actionProject">
@@ -284,6 +378,21 @@ color: rgb(29, 160, 185);</string>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionIntel">
+   <property name="text">
+    <string>intel</string>
+   </property>
+  </action>
+  <action name="actionAtt">
+   <property name="text">
+    <string>att</string>
+   </property>
+  </action>
+  <action name="actionFind">
+   <property name="text">
+    <string>Find</string>
    </property>
   </action>
  </widget>
