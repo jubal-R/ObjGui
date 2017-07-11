@@ -356,7 +356,7 @@ color: rgb(29, 160, 185);</string>
   </widget>
   <action name="actionOpen">
    <property name="text">
-    <string>Select Binary</string>
+    <string>Disassemble</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>

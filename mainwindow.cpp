@@ -68,7 +68,7 @@ void MainWindow::open(QString file){
 
     }
 }
-// Select Binary
+// Disassemble
 void MainWindow::on_actionOpen_triggered()
 {
     QString file = QFileDialog::getOpenFileName(this, tr("Open File"), currentDirectory, tr("All (*)"));
@@ -97,9 +97,23 @@ void MainWindow::highlightCurrentLine(){
 */
 void MainWindow::on_actionProject_triggered()
 {
-    QString aboutStr = "ObjGui - GUI for objdump\n"
-                       "Project page:\n"
-                       "https://github.com/jubal-R/ObjGui";
+    QString aboutStr = "ObjGui - GUI frontend for objdump\n"
+                       "Project page: https://github.com/jubal-R/ObjGui\n\n"
+
+                       "Copyright (C) 2017\n\n"
+
+                       "This program is free software: you can redistribute it and/or modify "
+                       "it under the terms of the GNU General Public License as published by "
+                       "the Free Software Foundation, either version 3 of the License, or "
+                       "(at your option) any later version.\n\n"
+
+                       "This program is distributed in the hope that it will be useful,"
+                       "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+                       "GNU General Public License for more details.\n\n"
+
+                       "You should have received a copy of the GNU General Public License "
+                       "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n";
     QMessageBox::information(this, tr("About ObjGui"), aboutStr,QMessageBox::Close);
 }
 
