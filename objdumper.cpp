@@ -17,7 +17,7 @@ QString ObjDumper::getDump(QString args, QString file){
     ostringstream oss;
     FILE *in;
     char buff[100];
-    string cmd = "objdump " + args.toStdString() + " " + file.toStdString();
+    string cmd = "objdump " + args.toStdString() + " " + file.toStdString() + " 2>&1";
 
     try{
         if(!(in = popen(cmd.c_str(),"r") )){
