@@ -13,7 +13,7 @@
 using namespace std;
 
 Files files;
-ObjDumper objDumper;
+ObjDumper *objDumper = NULL;
 Highlighter *disHighlighter = NULL;
 Highlighter *symbolsHighlighter = NULL;
 Highlighter *relocationsHighlighter = NULL;
@@ -52,19 +52,21 @@ void MainWindow::open(QString file){
     if (file != ""){
         this->setWindowTitle("ObjGUI - " + file);
 
-        ui->codeBrowser->setText(objDumper.getDisassembly(file));
-        ui->symbolsBrowser->setText(objDumper.getSymbolsTable(file));
-        ui->relocationsBrowser->setText(objDumper.getRelocationEntries(file));
-        ui->stringsBrowser->setText(objDumper.getStrings(file));
 
         // Clear old function/section list from sidebar
         while (ui->sectionList->count() > 0){
             ui->sectionList->takeItem(0);
         }
 
+        objDumper = new ObjDumper(file);
+
         // Populate function/section list in sidebar
-        QStringList sections = objDumper.getFunctionsList(objDumper.getDisassembly(file));
-        ui->sectionList->addItems(sections);
+        ui->sectionList->addItems(objDumper->getFunctionsList());
+
+        ui->codeBrowser->setText(objDumper->getDisassembly());
+        ui->symbolsBrowser->setText(objDumper->getSymbolsTable());
+        ui->relocationsBrowser->setText(objDumper->getRelocationEntries());
+        ui->stringsBrowser->setText(objDumper->getStrings());
 
     }
 }
@@ -72,6 +74,7 @@ void MainWindow::open(QString file){
 void MainWindow::on_actionOpen_triggered()
 {
     QString file = QFileDialog::getOpenFileName(this, tr("Open File"), currentDirectory, tr("All (*)"));
+    currentDirectory = getDirectory(file);
     open(file);
 }
 
@@ -90,6 +93,14 @@ void MainWindow::highlightCurrentLine(){
 
    ui->codeBrowser->setExtraSelections(extraSelections);
 
+}
+
+// Get directory given file path
+QString MainWindow::getDirectory(QString file){
+    int lastIndex = file.lastIndexOf("/");
+    file.chop(file.length() - lastIndex);
+
+    return file;
 }
 
 /*
@@ -137,3 +148,8 @@ void MainWindow::on_actionFullscreen_triggered()
         }
 }
 
+
+void MainWindow::on_actionShow_Containing_Folder_triggered()
+{
+
+}

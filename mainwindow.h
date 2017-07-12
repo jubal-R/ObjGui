@@ -19,6 +19,7 @@ private slots:
     void highlightCurrentLine();
     void on_actionOpen_triggered();
     void open(QString file);
+    QString getDirectory(QString file);
 
     void on_actionProject_triggered();
 
@@ -26,6 +27,8 @@ private slots:
 
     void on_actionFullscreen_triggered();
 
+    void on_actionShow_Containing_Folder_triggered();
+    
 private:
     Ui::MainWindow *ui;
 };

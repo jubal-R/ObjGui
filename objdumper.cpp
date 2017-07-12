@@ -1,6 +1,7 @@
 #include "objdumper.h"
 #include "QString"
 #include "QStringList"
+#include "QList"
 #include <stdlib.h>
 #include <fstream>
 #include <iostream>
@@ -8,11 +9,23 @@
 
 using namespace std;
 
-ObjDumper::ObjDumper()
-{
+QList<int> sectionIndices;
+QStringList funtionsList;
+QString disassembly;
+QString symbolsTable;
+QString relocationEntries;
+QString strings;
 
+ObjDumper::ObjDumper(QString file)
+{
+    setDisassembly(file);
+    setFunctionsLists(disassembly);
+    setSymbolsTable(file);
+    setRelocationEntries(file);
+    setStrings(file);
 }
 
+// Runs objdump given arguments and file then returns outout
 QString ObjDumper::getDump(QString args, QString file){
     ostringstream oss;
     FILE *in;
@@ -39,8 +52,10 @@ QString ObjDumper::getDump(QString args, QString file){
     return QString::fromStdString(oss.str());
 }
 
-QStringList ObjDumper::getFunctionsList(QString dump){
-    QStringList output;
+// Setters
+
+// Sets functionList and sectionIndices given disassembly text
+void ObjDumper::setFunctionsLists(QString dump){
     QString tmp = "";
 
     for(int i = 0; i < dump.length(); i++){
@@ -51,30 +66,61 @@ QStringList ObjDumper::getFunctionsList(QString dump){
                 tmp.append(dump.at(i));
                 i++;
             }
+
             i++;    // Move to next char
+
             // If char after '>' is ':' add to list
             if(dump.at(i) == QChar(':')){
-                output << tmp;
+                funtionsList << tmp;
+                sectionIndices << i;
+                cout << i << endl;
             }
             // Clear tmp
             tmp = "";
         }
     }
-    return output;
+
 }
 
-QString ObjDumper::getDisassembly(QString file){
-    return getDump("-M intel -d", file);
+void ObjDumper::setDisassembly(QString file){
+    disassembly = getDump("-M intel -d", file);
 }
 
-QString ObjDumper::getSymbolsTable(QString file){
-    return getDump("-T", file);
+void ObjDumper::setSymbolsTable(QString file){
+    symbolsTable = getDump("-T", file);
 }
 
-QString ObjDumper::getRelocationEntries(QString file){
-    return getDump("-R", file);
+void ObjDumper::setRelocationEntries(QString file){
+    relocationEntries = getDump("-R", file);
 }
 
-QString ObjDumper::getStrings(QString file){
-    return getDump("-s", file);
+void ObjDumper::setStrings(QString file){
+    strings = getDump("-s", file);
+}
+
+
+// Getters
+
+QString ObjDumper::getDisassembly(){
+    return disassembly;
+}
+
+QString ObjDumper::getSymbolsTable(){
+    return symbolsTable;
+}
+
+QString ObjDumper::getRelocationEntries(){
+    return relocationEntries;
+}
+
+QString ObjDumper::getStrings(){
+    return strings;
+}
+
+QStringList ObjDumper::getFunctionsList(){
+    return funtionsList;
+}
+
+QList<int> ObjDumper::getSectionIndices(){
+    return sectionIndices;
 }
