@@ -65,3 +65,29 @@ string Files::getHomeDir(){
 
     return oss.str().substr(0, oss.str().length()-1);
 }
+
+void Files::openFileManager(QString dir){
+    // xdg-open + dir
+    ostringstream oss;
+    FILE *in;
+    char buff[100];
+    string cmd = "xdg-open " + dir.toStdString() + " 2>&1";
+
+    try{
+        if(!(in = popen(cmd.c_str(),"r") )){
+            // Failed to open file manager
+        }
+        while(fgets(buff, sizeof(buff), in) !=NULL){
+            oss << buff;
+        }
+        pclose(in);
+
+    }catch(const std::exception& e){
+        // Something went wrong
+    }catch (const std::string& ex) {
+
+    } catch (...) {
+
+    }
+
+}

@@ -73,7 +73,6 @@ void ObjDumper::setFunctionsLists(QString dump){
             if(dump.at(i) == QChar(':')){
                 funtionsList << tmp;
                 sectionIndices << i;
-                cout << i << endl;
             }
             // Clear tmp
             tmp = "";

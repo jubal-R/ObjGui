@@ -96,11 +96,11 @@ void MainWindow::highlightCurrentLine(){
 }
 
 // Get directory given file path
-QString MainWindow::getDirectory(QString file){
-    int lastIndex = file.lastIndexOf("/");
-    file.chop(file.length() - lastIndex);
+QString MainWindow::getDirectory(QString filepath){
+    int lastIndex = filepath.lastIndexOf("/");
+    filepath.chop(filepath.length() - lastIndex);
 
-    return file;
+    return filepath;
 }
 
 /*
@@ -151,5 +151,6 @@ void MainWindow::on_actionFullscreen_triggered()
 
 void MainWindow::on_actionShow_Containing_Folder_triggered()
 {
-
+    // Open current directory in file manager
+    files.openFileManager(currentDirectory);
 }
