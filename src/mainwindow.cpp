@@ -9,10 +9,12 @@
 #include "files.h"
 #include "highlighter.h"
 #include "objdumper.h"
+#include "settings.h"
 
 using namespace std;
 
 Files files;
+Settings settings;
 ObjDumper *objDumper = NULL;
 Highlighter *disHighlighter = NULL;
 Highlighter *symbolsHighlighter = NULL;
@@ -27,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("ObjGUI");
+
+    // Set Window Size
+    MainWindow::resize(settings.getWindowWidth(), settings.getWindowHeight());
 
     // Style
     QString style = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
@@ -43,6 +48,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    /*
+     *  Save Settings
+    */
+
+    // Get Window Size
+    QRect windowRect = MainWindow::normalGeometry();
+    settings.setWindowWidth(windowRect.width());
+    settings.setWindowHeight(windowRect.height());
+
+    settings.saveSettings();
+
     delete ui;
 }
 
@@ -153,4 +169,14 @@ void MainWindow::on_actionShow_Containing_Folder_triggered()
 {
     // Open current directory in file manager
     files.openFileManager(currentDirectory);
+}
+
+void MainWindow::on_actionIntel_triggered()
+{
+    settings.setSyntax("intel");
+}
+
+void MainWindow::on_actionAtt_triggered()
+{
+    settings.setSyntax("att");
 }

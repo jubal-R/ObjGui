@@ -16,11 +16,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     files.cpp \
     objdumper.cpp \
-    highlighter.cpp
+    highlighter.cpp \
+    settings.cpp
 
 HEADERS  += mainwindow.h \
     files.h \
     objdumper.h \
-    highlighter.h
+    highlighter.h \
+    settings.h
 
 FORMS    += mainwindow.ui

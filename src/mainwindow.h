@@ -29,6 +29,10 @@ private slots:
 
     void on_actionShow_Containing_Folder_triggered();
     
+    void on_actionIntel_triggered();
+
+    void on_actionAtt_triggered();
+
 private:
     Ui::MainWindow *ui;
 };
