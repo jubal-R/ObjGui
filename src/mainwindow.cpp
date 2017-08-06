@@ -20,6 +20,7 @@ Highlighter *disHighlighter = NULL;
 Highlighter *symbolsHighlighter = NULL;
 Highlighter *relocationsHighlighter = NULL;
 Highlighter *stringsHighlighter = NULL;
+Highlighter *headersHighlighter = NULL;
 
 QString currentDirectory = QString::fromStdString(files.getHomeDir());
 
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     symbolsHighlighter = new Highlighter("sym", "default", ui->symbolsBrowser->document());
     relocationsHighlighter = new Highlighter("sym", "default", ui->relocationsBrowser->document());
     stringsHighlighter = new Highlighter("str", "default", ui->stringsBrowser->document());
+    headersHighlighter = new Highlighter("sym", "default", ui->headersBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 }
@@ -90,6 +92,7 @@ void MainWindow::open(QString file){
         ui->symbolsBrowser->setText(objDumper->getSymbolsTable());
         ui->relocationsBrowser->setText(objDumper->getRelocationEntries());
         ui->stringsBrowser->setText(objDumper->getStrings());
+        ui->headersBrowser->setText(objDumper->getHeaders());
 
     }
 }

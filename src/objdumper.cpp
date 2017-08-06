@@ -9,12 +9,16 @@ using namespace std;
 
 ObjDumper::ObjDumper(QString file, QString syntax)
 {
+    // Set options
     outputSyntax = syntax;
+
+    // Disassemble binary and set values
     setDisassembly(file);
     setFunctionsLists(disassembly);
     setSymbolsTable(file);
     setRelocationEntries(file);
     setStrings(file);
+    setHeaders(file);
 }
 
 // Runs objdump given arguments and file then returns outout
@@ -89,6 +93,10 @@ void ObjDumper::setStrings(QString file){
     strings = getDump("-s", file);
 }
 
+void ObjDumper::setHeaders(QString file){
+    headers = getDump("-x", file);
+}
+
 
 // Getters
 
@@ -106,6 +114,10 @@ QString ObjDumper::getRelocationEntries(){
 
 QString ObjDumper::getStrings(){
     return strings;
+}
+
+QString ObjDumper::getHeaders(){
+    return headers;
 }
 
 QStringList ObjDumper::getFunctionsList(){

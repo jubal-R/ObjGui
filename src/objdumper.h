@@ -14,6 +14,7 @@ public:
     QString getSymbolsTable();
     QString getRelocationEntries();
     QString getStrings();
+    QString getHeaders();
     QStringList getFunctionsList();
     QList<int> getSectionIndices();
 
@@ -23,6 +24,7 @@ private:
     void setSymbolsTable(QString file);
     void setRelocationEntries(QString file);
     void setStrings(QString file);
+    void setHeaders(QString file);
     void setFunctionsLists(QString disassembly);
     QList<int> sectionIndices;
     QStringList funtionsList;
@@ -30,6 +32,7 @@ private:
     QString symbolsTable;
     QString relocationEntries;
     QString strings;
+    QString headers;
     QString outputSyntax;
 
 };
