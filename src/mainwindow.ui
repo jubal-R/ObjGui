@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -138,9 +141,18 @@ font: 75 italic 11pt &quot;Noto Sans&quot;;</string>
           </property>
           <item row="0" column="0">
            <widget class="QTextBrowser" name="codeBrowser">
+            <property name="font">
+             <font>
+              <family>Anonymous Pro</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
             <property name="styleSheet">
-             <string notr="true">font: 12pt &quot;Anonymous Pro&quot;;
-background-color: rgb(250, 250, 250);</string>
+             <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85)</string>
             </property>
             <property name="cursorWidth">
              <number>0</number>
@@ -181,7 +193,8 @@ background-color: rgb(250, 250, 250);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(250, 250, 250);</string>
+             <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85)</string>
             </property>
            </widget>
           </item>
@@ -216,7 +229,8 @@ background-color: rgb(250, 250, 250);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(250, 250, 250);</string>
+             <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85)</string>
             </property>
            </widget>
           </item>
@@ -262,25 +276,37 @@ color: rgb(29, 160, 185);</string>
          <attribute name="title">
           <string>Headers</string>
          </attribute>
-         <widget class="QTextBrowser" name="headersBrowser">
-          <property name="geometry">
-           <rect>
-            <x>-5</x>
-            <y>1</y>
-            <width>991</width>
-            <height>481</height>
-           </rect>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <property name="leftMargin">
+           <number>1</number>
           </property>
-          <property name="font">
-           <font>
-            <family>Anonymous Pro</family>
-            <pointsize>12</pointsize>
-           </font>
+          <property name="topMargin">
+           <number>1</number>
           </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: rgb(250, 250, 250);</string>
+          <property name="rightMargin">
+           <number>1</number>
           </property>
-         </widget>
+          <property name="bottomMargin">
+           <number>1</number>
+          </property>
+          <property name="spacing">
+           <number>1</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QTextBrowser" name="headersBrowser">
+            <property name="font">
+             <font>
+              <family>Anonymous Pro</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
         <widget class="QWidget" name="settings_tab">
          <property name="styleSheet">

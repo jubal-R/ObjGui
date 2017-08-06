@@ -187,15 +187,10 @@ Highlighter::Highlighter(QString type, QString theme, QTextDocument *parent)
         commentEndExpression = QRegExp("\\*/");
 
     }else if(type == "sym"){
-        //Text
-        classFormat.setForeground(functionsColor);
-        rule.pattern = QRegExp("\\b[a-zA-Z0-9_.-@]+\\b");
-        rule.format = classFormat;
-        highlightingRules.append(rule);
 
         //Nums :D
         classFormat.setForeground(numColor);
-        rule.pattern = QRegExp("\\b[0-9a-f]+\\b");
+        rule.pattern = QRegExp("\\b[0-9a-fx]+\\b");
         rule.format = classFormat;
         highlightingRules.append(rule);
 
