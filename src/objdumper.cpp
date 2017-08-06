@@ -1,7 +1,5 @@
 #include "objdumper.h"
 #include "QString"
-#include "QStringList"
-#include "QList"
 #include <stdlib.h>
 #include <fstream>
 #include <iostream>
@@ -9,15 +7,9 @@
 
 using namespace std;
 
-QList<int> sectionIndices;
-QStringList funtionsList;
-QString disassembly;
-QString symbolsTable;
-QString relocationEntries;
-QString strings;
-
-ObjDumper::ObjDumper(QString file)
+ObjDumper::ObjDumper(QString file, QString syntax)
 {
+    outputSyntax = syntax;
     setDisassembly(file);
     setFunctionsLists(disassembly);
     setSymbolsTable(file);
@@ -82,7 +74,7 @@ void ObjDumper::setFunctionsLists(QString dump){
 }
 
 void ObjDumper::setDisassembly(QString file){
-    disassembly = getDump("-M intel -d", file);
+    disassembly = getDump("-M " + outputSyntax + " -d", file);
 }
 
 void ObjDumper::setSymbolsTable(QString file){

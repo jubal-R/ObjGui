@@ -33,6 +33,13 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set Window Size
     MainWindow::resize(settings.getWindowWidth(), settings.getWindowHeight());
 
+    // Indicate Current Preferences
+    if (settings.getSyntax() == "intel"){
+        ui->actionIntel->setChecked(true);
+    }else if (settings.getSyntax() == "att"){
+        ui->actionAtt->setChecked(true);
+    }
+
     // Style
     QString style = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
           "QTabBar::tab {color: font-size:9pt; padding: 1px 5px;}";
@@ -74,7 +81,7 @@ void MainWindow::open(QString file){
             ui->sectionList->takeItem(0);
         }
 
-        objDumper = new ObjDumper(file);
+        objDumper = new ObjDumper(file, settings.getSyntax());
 
         // Populate function/section list in sidebar
         ui->sectionList->addItems(objDumper->getFunctionsList());
@@ -174,9 +181,14 @@ void MainWindow::on_actionShow_Containing_Folder_triggered()
 void MainWindow::on_actionIntel_triggered()
 {
     settings.setSyntax("intel");
+
+    ui->actionIntel->setChecked(true);
+    ui->actionAtt->setChecked(false);
 }
 
 void MainWindow::on_actionAtt_triggered()
 {
     settings.setSyntax("att");
+    ui->actionAtt->setChecked(true);
+    ui->actionIntel->setChecked(false);
 }

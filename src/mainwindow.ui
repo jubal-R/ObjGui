@@ -382,11 +382,17 @@ color: rgb(29, 160, 185);</string>
    </property>
   </action>
   <action name="actionIntel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>intel</string>
    </property>
   </action>
   <action name="actionAtt">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>att</string>
    </property>

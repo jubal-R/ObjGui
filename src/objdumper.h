@@ -2,12 +2,14 @@
 #define OBJDUMPER_H
 
 #include "QString"
+#include "QStringList"
+#include "QList"
 
 
 class ObjDumper
 {
 public:
-    ObjDumper(QString File);
+    ObjDumper(QString File, QString syntax);
     QString getDisassembly();
     QString getSymbolsTable();
     QString getRelocationEntries();
@@ -22,6 +24,13 @@ private:
     void setRelocationEntries(QString file);
     void setStrings(QString file);
     void setFunctionsLists(QString disassembly);
+    QList<int> sectionIndices;
+    QStringList funtionsList;
+    QString disassembly;
+    QString symbolsTable;
+    QString relocationEntries;
+    QString strings;
+    QString outputSyntax;
 
 };
 
