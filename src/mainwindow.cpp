@@ -7,6 +7,7 @@
 #include "iostream"
 
 #include "files.h"
+#include "functionlist.h"
 #include "highlighter.h"
 #include "objdumper.h"
 #include "settings.h"
@@ -14,8 +15,9 @@
 using namespace std;
 
 Files files;
+FunctionList functionList;
 Settings settings;
-ObjDumper *objDumper = NULL;
+ObjDumper objDumper;
 Highlighter *disHighlighter = NULL;
 Highlighter *symbolsHighlighter = NULL;
 Highlighter *relocationsHighlighter = NULL;
@@ -53,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     headersHighlighter = new Highlighter("sym", "default", ui->headersBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
+
 }
 
 MainWindow::~MainWindow()
@@ -79,20 +82,39 @@ void MainWindow::open(QString file){
 
 
         // Clear old function/section list from sidebar
-        while (ui->sectionList->count() > 0){
-            ui->sectionList->takeItem(0);
+        while (ui->functionList->count() > 0){
+            ui->functionList->takeItem(0);
         }
 
-        objDumper = new ObjDumper(file, settings.getSyntax());
+        // Set file format value in statusbar
+
+
+        functionList = objDumper.getFunctionList(file);
 
         // Populate function/section list in sidebar
-        ui->sectionList->addItems(objDumper->getFunctionsList());
+        ui->functionList->addItems(functionList.getFunctionNames());
 
-        ui->codeBrowser->setText(objDumper->getDisassembly());
-        ui->symbolsBrowser->setText(objDumper->getSymbolsTable());
-        ui->relocationsBrowser->setText(objDumper->getRelocationEntries());
-        ui->stringsBrowser->setText(objDumper->getStrings());
-        ui->headersBrowser->setText(objDumper->getHeaders());
+        // Set disassembly text
+        if (!functionList.isEmpty()){
+            // Display main function by default if it exists
+            if (functionList.containsFunction("main"))
+                displayFunctionText("main");
+            else {
+                QString firstIndexName = functionList.getFunction(0).getName();
+                displayFunctionText(firstIndexName);
+            }
+
+        } else {
+           ui->codeBrowser->setText("File format not recognized.");
+           ui->addressLabel->setText("");
+           ui->functionLabel->setText("");
+        }
+
+
+        ui->symbolsBrowser->setText(objDumper.getSymbolsTable(file));
+        ui->relocationsBrowser->setText(objDumper.getRelocationEntries(file));
+        ui->stringsBrowser->setText(objDumper.getStrings(file));
+        ui->headersBrowser->setText(objDumper.getHeaders(file));
 
     }
 }
@@ -127,6 +149,16 @@ QString MainWindow::getDirectory(QString filepath){
     filepath.chop(filepath.length() - lastIndex);
 
     return filepath;
+}
+
+void MainWindow::displayFunctionText(QString functionName){
+    if (!functionList.isEmpty()){
+        Function function = functionList.getFunction(functionName);
+        ui->addressLabel->setText(function.getAddress());
+        ui->functionLabel->setText(function.getName());
+        //QString display = "  " + function.getAddress() + "\t\t" + function.getName() + "\n\n" + function.getContents();
+        ui->codeBrowser->setText(function.getContents());
+    }
 }
 
 /*
@@ -194,4 +226,19 @@ void MainWindow::on_actionAtt_triggered()
     settings.setSyntax("att");
     ui->actionAtt->setChecked(true);
     ui->actionIntel->setChecked(false);
+}
+
+// Syntax Option ComboBox
+void MainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    if (index == 0){
+        on_actionIntel_triggered();
+    }else if(index == 1){
+        on_actionAtt_triggered();
+    }
+}
+
+void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
+{
+    displayFunctionText(item->text());
 }

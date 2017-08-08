@@ -1,4 +1,6 @@
 #include "objdumper.h"
+#include "function.h"
+#include "functionlist.h"
 #include "QString"
 #include <stdlib.h>
 #include <fstream>
@@ -7,18 +9,10 @@
 
 using namespace std;
 
-ObjDumper::ObjDumper(QString file, QString syntax)
+ObjDumper::ObjDumper()
 {
-    // Set options
-    outputSyntax = syntax;
-
-    // Disassemble binary and set values
-    setDisassembly(file);
-    setFunctionsLists(disassembly);
-    setSymbolsTable(file);
-    setRelocationEntries(file);
-    setStrings(file);
-    setHeaders(file);
+    // Set default options
+    outputSyntax = "intel";
 }
 
 // Runs objdump given arguments and file then returns outout
@@ -48,82 +42,103 @@ QString ObjDumper::getDump(QString args, QString file){
     return QString::fromStdString(oss.str());
 }
 
-// Setters
+// Parses disassembly and populates functionList
+FunctionList ObjDumper::getFunctionList(QString file){
+   FunctionList functionList;
+   QString dump = getDisassembly(file);
 
-// Sets functionList and sectionIndices given disassembly text
-void ObjDumper::setFunctionsLists(QString dump){
-    QString tmp = "";
+    // Split dump into list of functions
+    QStringList dumpList = dump.split("\n\n");
 
-    for(int i = 0; i < dump.length(); i++){
-        if(dump.at(i) == QChar('<')){
+    // Parse dumplist
+    for (int listIndex = 0; listIndex < dumpList.length(); listIndex++){
+        QString dumpStr = dumpList.at(listIndex);
+
+        // Parse first word
+        QString tmp;
+        int i = 0;
+        while (i < dumpStr.length()-1 && dumpStr.at(i) != QChar(' ')){
+            tmp.append(dumpStr.at(i));
             i++;
-            // Build function string
-            while(i < dump.length()-1 && dump.at(i) != QChar('>')){
-                tmp.append(dump.at(i));
+        }
+
+        // Check if section or function
+        if (tmp == "Disassembly"){
+            // TODO
+
+        } else if (tmp.startsWith("0") /*tmp is hex*/){
+            QString name = "";
+            QString address = "";
+            QString contents = "";
+
+            address = tmp;
+
+            i += 2;
+            QString tmp2 = "";
+            while (i < dumpStr.length()-1 && dumpStr.at(i) != QChar('>')){
+                tmp2.append(dumpStr.at(i));
                 i++;
             }
+            name = tmp2;
+            contents = dumpStr.mid(i+3);
 
-            i++;    // Move to next char
 
-            // If char after '>' is ':' add to list
-            if(dump.at(i) == QChar(':')){
-                funtionsList << tmp;
-                sectionIndices << i;
-            }
-            // Clear tmp
-            tmp = "";
+            // Add to functionList
+            functionList.insert(name, address, contents);
         }
+
+
     }
+    return functionList;
 
 }
 
-void ObjDumper::setDisassembly(QString file){
-    disassembly = getDump("-M " + outputSyntax + " -d", file);
-}
+// Setters
 
-void ObjDumper::setSymbolsTable(QString file){
-    symbolsTable = getDump("-T", file);
-}
-
-void ObjDumper::setRelocationEntries(QString file){
-    relocationEntries = getDump("-R", file);
-}
-
-void ObjDumper::setStrings(QString file){
-    strings = getDump("-s", file);
-}
-
-void ObjDumper::setHeaders(QString file){
-    headers = getDump("-x", file);
-}
-
-
-// Getters
-
-QString ObjDumper::getDisassembly(){
+QString ObjDumper::getDisassembly(QString file){
+    QString disassembly = getDump("-M " + outputSyntax + " -d", file);
     return disassembly;
 }
 
-QString ObjDumper::getSymbolsTable(){
+QString ObjDumper::getSymbolsTable(QString file){
+    QString symbolsTable = getDump("-T", file);
     return symbolsTable;
 }
 
-QString ObjDumper::getRelocationEntries(){
+QString ObjDumper::getRelocationEntries(QString file){
+    QString relocationEntries = getDump("-R", file);
     return relocationEntries;
 }
 
-QString ObjDumper::getStrings(){
+QString ObjDumper::getStrings(QString file){
+    QString strings = getDump("-s", file);
     return strings;
 }
 
-QString ObjDumper::getHeaders(){
+QString ObjDumper::getHeaders(QString file){
+    QString headers = getDump("-x", file);
     return headers;
 }
 
-QStringList ObjDumper::getFunctionsList(){
-    return funtionsList;
+QString ObjDumper::getFileFormat(QString file){
+    QString header = getDump("-f", file);
+    // Extract file format from header
+    int i = 0;
+    int newlineCount = 0;
+    while (i < header.length() && newlineCount < 2){
+        if (header.at(i) == QChar('\n'))
+            newlineCount++;
+        i++;
+    }
+    i--;
+    QString fileFormat = "";
+    while (i >= 0 && header.at(i) != QChar(' ')) {
+        fileFormat.prepend(header.at(i));
+        i--;
+    }
+
+    return fileFormat;
+
 }
 
-QList<int> ObjDumper::getSectionIndices(){
-    return sectionIndices;
-}
+

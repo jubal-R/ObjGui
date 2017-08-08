@@ -17,12 +17,18 @@ SOURCES += main.cpp\
     files.cpp \
     objdumper.cpp \
     highlighter.cpp \
-    settings.cpp
+    settings.cpp \
+    functionnode.cpp \
+    functionlist.cpp \
+    function.cpp
 
 HEADERS  += mainwindow.h \
     files.h \
     objdumper.h \
     highlighter.h \
-    settings.h
+    settings.h \
+    functionnode.h \
+    functionlist.h \
+    function.h
 
 FORMS    += mainwindow.ui

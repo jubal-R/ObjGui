@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "QListWidgetItem"
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +20,7 @@ private slots:
     void highlightCurrentLine();
     void on_actionOpen_triggered();
     void open(QString file);
+    void displayFunctionText(QString functionName);
     QString getDirectory(QString file);
 
     void on_actionProject_triggered();
@@ -32,6 +34,10 @@ private slots:
     void on_actionIntel_triggered();
 
     void on_actionAtt_triggered();
+
+    void on_comboBox_currentIndexChanged(int index);
+
+    void on_functionList_itemDoubleClicked(QListWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;

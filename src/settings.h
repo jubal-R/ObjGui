@@ -19,6 +19,7 @@ private:
     int windowWidth;
     int windowHeight;
     QString syntax;
+    QString disassemblyFlag;
 
 };
 
