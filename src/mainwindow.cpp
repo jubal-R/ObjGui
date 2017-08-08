@@ -87,6 +87,7 @@ void MainWindow::open(QString file){
         }
 
         // Set file format value in statusbar
+        ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
 
 
         functionList = objDumper.getFunctionList(file);

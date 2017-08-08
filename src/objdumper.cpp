@@ -93,7 +93,6 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
 }
 
-// Setters
 
 QString ObjDumper::getDisassembly(QString file){
     QString disassembly = getDump("-M " + outputSyntax + " -d", file);
@@ -130,7 +129,7 @@ QString ObjDumper::getFileFormat(QString file){
             newlineCount++;
         i++;
     }
-    i--;
+    i-=2;
     QString fileFormat = "";
     while (i >= 0 && header.at(i) != QChar(' ')) {
         fileFormat.prepend(header.at(i));
