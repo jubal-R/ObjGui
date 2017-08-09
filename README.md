@@ -5,6 +5,7 @@ ObjGui is a GUI frontend for objdump made for readability and easy analysis.
 ![ObjGui](https://github.com/jubal-R/ObjGui/blob/master/screenshots/objGui.png)
 
 ## Features
+- Sidebar navigation to jump between functions
 - Output seperated into tabs
 - Highlighting for readability
 
@@ -19,7 +20,8 @@ qt5-default qt5-qmake objdump
 `make`
 
 ## To Be Added
-- Sidebar navigation to jump between sections
+- Follow jump/call instructions
+- Edit and patch binaries
 - User preferences
 - Searching
 
