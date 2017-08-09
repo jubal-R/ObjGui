@@ -239,7 +239,7 @@ color: rgb(85, 85, 85)</string>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_2">
+        <widget class="QWidget" name="symbolsTab">
          <attribute name="title">
           <string>Symbols Table</string>
          </attribute>
@@ -275,7 +275,7 @@ color: rgb(85, 85, 85)</string>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab">
+        <widget class="QWidget" name="relocationsTab">
          <attribute name="title">
           <string>Relocation Entries</string>
          </attribute>
@@ -311,9 +311,9 @@ color: rgb(85, 85, 85)</string>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_3">
+        <widget class="QWidget" name="contentsTab">
          <attribute name="title">
-          <string>Strings</string>
+          <string>Contents</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_3">
           <property name="leftMargin">
@@ -332,7 +332,7 @@ color: rgb(85, 85, 85)</string>
            <number>1</number>
           </property>
           <item row="0" column="0">
-           <widget class="QTextBrowser" name="stringsBrowser">
+           <widget class="QTextBrowser" name="contentsBrowser">
             <property name="font">
              <font>
               <family>Anonymous Pro</family>
@@ -347,7 +347,7 @@ color: rgb(29, 160, 185);</string>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_4">
+        <widget class="QWidget" name="headersTab">
          <attribute name="title">
           <string>Headers</string>
          </attribute>

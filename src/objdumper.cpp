@@ -101,22 +101,22 @@ QString ObjDumper::getDisassembly(QString file){
 
 QString ObjDumper::getSymbolsTable(QString file){
     QString symbolsTable = getDump("-T", file);
-    return symbolsTable;
+    return removeHeading(symbolsTable);
 }
 
 QString ObjDumper::getRelocationEntries(QString file){
     QString relocationEntries = getDump("-R", file);
-    return relocationEntries;
+    return removeHeading(relocationEntries);
 }
 
-QString ObjDumper::getStrings(QString file){
-    QString strings = getDump("-s", file);
-    return strings;
+QString ObjDumper::getContents(QString file){
+    QString contents = getDump("-s", file);
+    return removeHeading(contents);
 }
 
 QString ObjDumper::getHeaders(QString file){
     QString headers = getDump("-x", file);
-    return headers;
+    return removeHeading(headers);
 }
 
 QString ObjDumper::getFileFormat(QString file){
@@ -140,4 +140,15 @@ QString ObjDumper::getFileFormat(QString file){
 
 }
 
+// Removes heading(first three lines of objdump output)
+QString ObjDumper::removeHeading(QString dump){
+    int i = 0;
+    int newlineCount = 0;
+    while (i < dump.length() && newlineCount < 3){
+        if (dump.at(i) == QChar('\n'))
+            newlineCount++;
+        i++;
+    }
 
+    return dump.mid(i);
+}

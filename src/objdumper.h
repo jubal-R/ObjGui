@@ -14,13 +14,14 @@ public:
     QString getDisassembly(QString file);
     QString getSymbolsTable(QString file);
     QString getRelocationEntries(QString file);
-    QString getStrings(QString file);
+    QString getContents(QString file);
     QString getHeaders(QString file);
     QString getFileFormat(QString file);
     FunctionList getFunctionList(QString file);
 
 private:
     QString getDump(QString args, QString file);
+    QString removeHeading(QString dump);
 
     QString outputSyntax;
 
