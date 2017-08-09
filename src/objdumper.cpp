@@ -13,6 +13,8 @@ ObjDumper::ObjDumper()
 {
     // Set default options
     outputSyntax = "intel";
+    disassemblyFlag = "-d";
+    headerFlags = "-x";
 }
 
 // Runs objdump given arguments and file then returns outout
@@ -95,7 +97,7 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
 
 QString ObjDumper::getDisassembly(QString file){
-    QString disassembly = getDump("-M " + outputSyntax + " -d", file);
+    QString disassembly = getDump("-M " + outputSyntax + " " + disassemblyFlag, file);
     return disassembly;
 }
 
@@ -115,8 +117,12 @@ QString ObjDumper::getContents(QString file){
 }
 
 QString ObjDumper::getHeaders(QString file){
-    QString headers = getDump("-x", file);
-    return removeHeading(headers);
+    if (!headerFlags.isEmpty()){
+        QString headers = getDump(headerFlags, file);
+        return removeHeading(headers);
+    } else {
+        return "";
+    }
 }
 
 QString ObjDumper::getFileFormat(QString file){
@@ -151,4 +157,16 @@ QString ObjDumper::removeHeading(QString dump){
     }
 
     return dump.mid(i);
+}
+
+void ObjDumper::setOutputSyntax(QString syntax){
+    outputSyntax = syntax;
+}
+
+void ObjDumper::setDisassemblyFlag(QString flag){
+    disassemblyFlag = flag;
+}
+
+void ObjDumper::setHeaderFlags(QString flags){
+    headerFlags = flags;
 }

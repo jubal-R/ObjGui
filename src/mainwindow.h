@@ -21,6 +21,7 @@ private slots:
     void on_actionOpen_triggered();
     void open(QString file);
     void displayFunctionText(QString functionName);
+    QString getHeaderFlags();
     QString getDirectory(QString file);
 
     void on_actionProject_triggered();
@@ -35,9 +36,19 @@ private slots:
 
     void on_actionAtt_triggered();
 
-    void on_comboBox_currentIndexChanged(int index);
-
     void on_functionList_itemDoubleClicked(QListWidgetItem *item);
+
+    void on_syntaxComboBox_currentIndexChanged(int index);
+
+    void on_disassemblyFlagcheckBox_toggled(bool checked);
+
+    void on_allHeadersCheckBox_toggled(bool checked);
+
+    void on_archiveHeadersCheckBox_toggled(bool checked);
+
+    void on_fileHeadersCheckBox_toggled(bool checked);
+
+    void on_privateHeadersCheckBox_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;

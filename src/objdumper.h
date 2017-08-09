@@ -19,11 +19,17 @@ public:
     QString getFileFormat(QString file);
     FunctionList getFunctionList(QString file);
 
+    void setOutputSyntax(QString syntax);
+    void setDisassemblyFlag(QString flag);
+    void setHeaderFlags(QString flags);
+
 private:
     QString getDump(QString args, QString file);
     QString removeHeading(QString dump);
 
     QString outputSyntax;
+    QString disassemblyFlag;
+    QString headerFlags;
 
 };
 

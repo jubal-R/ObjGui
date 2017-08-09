@@ -39,9 +39,14 @@ MainWindow::MainWindow(QWidget *parent) :
     // Indicate Current Preferences
     if (settings.getSyntax() == "intel"){
         ui->actionIntel->setChecked(true);
+        ui->syntaxComboBox->setCurrentIndex(0);
+        objDumper.setOutputSyntax("intel");
     }else if (settings.getSyntax() == "att"){
         ui->actionAtt->setChecked(true);
+        ui->syntaxComboBox->setCurrentIndex(1);
+        objDumper.setOutputSyntax("att");
     }
+    ui->allHeadersCheckBox->toggle();
 
     // Style
     QString style = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
@@ -79,7 +84,6 @@ void MainWindow::open(QString file){
 
     if (file != ""){
         this->setWindowTitle("ObjGUI - " + file);
-
 
         // Clear old function/section list from sidebar
         while (ui->functionList->count() > 0){
@@ -217,20 +221,23 @@ void MainWindow::on_actionShow_Containing_Folder_triggered()
 void MainWindow::on_actionIntel_triggered()
 {
     settings.setSyntax("intel");
-
+    objDumper.setOutputSyntax("intel");
     ui->actionIntel->setChecked(true);
     ui->actionAtt->setChecked(false);
+    ui->syntaxComboBox->setCurrentIndex(0);
 }
 
 void MainWindow::on_actionAtt_triggered()
 {
     settings.setSyntax("att");
+    objDumper.setOutputSyntax("att");
     ui->actionAtt->setChecked(true);
     ui->actionIntel->setChecked(false);
+    ui->syntaxComboBox->setCurrentIndex(1);
 }
 
 // Syntax Option ComboBox
-void MainWindow::on_comboBox_currentIndexChanged(int index)
+void MainWindow::on_syntaxComboBox_currentIndexChanged(int index)
 {
     if (index == 0){
         on_actionIntel_triggered();
@@ -242,4 +249,68 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 {
     displayFunctionText(item->text());
+}
+
+
+
+void MainWindow::on_disassemblyFlagcheckBox_toggled(bool checked)
+{
+    if (checked)
+        objDumper.setDisassemblyFlag("-D");
+    else
+        objDumper.setDisassemblyFlag("-d");
+}
+
+void MainWindow::on_allHeadersCheckBox_toggled(bool checked)
+{
+    if (checked){
+        objDumper.setHeaderFlags("-x");
+        // Check all boxes
+        ui->archiveHeadersCheckBox->setChecked(true);
+        ui->fileHeadersCheckBox->setChecked(true);
+        ui->privateHeadersCheckBox->setChecked(true);
+        // Disable other options
+        ui->archiveHeadersCheckBox->setEnabled(false);
+        ui->fileHeadersCheckBox->setEnabled(false);
+        ui->privateHeadersCheckBox->setEnabled(false);
+    } else {
+        // Re-enble other options
+        ui->archiveHeadersCheckBox->setEnabled(true);
+        ui->fileHeadersCheckBox->setEnabled(true);
+        ui->privateHeadersCheckBox->setEnabled(true);
+    }
+}
+
+QString MainWindow::getHeaderFlags(){
+    QString flags = "";
+    if (!ui->allHeadersCheckBox->isChecked()){
+        if (ui->archiveHeadersCheckBox->isChecked())
+            flags.append("-a ");
+        if (ui->fileHeadersCheckBox->isChecked())
+            flags.append("-f ");
+        if (ui->privateHeadersCheckBox->isChecked())
+            flags.append("-p ");
+
+        return flags;
+    } else {
+        return "-x";
+    }
+}
+
+void MainWindow::on_archiveHeadersCheckBox_toggled(bool checked)
+{
+    if (!ui->allHeadersCheckBox->isChecked())
+        objDumper.setHeaderFlags(getHeaderFlags());
+}
+
+void MainWindow::on_fileHeadersCheckBox_toggled(bool checked)
+{
+    if (!ui->allHeadersCheckBox->isChecked())
+        objDumper.setHeaderFlags(getHeaderFlags());
+}
+
+void MainWindow::on_privateHeadersCheckBox_toggled(bool checked)
+{
+    if (!ui->allHeadersCheckBox->isChecked())
+        objDumper.setHeaderFlags(getHeaderFlags());
 }

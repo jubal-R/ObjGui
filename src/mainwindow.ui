@@ -134,7 +134,7 @@ font: 75 10pt &quot;Noto Sans&quot;;</string>
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="disTab">
          <attribute name="title">
@@ -405,14 +405,14 @@ color: rgb(85, 85, 85)</string>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QCheckBox" name="checkBox_5">
+           <widget class="QCheckBox" name="disassemblyFlagcheckBox">
             <property name="text">
              <string>disassemble-all</string>
             </property>
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QCheckBox" name="checkBox_2">
+           <widget class="QCheckBox" name="archiveHeadersCheckBox">
             <property name="maximumSize">
              <size>
               <width>150</width>
@@ -425,7 +425,7 @@ color: rgb(85, 85, 85)</string>
            </widget>
           </item>
           <item row="2" column="3">
-           <widget class="QCheckBox" name="checkBox_3">
+           <widget class="QCheckBox" name="fileHeadersCheckBox">
             <property name="maximumSize">
              <size>
               <width>150</width>
@@ -438,7 +438,7 @@ color: rgb(85, 85, 85)</string>
            </widget>
           </item>
           <item row="2" column="4">
-           <widget class="QCheckBox" name="checkBox_4">
+           <widget class="QCheckBox" name="privateHeadersCheckBox">
             <property name="maximumSize">
              <size>
               <width>150</width>
@@ -486,7 +486,7 @@ color: rgb(85, 85, 85)</string>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QCheckBox" name="checkBox">
+           <widget class="QCheckBox" name="allHeadersCheckBox">
             <property name="maximumSize">
              <size>
               <width>150</width>
@@ -525,7 +525,7 @@ color: rgb(85, 85, 85)</string>
            </spacer>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="comboBox">
+           <widget class="QComboBox" name="syntaxComboBox">
             <property name="maximumSize">
              <size>
               <width>75</width>
@@ -568,7 +568,7 @@ color: rgb(85, 85, 85)</string>
        <string notr="true">background-color: rgb(61, 61, 61);
 color: rgb(240, 240, 240);</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_8">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -581,7 +581,17 @@ color: rgb(240, 240, 240);</string>
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="0" column="0">
+       <item>
+        <widget class="QLabel" name="statusMsgLabel">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="indent">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="fileFormatlabel">
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
