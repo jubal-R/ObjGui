@@ -78,7 +78,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Style
     QString style = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
-          "QTabBar::tab {color: font-size:9pt; padding: 1px 5px;}";
+          "QTabBar::tab {background-color: #fafafa;}"
+          "QTabWidget::tab-bar {left: 5px;}"
+          "QTabWidget::pane {border: none;}"
+          "QTextBrowser {border: 2px soild red;}";
    ui->tabWidget->setStyleSheet(style);
 
     disHighlighter = new Highlighter("dis", "default", ui->codeBrowser->document());

@@ -53,85 +53,101 @@
        <number>0</number>
       </property>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <property name="spacing">
-         <number>0</number>
+       <widget class="QWidget" name="sidebar_2" native="true">
+        <property name="styleSheet">
+         <string notr="true">border-right: 1px solid #d4d4d4;</string>
         </property>
-        <property name="sizeConstraint">
-         <enum>QLayout::SetFixedSize</enum>
-        </property>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>31</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-            <weight>50</weight>
-            <italic>false</italic>
-            <bold>false</bold>
-            <underline>false</underline>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
-          </property>
-          <property name="text">
-           <string>Functions</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QListWidget" name="functionList">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>150</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Sans Serif</family>
-            <pointsize>10</pointsize>
-            <weight>9</weight>
-            <italic>false</italic>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: rgb(245, 245, 245);
-border-color: rgb(53, 53, 53);
+        <layout class="QVBoxLayout" name="sidebar">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>31</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+             <underline>false</underline>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="text">
+            <string>Functions</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="functionList">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Sans Serif</family>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(245, 245, 245);
 font-size: 10pt;</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
        <widget class="QTabWidget" name="tabWidget">
@@ -156,6 +172,9 @@ font-size: 10pt;</string>
          <number>0</number>
         </property>
         <widget class="QWidget" name="disTab">
+         <property name="styleSheet">
+          <string notr="true">border: none;</string>
+         </property>
          <attribute name="title">
           <string>Disassembly</string>
          </attribute>
@@ -164,7 +183,7 @@ font-size: 10pt;</string>
            <number>1</number>
           </property>
           <property name="topMargin">
-           <number>1</number>
+           <number>15</number>
           </property>
           <property name="rightMargin">
            <number>1</number>
@@ -207,7 +226,7 @@ color: rgb(85, 85, 85)</string>
              <number>20</number>
             </property>
             <property name="topMargin">
-             <number>2</number>
+             <number>0</number>
             </property>
             <property name="rightMargin">
              <number>20</number>
@@ -259,15 +278,18 @@ color: rgb(85, 85, 85)</string>
          </layout>
         </widget>
         <widget class="QWidget" name="symbolsTab">
+         <property name="styleSheet">
+          <string notr="true">border: none;</string>
+         </property>
          <attribute name="title">
           <string>Symbols Table</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_5">
           <property name="leftMargin">
-           <number>1</number>
+           <number>10</number>
           </property>
           <property name="topMargin">
-           <number>1</number>
+           <number>15</number>
           </property>
           <property name="rightMargin">
            <number>1</number>
@@ -288,22 +310,25 @@ color: rgb(85, 85, 85)</string>
             </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85)</string>
+color: rgb(85, 85, 85);</string>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
         <widget class="QWidget" name="relocationsTab">
+         <property name="styleSheet">
+          <string notr="true">border: none;</string>
+         </property>
          <attribute name="title">
           <string>Relocation Entries</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_4">
           <property name="leftMargin">
-           <number>1</number>
+           <number>10</number>
           </property>
           <property name="topMargin">
-           <number>1</number>
+           <number>15</number>
           </property>
           <property name="rightMargin">
            <number>1</number>
@@ -331,15 +356,18 @@ color: rgb(85, 85, 85)</string>
          </layout>
         </widget>
         <widget class="QWidget" name="contentsTab">
+         <property name="styleSheet">
+          <string notr="true">border: none;</string>
+         </property>
          <attribute name="title">
           <string>Contents</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_3">
           <property name="leftMargin">
-           <number>1</number>
+           <number>10</number>
           </property>
           <property name="topMargin">
-           <number>1</number>
+           <number>15</number>
           </property>
           <property name="rightMargin">
            <number>1</number>
@@ -367,15 +395,18 @@ color: rgb(29, 160, 185);</string>
          </layout>
         </widget>
         <widget class="QWidget" name="headersTab">
+         <property name="styleSheet">
+          <string notr="true">border: none;</string>
+         </property>
          <attribute name="title">
           <string>Headers</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_7">
           <property name="leftMargin">
-           <number>1</number>
+           <number>10</number>
           </property>
           <property name="topMargin">
-           <number>1</number>
+           <number>15</number>
           </property>
           <property name="rightMargin">
            <number>1</number>
@@ -410,10 +441,18 @@ color: rgb(85, 85, 85)</string>
           <string>Options</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_6">
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
+          <property name="topMargin">
+           <number>15</number>
+          </property>
           <item row="1" column="0">
            <widget class="QLabel" name="label">
             <property name="font">
              <font>
+              <family>Noto Sans</family>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -675,15 +714,7 @@ font-size: 10pt;</string>
      <addaction name="actionIntel"/>
      <addaction name="actionAtt"/>
     </widget>
-    <widget class="QMenu" name="menuDisassemble">
-     <property name="title">
-      <string>Disassemble</string>
-     </property>
-     <addaction name="actionDisassemble_d"/>
-     <addaction name="actionDisassemble_all_D"/>
-    </widget>
     <addaction name="menuSyntax"/>
-    <addaction name="menuDisassemble"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
