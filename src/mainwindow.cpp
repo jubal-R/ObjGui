@@ -31,6 +31,34 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    // Setup application fonts
+    int sansid = QFontDatabase::addApplicationFont(":/fonts/NotoSans-Regular.ttf");
+    QString sansfamily = QFontDatabase::applicationFontFamilies(sansid).at(0);
+    QFont sans(sansfamily);
+    sans.setPointSize(11);
+
+    this->setFont(sans);
+    ui->tabWidget->setFont(sans);
+
+//    sans.setPointSize(10);
+    ui->functionList->setFont(sans);
+
+    int monoid = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro.ttf");
+    QString monofamily = QFontDatabase::applicationFontFamilies(monoid).at(0);
+    QFont mono(monofamily);
+    mono.setPointSize(12);
+
+    ui->codeBrowser->setFont(mono);
+    ui->symbolsBrowser->setFont(mono);
+    ui->relocationsBrowser->setFont(mono);
+    ui->contentsBrowser->setFont(mono);
+    ui->headersBrowser->setFont(mono);
+
+    mono.setBold(true);
+    ui->addressLabel->setFont(mono);
+    ui->functionLabel->setFont(mono);
+
     this->setWindowTitle("ObjGUI");
 
     // Set Window Size

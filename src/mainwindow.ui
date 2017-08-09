@@ -10,6 +10,11 @@
     <height>575</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Sans Serif</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -110,10 +115,19 @@
             <height>16777215</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <family>Sans Serif</family>
+            <pointsize>10</pointsize>
+            <weight>9</weight>
+            <italic>false</italic>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(245, 245, 245);
 border-color: rgb(53, 53, 53);
-font: 75 10pt &quot;Noto Sans&quot;;</string>
+font-size: 10pt;</string>
           </property>
          </widget>
         </item>
@@ -127,6 +141,11 @@ font: 75 10pt &quot;Noto Sans&quot;;</string>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
         <property name="styleSheet">
          <string notr="true"/>
         </property>
@@ -134,7 +153,7 @@ font: 75 10pt &quot;Noto Sans&quot;;</string>
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="disTab">
          <attribute name="title">
@@ -160,7 +179,7 @@ font: 75 10pt &quot;Noto Sans&quot;;</string>
            <widget class="QTextBrowser" name="codeBrowser">
             <property name="font">
              <font>
-              <family>Anonymous Pro</family>
+              <family>Monospace</family>
               <pointsize>12</pointsize>
               <weight>50</weight>
               <italic>false</italic>
@@ -206,7 +225,7 @@ color: rgb(85, 85, 85)</string>
               </property>
               <property name="font">
                <font>
-                <family>Anonymous Pro</family>
+                <family>Monospace</family>
                 <pointsize>12</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
@@ -224,7 +243,7 @@ color: rgb(85, 85, 85)</string>
              <widget class="QLabel" name="functionLabel">
               <property name="font">
                <font>
-                <family>Anonymous Pro</family>
+                <family>Monospace</family>
                 <pointsize>12</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
@@ -263,7 +282,7 @@ color: rgb(85, 85, 85)</string>
            <widget class="QTextBrowser" name="symbolsBrowser">
             <property name="font">
              <font>
-              <family>Anonymous Pro</family>
+              <family>Monospace</family>
               <pointsize>12</pointsize>
              </font>
             </property>
@@ -299,7 +318,7 @@ color: rgb(85, 85, 85)</string>
            <widget class="QTextBrowser" name="relocationsBrowser">
             <property name="font">
              <font>
-              <family>Anonymous Pro</family>
+              <family>Monospace</family>
               <pointsize>12</pointsize>
              </font>
             </property>
@@ -335,7 +354,7 @@ color: rgb(85, 85, 85)</string>
            <widget class="QTextBrowser" name="contentsBrowser">
             <property name="font">
              <font>
-              <family>Anonymous Pro</family>
+              <family>Monospace</family>
               <pointsize>12</pointsize>
              </font>
             </property>
@@ -371,7 +390,7 @@ color: rgb(29, 160, 185);</string>
            <widget class="QTextBrowser" name="headersBrowser">
             <property name="font">
              <font>
-              <family>Anonymous Pro</family>
+              <family>Monospace</family>
               <pointsize>12</pointsize>
              </font>
             </property>
@@ -564,9 +583,15 @@ color: rgb(85, 85, 85)</string>
         <height>25</height>
        </size>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(61, 61, 61);
-color: rgb(240, 240, 240);</string>
+color: rgb(240, 240, 240);
+font-size: 10pt;</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="leftMargin">
@@ -621,7 +646,7 @@ color: rgb(240, 240, 240);</string>
      <x>0</x>
      <y>0</y>
      <width>1143</width>
-     <height>28</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
