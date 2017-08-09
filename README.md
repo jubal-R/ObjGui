@@ -16,7 +16,7 @@ qt5-default qt5-qmake objdump
 `git clone https://github.com/jubal-R/ObjGui.git`  
 `mkdir build`  
 `cd build`  
-`qmake ../Geist/Geist.pro`  
+`qmake -qt=qt5 ../ObjGui/src/ObjGui.pro`  
 `make`
 
 ## To Be Added
