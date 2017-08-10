@@ -9,7 +9,7 @@ class FunctionList
 {
 public:
     FunctionList();
-    void insert(QString name, QString address, QString contents);
+    void insert(QString name, QString address, QString contents, QString section);
     bool isEmpty();
     bool containsFunction(QString name);
     Function getFunction(QString name);

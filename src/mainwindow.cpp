@@ -81,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
     monoBold.setBold(true);
     ui->addressLabel->setFont(monoBold);
     ui->functionLabel->setFont(monoBold);
+    ui->sectionLabel->setFont(monoBold);
 
     this->setWindowTitle("ObjGUI");
 
@@ -220,7 +221,7 @@ void MainWindow::displayFunctionText(QString functionName){
         Function function = functionList.getFunction(functionName);
         ui->addressLabel->setText(function.getAddress());
         ui->functionLabel->setText(function.getName());
-        //QString display = "  " + function.getAddress() + "\t\t" + function.getName() + "\n\n" + function.getContents();
+        ui->sectionLabel->setText(function.getSection());
         ui->codeBrowser->setText(function.getContents());
     }
 }

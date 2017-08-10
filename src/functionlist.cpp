@@ -8,8 +8,8 @@ FunctionList::FunctionList()
     length = 0;
 }
 
-void FunctionList::insert(QString name, QString address, QString contents){
-    FunctionNode *newNode = new FunctionNode(name, address, contents);
+void FunctionList::insert(QString name, QString address, QString contents, QString section){
+    FunctionNode *newNode = new FunctionNode(name, address, contents, section);
 
     if (isEmpty()){
         head = newNode;
@@ -56,7 +56,7 @@ Function FunctionList::getFunction(QString name){
         }
     }
     // If not found return empty function
-    Function f("", "", "");
+    Function f("", "", "", "");
     return f;
 }
 
@@ -69,7 +69,7 @@ Function FunctionList::getFunction(int index){
         return p->getFunction();
     }
     // If not found return empty function
-    Function f("", "", "");
+    Function f("", "", "", "");
     return f;
 }
 

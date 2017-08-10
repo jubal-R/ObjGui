@@ -51,6 +51,7 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
     // Split dump into list of functions
     QStringList dumpList = dump.split("\n\n");
+    QString currentSection = "";
 
     // Parse dumplist
     for (int listIndex = 0; listIndex < dumpList.length(); listIndex++){
@@ -66,7 +67,8 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
         // Check if section or function
         if (tmp == "Disassembly"){
-            // TODO
+            currentSection = dumpStr.mid(23);
+            currentSection.chop(1);
 
         } else if (tmp.startsWith("0") /*tmp is hex*/){
             QString name = "";
@@ -86,7 +88,7 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
 
             // Add to functionList
-            functionList.insert(name, address, contents);
+            functionList.insert(name, address, contents, currentSection);
         }
 
 
@@ -98,28 +100,28 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
 QString ObjDumper::getDisassembly(QString file){
     QString disassembly = getDump("-M " + outputSyntax + " " + disassemblyFlag, file);
-    return disassembly;
+    return removeHeading(disassembly, 4);
 }
 
 QString ObjDumper::getSymbolsTable(QString file){
     QString symbolsTable = getDump("-T", file);
-    return removeHeading(symbolsTable);
+    return removeHeading(symbolsTable, 3);
 }
 
 QString ObjDumper::getRelocationEntries(QString file){
     QString relocationEntries = getDump("-R", file);
-    return removeHeading(relocationEntries);
+    return removeHeading(relocationEntries, 3);
 }
 
 QString ObjDumper::getContents(QString file){
     QString contents = getDump("-s", file);
-    return removeHeading(contents);
+    return removeHeading(contents, 3);
 }
 
 QString ObjDumper::getHeaders(QString file){
     if (!headerFlags.isEmpty()){
         QString headers = getDump(headerFlags, file);
-        return removeHeading(headers);
+        return removeHeading(headers, 3);
     } else {
         return "";
     }
@@ -147,10 +149,10 @@ QString ObjDumper::getFileFormat(QString file){
 }
 
 // Removes heading(first three lines of objdump output)
-QString ObjDumper::removeHeading(QString dump){
+QString ObjDumper::removeHeading(QString dump, int numLines){
     int i = 0;
     int newlineCount = 0;
-    while (i < dump.length() && newlineCount < 3){
+    while (i < dump.length() && newlineCount < numLines){
         if (dump.at(i) == QChar('\n'))
             newlineCount++;
         i++;

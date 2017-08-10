@@ -6,11 +6,12 @@ Function::Function(){
     contents = "";
 }
 
-Function::Function(QString functionName, QString addr, QString functionContents)
+Function::Function(QString functionName, QString addr, QString functionContents, QString sect)
 {
     name = functionName;
     address = addr;
     contents = functionContents;
+    section = sect;
 }
 
 //Get Values
@@ -25,4 +26,8 @@ QString Function::getAddress(){
 
 QString Function::getContents(){
     return contents;
+}
+
+QString Function::getSection(){
+    return section;
 }

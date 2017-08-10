@@ -25,7 +25,7 @@ public:
 
 private:
     QString getDump(QString args, QString file);
-    QString removeHeading(QString dump);
+    QString removeHeading(QString dump, int numLines);
 
     QString outputSyntax;
     QString disassemblyFlag;

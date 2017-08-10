@@ -7,14 +7,16 @@ class Function
 {
 public:
     Function();
-    Function(QString functionName, QString addr, QString functionContents);
+    Function(QString functionName, QString addr, QString functionContents, QString section);
     QString getName();
     QString getAddress();
     QString getContents();
+    QString getSection();
 private:
     QString name;
     QString address;
     QString contents;
+    QString section;
 
 };
 
