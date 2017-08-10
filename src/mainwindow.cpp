@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     int monoid = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro.ttf");
     QString monofamily = QFontDatabase::applicationFontFamilies(monoid).at(0);
     QFont mono(monofamily);
-    mono.setPointSize(13);
+    mono.setPointSize(12);
 
     ui->codeBrowser->setFont(mono);
     ui->symbolsBrowser->setFont(mono);
@@ -100,12 +100,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->allHeadersCheckBox->toggle();
 
     // Style
-    QString style = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
+    QString tabWidgetStyle = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
           "QTabBar::tab {background-color: #fafafa;}"
           "QTabWidget::tab-bar {left: 5px;}"
           "QTabWidget::pane {border: none;}"
-          "QTextBrowser {border: 2px soild red;}";
-   ui->tabWidget->setStyleSheet(style);
+          "QTextBrowser {border: 2px soild red;}"
+          "QComboBox {background-color: #fafafa; color: #555555;}";
+    ui->tabWidget->setStyleSheet(tabWidgetStyle);
+    QString menuStyle = "QMenu::item:selected {background-color: #3ba1a1; color: #fafafa;}"
+            "QMenuBar::item {background-color: #fafafa; color: #555555;}"
+            "QMenuBar {border-bottom: 1px solid #cccccc;}";
+    ui->menuBar->setStyleSheet(menuStyle);
 
     disHighlighter = new Highlighter("dis", "default", ui->codeBrowser->document());
     symbolsHighlighter = new Highlighter("sym", "default", ui->symbolsBrowser->document());

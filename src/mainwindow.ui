@@ -19,7 +19,8 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85);</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -55,7 +56,7 @@
       <item>
        <widget class="QWidget" name="sidebar_2" native="true">
         <property name="styleSheet">
-         <string notr="true">border-right: 1px solid #d4d4d4;</string>
+         <string notr="true">border-right: 2px solid #d4d4d4;</string>
         </property>
         <layout class="QVBoxLayout" name="sidebar">
          <property name="spacing">
@@ -111,13 +112,6 @@
           </widget>
          </item>
          <item>
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QListWidget" name="functionList">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
@@ -142,7 +136,8 @@
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: rgb(245, 245, 245);
-font-size: 10pt;</string>
+font-size: 10pt;
+border-top: 1px solid #d4d4d4;</string>
            </property>
           </widget>
          </item>
@@ -170,7 +165,7 @@ font-size: 10pt;</string>
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="disTab">
          <property name="styleSheet">
@@ -195,32 +190,6 @@ font-size: 10pt;</string>
           <property name="spacing">
            <number>1</number>
           </property>
-          <item row="4" column="0">
-           <widget class="QTextBrowser" name="codeBrowser">
-            <property name="font">
-             <font>
-              <family>Monospace</family>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85)</string>
-            </property>
-            <property name="lineWrapMode">
-             <enum>QTextEdit::NoWrap</enum>
-            </property>
-            <property name="cursorWidth">
-             <number>0</number>
-            </property>
-            <property name="textInteractionFlags">
-             <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <property name="leftMargin">
@@ -275,6 +244,32 @@ color: rgb(85, 85, 85)</string>
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="4" column="0">
+           <widget class="QTextBrowser" name="codeBrowser">
+            <property name="font">
+             <font>
+              <family>Monospace</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85);</string>
+            </property>
+            <property name="lineWrapMode">
+             <enum>QTextEdit::NoWrap</enum>
+            </property>
+            <property name="cursorWidth">
+             <number>0</number>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -625,13 +620,13 @@ color: rgb(85, 85, 85)</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>11</pointsize>
        </font>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(61, 61, 61);
 color: rgb(240, 240, 240);
-font-size: 10pt;</string>
+font-size: 11pt;</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="leftMargin">
@@ -658,6 +653,9 @@ font-size: 10pt;</string>
        </item>
        <item>
         <widget class="QLabel" name="fileFormatlabel">
+         <property name="font">
+          <font/>
+         </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
@@ -694,15 +692,6 @@ font-size: 10pt;</string>
      <family>Noto Sans</family>
     </font>
    </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="actionOpen"/>
-    <addaction name="actionShow_Containing_Folder"/>
-    <addaction name="separator"/>
-    <addaction name="actionExit"/>
-   </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
      <string>View</string>
@@ -733,6 +722,15 @@ font-size: 10pt;</string>
      <string>Search</string>
     </property>
     <addaction name="actionFind"/>
+   </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionShow_Containing_Folder"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
