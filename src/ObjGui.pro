@@ -35,3 +35,8 @@ FORMS    += mainwindow.ui
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES += \
+    fonts/Anonymous Pro B.ttf \
+    fonts/Anonymous Pro BI.ttf \
+    fonts/Anonymous Pro I.ttf

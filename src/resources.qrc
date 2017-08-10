@@ -2,5 +2,9 @@
     <qresource prefix="/">
         <file>fonts/Anonymous Pro.ttf</file>
         <file>fonts/NotoSans-Regular.ttf</file>
+        <file>fonts/Anonymous Pro B.ttf</file>
+        <file>fonts/Anonymous Pro BI.ttf</file>
+        <file>fonts/Anonymous Pro I.ttf</file>
+        <file>fonts/NotoSans-Bold.ttf</file>
     </qresource>
 </RCC>

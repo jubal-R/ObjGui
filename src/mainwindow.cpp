@@ -32,7 +32,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Setup application fonts
+    /*
+     * Setup builtin fonts
+    */
+
+    // Sans serif
     int sansid = QFontDatabase::addApplicationFont(":/fonts/NotoSans-Regular.ttf");
     QString sansfamily = QFontDatabase::applicationFontFamilies(sansid).at(0);
     QFont sans(sansfamily);
@@ -40,14 +44,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setFont(sans);
     ui->tabWidget->setFont(sans);
-
-//    sans.setPointSize(10);
+    ui->syntaxLabel->setFont(sans);
+    ui->disassemblyFlagLabel->setFont(sans);
+    ui->headersLabel->setFont(sans);
+    ui->functionListLabel->setFont(sans);
     ui->functionList->setFont(sans);
 
+    // Sans serif bold
+    int sansBoldId = QFontDatabase::addApplicationFont(":/fonts/NotoSans-Bold.ttf");
+    QString sansBoldFamily = QFontDatabase::applicationFontFamilies(sansBoldId).at(0);
+    QFont sansBold(sansBoldFamily);
+    sansBold.setPointSize(11);
+    sansBold.setBold(true);
+
+    ui->syntaxLabel->setFont(sansBold);
+    ui->disassemblyFlagLabel->setFont(sansBold);
+    ui->headersLabel->setFont(sansBold);
+
+    // Monospace
     int monoid = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro.ttf");
     QString monofamily = QFontDatabase::applicationFontFamilies(monoid).at(0);
     QFont mono(monofamily);
-    mono.setPointSize(12);
+    mono.setPointSize(13);
 
     ui->codeBrowser->setFont(mono);
     ui->symbolsBrowser->setFont(mono);
@@ -55,9 +73,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->contentsBrowser->setFont(mono);
     ui->headersBrowser->setFont(mono);
 
-    mono.setBold(true);
-    ui->addressLabel->setFont(mono);
-    ui->functionLabel->setFont(mono);
+    // Monospace Bold
+    int monoBoldId = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro B.ttf");
+    QString monoBoldFamily = QFontDatabase::applicationFontFamilies(monoBoldId).at(0);
+    QFont monoBold(monoBoldFamily);
+    monoBold.setPointSize(13);
+    monoBold.setBold(true);
+    ui->addressLabel->setFont(monoBold);
+    ui->functionLabel->setFont(monoBold);
 
     this->setWindowTitle("ObjGUI");
 

@@ -77,7 +77,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="functionListLabel">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -159,6 +159,7 @@ font-size: 10pt;</string>
         </property>
         <property name="font">
          <font>
+          <family>Noto Sans</family>
           <pointsize>12</pointsize>
          </font>
         </property>
@@ -169,7 +170,7 @@ font-size: 10pt;</string>
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="disTab">
          <property name="styleSheet">
@@ -448,7 +449,7 @@ color: rgb(85, 85, 85)</string>
            <number>15</number>
           </property>
           <item row="1" column="0">
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="disassemblyFlagLabel">
             <property name="font">
              <font>
               <family>Noto Sans</family>
@@ -685,8 +686,13 @@ font-size: 10pt;</string>
      <x>0</x>
      <y>0</y>
      <width>1143</width>
-     <height>26</height>
+     <height>28</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Noto Sans</family>
+    </font>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
