@@ -22,6 +22,7 @@ public:
     void setOutputSyntax(QString syntax);
     void setDisassemblyFlag(QString flag);
     void setHeaderFlags(QString flags);
+    void setOptionalFlags(QString);
 
 private:
     QString getDump(QString args, QString file);
@@ -30,6 +31,7 @@ private:
     QString outputSyntax;
     QString disassemblyFlag;
     QString headerFlags;
+    QString optionalFlags;
 
 };
 

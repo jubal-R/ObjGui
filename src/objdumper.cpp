@@ -15,6 +15,7 @@ ObjDumper::ObjDumper()
     outputSyntax = "intel";
     disassemblyFlag = "-d";
     headerFlags = "-x";
+    optionalFlags = "";
 }
 
 // Runs objdump given arguments and file then returns outout
@@ -99,7 +100,7 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
 
 QString ObjDumper::getDisassembly(QString file){
-    QString disassembly = getDump("-M " + outputSyntax + " " + disassemblyFlag, file);
+    QString disassembly = getDump(optionalFlags + " -M " + outputSyntax + " " + disassemblyFlag, file);
     return removeHeading(disassembly, 4);
 }
 
@@ -171,4 +172,8 @@ void ObjDumper::setDisassemblyFlag(QString flag){
 
 void ObjDumper::setHeaderFlags(QString flags){
     headerFlags = flags;
+}
+
+void ObjDumper::setOptionalFlags(QString flags){
+    optionalFlags = flags;
 }

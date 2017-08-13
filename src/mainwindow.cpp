@@ -374,3 +374,12 @@ void MainWindow::on_privateHeadersCheckBox_toggled(bool checked)
     if (!ui->allHeadersCheckBox->isChecked())
         objDumper.setHeaderFlags(getHeaderFlags());
 }
+
+void MainWindow::on_checkBox_toggled(bool checked)
+{
+    if (checked){
+        objDumper.setOptionalFlags("-C");
+    } else {
+        objDumper.setOptionalFlags("");
+    }
+}
