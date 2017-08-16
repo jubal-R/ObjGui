@@ -1,6 +1,6 @@
 #include "objdumper.h"
-#include "function.h"
-#include "functionlist.h"
+#include "dataStructures/function.h"
+#include "dataStructures/functionlist.h"
 #include "QString"
 #include <stdlib.h>
 #include <fstream>

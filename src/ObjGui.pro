@@ -18,24 +18,24 @@ SOURCES += main.cpp\
     objdumper.cpp \
     highlighter.cpp \
     settings.cpp \
-    functionnode.cpp \
-    functionlist.cpp \
-    function.cpp \
-    section.cpp \
-    sectionnode.cpp \
-    sectionlist.cpp
+    dataStructures/function.cpp \
+    dataStructures/functionlist.cpp \
+    dataStructures/functionnode.cpp \
+    dataStructures/section.cpp \
+    dataStructures/sectionlist.cpp \
+    dataStructures/sectionnode.cpp
 
 HEADERS  += mainwindow.h \
     files.h \
     objdumper.h \
     highlighter.h \
     settings.h \
-    functionnode.h \
-    functionlist.h \
-    function.h \
-    section.h \
-    sectionnode.h \
-    sectionlist.h
+    dataStructures/function.h \
+    dataStructures/functionlist.h \
+    dataStructures/functionnode.h \
+    dataStructures/section.h \
+    dataStructures/sectionlist.h \
+    dataStructures/sectionnode.h
 
 FORMS    += mainwindow.ui
 

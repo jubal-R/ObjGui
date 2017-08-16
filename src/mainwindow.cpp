@@ -8,7 +8,7 @@
 #include "iostream"
 
 #include "files.h"
-#include "functionlist.h"
+#include "dataStructures/functionlist.h"
 #include "highlighter.h"
 #include "objdumper.h"
 #include "settings.h"

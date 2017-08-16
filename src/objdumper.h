@@ -4,8 +4,8 @@
 #include "QString"
 #include "QStringList"
 #include "QList"
-#include "functionlist.h"
-#include "sectionlist.h"
+#include "dataStructures/functionlist.h"
+#include "dataStructures/sectionlist.h"
 
 
 class ObjDumper
