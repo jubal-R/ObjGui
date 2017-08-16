@@ -26,8 +26,6 @@ Highlighter *relocationsHighlighter = NULL;
 Highlighter *hexHighlighter = NULL;
 Highlighter *headersHighlighter = NULL;
 
-QString currentDirectory = QString::fromStdString(files.getHomeDir());
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -214,8 +212,8 @@ void MainWindow::open(QString file){
 // Disassemble
 void MainWindow::on_actionOpen_triggered()
 {
-    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), currentDirectory, tr("All (*)"));
-    currentDirectory = getDirectory(file);
+    QString file = QFileDialog::getOpenFileName(this, tr("Open File"), files.getCurrentDirectory(), tr("All (*)"));
+    files.setCurrentDirectory(file);
     open(file);
 }
 
@@ -234,14 +232,6 @@ void MainWindow::highlightCurrentLine(){
 
    ui->codeBrowser->setExtraSelections(extraSelections);
 
-}
-
-// Get directory given file path
-QString MainWindow::getDirectory(QString filepath){
-    int lastIndex = filepath.lastIndexOf("/");
-    filepath.chop(filepath.length() - lastIndex);
-
-    return filepath;
 }
 
 void MainWindow::displayFunctionText(QString functionName){
@@ -303,7 +293,7 @@ void MainWindow::on_actionFullscreen_triggered()
 void MainWindow::on_actionShow_Containing_Folder_triggered()
 {
     // Open current directory in file manager
-    files.openFileManager(currentDirectory);
+    files.openFileManager(files.getCurrentDirectory());
 }
 
 void MainWindow::on_actionIntel_triggered()

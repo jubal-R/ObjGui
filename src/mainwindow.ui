@@ -614,6 +614,9 @@ color: rgb(85, 85, 85)</string>
             </item>
             <item row="1" column="1">
              <widget class="QCheckBox" name="disassemblyFlagcheckBox">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display assembler contents of all sections&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
               <property name="text">
                <string>disassemble-all</string>
               </property>
@@ -626,6 +629,9 @@ color: rgb(85, 85, 85)</string>
                 <width>150</width>
                 <height>16777215</height>
                </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display archive header information&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string>archive-headers</string>
@@ -640,6 +646,9 @@ color: rgb(85, 85, 85)</string>
                 <height>16777215</height>
                </size>
               </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display the contents of the overall file header&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
               <property name="text">
                <string>file-headers</string>
               </property>
@@ -652,6 +661,9 @@ color: rgb(85, 85, 85)</string>
                 <width>150</width>
                 <height>16777215</height>
                </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display object format specific file header contents&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string>private-headers</string>
@@ -700,6 +712,9 @@ color: rgb(85, 85, 85)</string>
                 <width>150</width>
                 <height>16777215</height>
                </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display the contents of all headers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string>all-headers</string>
@@ -754,6 +769,9 @@ color: rgb(85, 85, 85)</string>
             </item>
             <item row="1" column="2">
              <widget class="QCheckBox" name="checkBox">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Decode mangled/processed symbol names&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
               <property name="text">
                <string>demangle</string>
               </property>

@@ -7,10 +7,15 @@ class Files
 {
 public:
     Files();
-    std::string read(std::string file);
-    bool write(std::string fileName, std::string content);
-    std::string getHomeDir();
+    QString read(QString file);
+    bool write(QString fileName, QString content);
+    QString getHomeDir();
+    QString getDirectory(QString file);
+    QString getCurrentDirectory();
+    void setCurrentDirectory(QString file);
     void openFileManager(QString dir);
+private:
+    QString currentDirectory;
 };
 
 #endif // READER_H

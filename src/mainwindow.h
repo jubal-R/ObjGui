@@ -17,12 +17,15 @@ public:
     ~MainWindow();
 
 private slots:
-    void highlightCurrentLine();
-    void on_actionOpen_triggered();
-    void open(QString file);
-    void displayFunctionText(QString functionName);
     QString getHeaderFlags();
-    QString getDirectory(QString file);
+
+    void highlightCurrentLine();
+
+    void on_actionOpen_triggered();
+
+    void open(QString file);
+
+    void displayFunctionText(QString functionName);
 
     void on_actionProject_triggered();
 

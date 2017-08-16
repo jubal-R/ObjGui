@@ -7,8 +7,8 @@
 Settings::Settings()
 {
     Files fileReader;
-    std::string settingsStr = fileReader.read(".objGUI.conf");
-    QStringList settingsList = QString::fromStdString(settingsStr).split("\n", QString::SkipEmptyParts);
+    QString settingsStr = fileReader.read(".objGUI.conf");
+    QStringList settingsList = settingsStr.split("\n", QString::SkipEmptyParts);
 
     if (settingsList.length() == 3){
         // Set values to saved settings
@@ -27,14 +27,14 @@ Settings::Settings()
 
 void Settings::saveSettings(){
     // Build settings file string
-    std::ostringstream oss;
-    oss << getWindowWidth() << "\n";
-    oss << getWindowHeight() << "\n";
-    oss << getSyntax().toStdString() << "\n";
+    QString settingsStr = "";
+    settingsStr.append(QString::number(getWindowWidth()) + "\n");
+    settingsStr.append(QString::number(getWindowHeight()) + "\n");
+    settingsStr.append(getSyntax() + "\n");
 
     // Write Settings To File
     Files fileWriter;
-    fileWriter.write(".objGUI.conf", oss.str());
+    fileWriter.write(".objGUI.conf", settingsStr);
 
 }
 

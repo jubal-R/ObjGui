@@ -1,4 +1,3 @@
-//Copyright (C) 2016  Jubal
 #include "files.h"
 #include <stdlib.h>
 #include <fstream>
@@ -10,16 +9,18 @@ using namespace std;
 
 Files::Files()
 {
+    currentDirectory = getHomeDir();
 }
 
 //  Read File And Return It's Contents
-string Files::read(string file){
+QString Files::read(QString file){
+    string fileStr = file.toStdString();
     string line = "";
     string content = "";
     ifstream fileReader;
 
     try{
-    fileReader.open(file.c_str());
+    fileReader.open(fileStr.c_str());
 
     while(fileReader.good()){
         getline(fileReader, line);
@@ -34,11 +35,13 @@ string Files::read(string file){
         content.resize(content.length() - 1);
     }
 
-    return content;
+    return QString::fromStdString(content);
 }
 
 //  Write String Content To File
-bool Files::write(string fileName, string content){
+bool Files::write(QString filepath, QString contents){
+    string fileName = filepath.toStdString();
+    string content = contents.toStdString();
     try{
         ofstream file;
         file.open(fileName.c_str());
@@ -50,8 +53,25 @@ bool Files::write(string fileName, string content){
     }
 }
 
+QString Files::getCurrentDirectory(){
+    return currentDirectory;
+}
+
+// Get directory given file path
+QString Files::getDirectory(QString filepath){
+    int lastIndex = filepath.lastIndexOf("/");
+    filepath.chop(filepath.length() - lastIndex);
+
+    return filepath;
+}
+
+// Set current directory given most recently opened file
+void Files::setCurrentDirectory(QString file){
+    currentDirectory = getDirectory(file);
+}
+
 //  Return Users Home Directory
-string Files::getHomeDir(){
+QString Files::getHomeDir(){
     ostringstream oss;
     FILE *in;
     char buff[100];
@@ -63,7 +83,7 @@ string Files::getHomeDir(){
     }
     pclose(in);
 
-    return oss.str().substr(0, oss.str().length()-1);
+    return QString::fromStdString(oss.str().substr(0, oss.str().length()-1));
 }
 
 void Files::openFileManager(QString dir){
