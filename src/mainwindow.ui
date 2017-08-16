@@ -237,7 +237,7 @@ border-top: 1px solid #d4d4d4;</string>
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="movable">
          <bool>false</bool>
@@ -382,13 +382,13 @@ color: rgb(85, 85, 85);</string>
            <widget class="QTextBrowser" name="hexBrowser">
             <property name="minimumSize">
              <size>
-              <width>375</width>
+              <width>450</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>275</width>
+              <width>450</width>
               <height>16777215</height>
              </size>
             </property>

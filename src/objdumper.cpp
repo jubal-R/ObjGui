@@ -140,7 +140,16 @@ SectionList ObjDumper::getSectionList(QString file){
             pos++;
 
             // Next 35 chars are hex followed by 2 spaces
-            hex.append(line.mid(pos, 35));
+            QString hexStr = line.mid(pos, 35);
+
+            // Add space between each byte(default is space between 4 byte words)
+            for (int i = 2; i < hexStr.length(); i+=3){
+                if (hexStr.at(i) != QChar(' ')){
+                    hexStr.insert(i, ' ');
+                }
+            }
+
+            hex.append(hexStr);
 
             pos += 37;
 
