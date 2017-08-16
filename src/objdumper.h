@@ -5,6 +5,7 @@
 #include "QStringList"
 #include "QList"
 #include "functionlist.h"
+#include "sectionlist.h"
 
 
 class ObjDumper
@@ -18,6 +19,7 @@ public:
     QString getHeaders(QString file);
     QString getFileFormat(QString file);
     FunctionList getFunctionList(QString file);
+    SectionList getSectionList(QString file);
 
     void setOutputSyntax(QString syntax);
     void setDisassemblyFlag(QString flag);

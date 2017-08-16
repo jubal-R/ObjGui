@@ -148,16 +148,12 @@ Highlighter::Highlighter(QString type, QString theme, QTextDocument *parent)
         commentStartExpression = QRegExp("/\\*");
         commentEndExpression = QRegExp("\\*/");
 
-    }else if(type == "str"){
-        keywordFormat.setForeground(keyword2Color);
-        rule.pattern = QRegExp("\\bContents+\\s+of+\\s+section\\b");
-        rule.format = keywordFormat;
-        highlightingRules.append(rule);
+    }else if(type == "hexdump"){
 
-        //Functions
+        //Sections
         classFormat.setForeground(functionsColor);
         classFormat.setFontWeight(QFont::Bold);
-        rule.pattern = QRegExp("\\.+[a-zA-Z0-9_.-]+:");
+        rule.pattern = QRegExp("\\.+[a-zA-Z0-9_.-]+\\b");
         rule.format = classFormat;
         highlightingRules.append(rule);
 

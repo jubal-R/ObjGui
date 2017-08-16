@@ -20,7 +20,10 @@ SOURCES += main.cpp\
     settings.cpp \
     functionnode.cpp \
     functionlist.cpp \
-    function.cpp
+    function.cpp \
+    section.cpp \
+    sectionnode.cpp \
+    sectionlist.cpp
 
 HEADERS  += mainwindow.h \
     files.h \
@@ -29,7 +32,10 @@ HEADERS  += mainwindow.h \
     settings.h \
     functionnode.h \
     functionlist.h \
-    function.h
+    function.h \
+    section.h \
+    sectionnode.h \
+    sectionlist.h
 
 FORMS    += mainwindow.ui
 

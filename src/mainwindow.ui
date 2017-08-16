@@ -48,6 +48,78 @@ color: rgb(85, 85, 85);</string>
     <property name="spacing">
      <number>0</number>
     </property>
+    <item row="1" column="0">
+     <widget class="QWidget" name="statusbar" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(61, 61, 61);
+color: rgb(240, 240, 240);
+font-size: 11pt;</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="statusMsgLabel">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="indent">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="fileFormatlabel">
+         <property name="font">
+          <font/>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="indent">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
@@ -165,7 +237,10 @@ border-top: 1px solid #d4d4d4;</string>
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
+        </property>
+        <property name="movable">
+         <bool>false</bool>
         </property>
         <widget class="QWidget" name="disTab">
          <property name="styleSheet">
@@ -280,6 +355,84 @@ color: rgb(85, 85, 85);</string>
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="hexTab">
+         <attribute name="title">
+          <string>Hex</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
+          <property name="topMargin">
+           <number>15</number>
+          </property>
+          <property name="rightMargin">
+           <number>1</number>
+          </property>
+          <property name="bottomMargin">
+           <number>1</number>
+          </property>
+          <property name="spacing">
+           <number>1</number>
+          </property>
+          <item row="1" column="2">
+           <widget class="QTextBrowser" name="asciiBrowser"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QTextBrowser" name="hexBrowser">
+            <property name="minimumSize">
+             <size>
+              <width>375</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>275</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTextBrowser" name="hexAddressBrowser">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="hexAddressLabel">
+            <property name="text">
+             <string>Address</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="hexLabel">
+            <property name="text">
+             <string>Hex</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="asciiLabel">
+            <property name="text">
+             <string>Ascii</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
         <widget class="QWidget" name="symbolsTab">
          <property name="styleSheet">
           <string notr="true">border: none;</string>
@@ -353,45 +506,6 @@ color: rgb(85, 85, 85);</string>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(250, 250, 250);
 color: rgb(85, 85, 85)</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="contentsTab">
-         <property name="styleSheet">
-          <string notr="true">border: none;</string>
-         </property>
-         <attribute name="title">
-          <string>Contents</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <property name="leftMargin">
-           <number>10</number>
-          </property>
-          <property name="topMargin">
-           <number>15</number>
-          </property>
-          <property name="rightMargin">
-           <number>1</number>
-          </property>
-          <property name="bottomMargin">
-           <number>1</number>
-          </property>
-          <property name="spacing">
-           <number>1</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QTextBrowser" name="contentsBrowser">
-            <property name="font">
-             <font>
-              <family>Monospace</family>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(29, 160, 185);</string>
             </property>
            </widget>
           </item>
@@ -617,78 +731,6 @@ color: rgb(85, 85, 85)</string>
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="1" column="0">
-     <widget class="QWidget" name="statusbar" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>25</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>25</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(61, 61, 61);
-color: rgb(240, 240, 240);
-font-size: 11pt;</string>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QLabel" name="statusMsgLabel">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="indent">
-          <number>10</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="fileFormatlabel">
-         <property name="font">
-          <font/>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="indent">
-          <number>10</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </item>
    </layout>
   </widget>

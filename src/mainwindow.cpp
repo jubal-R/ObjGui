@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "qfiledialog.h"
 #include "qmessagebox.h"
+#include "QScrollBar"
 
 // For debugging
 #include "iostream"
@@ -16,12 +17,13 @@ using namespace std;
 
 Files files;
 FunctionList functionList;
+SectionList sectionList;
 Settings settings;
 ObjDumper objDumper;
 Highlighter *disHighlighter = NULL;
 Highlighter *symbolsHighlighter = NULL;
 Highlighter *relocationsHighlighter = NULL;
-Highlighter *contentsHighlighter = NULL;
+Highlighter *hexHighlighter = NULL;
 Highlighter *headersHighlighter = NULL;
 
 QString currentDirectory = QString::fromStdString(files.getHomeDir());
@@ -31,6 +33,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QObject::connect(ui->hexAddressBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->hexBrowser->verticalScrollBar(), SLOT(setValue(int)));
+    QObject::connect(ui->hexBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->hexAddressBrowser->verticalScrollBar(), SLOT(setValue(int)));
+    QObject::connect(ui->hexBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->asciiBrowser->verticalScrollBar(), SLOT(setValue(int)));
+    QObject::connect(ui->asciiBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->hexBrowser->verticalScrollBar(), SLOT(setValue(int)));
 
     /*
      * Setup builtin fonts
@@ -70,7 +77,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->codeBrowser->setFont(mono);
     ui->symbolsBrowser->setFont(mono);
     ui->relocationsBrowser->setFont(mono);
-    ui->contentsBrowser->setFont(mono);
+    ui->hexAddressBrowser->setFont(mono);
+    ui->hexBrowser->setFont(mono);
+    ui->asciiBrowser->setFont(mono);
     ui->headersBrowser->setFont(mono);
 
     // Monospace Bold
@@ -82,6 +91,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->addressLabel->setFont(monoBold);
     ui->functionLabel->setFont(monoBold);
     ui->sectionLabel->setFont(monoBold);
+    ui->hexAddressLabel->setFont(monoBold);
+    ui->hexLabel->setFont(monoBold);
+    ui->asciiLabel->setFont(monoBold);
 
     this->setWindowTitle("ObjGUI");
 
@@ -102,7 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Style
     QString tabWidgetStyle = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
-          "QTabBar::tab {background-color: #fafafa;}"
+          "QTabBar::tab {background-color: #fafafa; min-width: 80px;}"
           "QTabWidget::tab-bar {left: 5px;}"
           "QTabWidget::pane {border: none;}"
           "QTextBrowser {border: 2px soild red;}"
@@ -116,7 +128,7 @@ MainWindow::MainWindow(QWidget *parent) :
     disHighlighter = new Highlighter("dis", "default", ui->codeBrowser->document());
     symbolsHighlighter = new Highlighter("sym", "default", ui->symbolsBrowser->document());
     relocationsHighlighter = new Highlighter("sym", "default", ui->relocationsBrowser->document());
-    contentsHighlighter = new Highlighter("str", "default", ui->contentsBrowser->document());
+    hexHighlighter = new Highlighter("hexdump", "default", ui->hexBrowser->document());
     headersHighlighter = new Highlighter("sym", "default", ui->headersBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
@@ -145,10 +157,14 @@ void MainWindow::open(QString file){
     if (file != ""){
         this->setWindowTitle("ObjGUI - " + file);
 
-        // Clear old function/section list from sidebar
+        // Clear old function list from sidebar
         while (ui->functionList->count() > 0){
             ui->functionList->takeItem(0);
         }
+        // Clear old hex dump
+        ui->hexAddressBrowser->setText("");
+        ui->hexBrowser->setText("");
+        ui->asciiBrowser->setText("");
 
         // Set file format value in statusbar
         ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
@@ -175,14 +191,26 @@ void MainWindow::open(QString file){
            ui->functionLabel->setText("");
         }
 
+        // Get section list and set hex values
+        sectionList = objDumper.getSectionList(file);
+        int len = sectionList.getLength();
+        for (int i = 1; i < len; i++){
+            Section section = sectionList.getSection(i);
+
+            ui->hexBrowser->insertPlainText(section.getSectionName() + "\n");
+            ui->hexAddressBrowser->insertPlainText("\n" + section.getAddressList().join("\n") + "\n");
+            ui->hexBrowser->insertPlainText(section.getHexList().join("\n") + "\n");
+            ui->asciiBrowser->insertPlainText("\n" + section.getAsciiList().join("\n") + "\n");
+        }
+
 
         ui->symbolsBrowser->setText(objDumper.getSymbolsTable(file));
         ui->relocationsBrowser->setText(objDumper.getRelocationEntries(file));
-        ui->contentsBrowser->setText(objDumper.getContents(file));
         ui->headersBrowser->setText(objDumper.getHeaders(file));
 
     }
 }
+
 // Disassemble
 void MainWindow::on_actionOpen_triggered()
 {

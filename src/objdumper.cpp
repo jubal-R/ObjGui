@@ -98,6 +98,64 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
 }
 
+SectionList ObjDumper::getSectionList(QString file){
+    SectionList sectionList;
+    QString contents = getContents(file);
+
+    QStringList contentsList = contents.split("Contents of section ");
+
+    // Parse contents list
+    for (int listIndex = 0; listIndex < contentsList.length(); listIndex++){
+        QString sectionName;
+        QStringList addresses;
+        QStringList hex;
+        QStringList ascii;
+        QString contentsStr = contentsList.at(listIndex);
+
+        // Get section name
+        QString tmp;
+        int i = 0;
+        while (i < contentsStr.length()-1 && contentsStr.at(i) != QChar(':')){
+            tmp.append(contentsStr.at(i));
+            i++;
+        }
+        sectionName = tmp;
+        contentsStr = contentsStr.mid(i+2);
+
+        // Split content into lines
+        QStringList lines = contentsStr.split("\n");
+
+        // Parse each line and add data to lists
+        for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
+            QString line = lines.at(lineNum);
+
+            QString address;
+            int pos = 1;
+            while (pos < line.length() && line.at(pos) != QChar(' ')){
+                address.append(line.at(pos));
+                pos++;
+            }
+            addresses.append(address);
+
+            pos++;
+
+            // Next 35 chars are hex followed by 2 spaces
+            hex.append(line.mid(pos, 35));
+
+            pos += 37;
+
+            ascii.append(line.mid(pos));
+
+        }
+
+        // Insert new section
+        sectionList.insert(sectionName, addresses, hex, ascii);
+
+    }
+
+    return sectionList;
+}
+
 
 QString ObjDumper::getDisassembly(QString file){
     QString disassembly = getDump(optionalFlags + " -M " + outputSyntax + " " + disassemblyFlag, file);
