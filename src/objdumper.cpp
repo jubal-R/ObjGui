@@ -33,7 +33,7 @@ QString ObjDumper::getDump(QString args, QString file){
     else
         objdumpStr = "objdump";
 
-    string cmd = objdumpStr + " "  + target.toStdString() + " " + args.toStdString() + " " + file.toStdString() + " 2>&1";
+    string cmd = "\"" + objdumpStr + "\" "  + target.toStdString() + " " + args.toStdString() + " \"" + file.toStdString() + "\" 2>&1";
 
     try{
         if(!(in = popen(cmd.c_str(),"r") )){
