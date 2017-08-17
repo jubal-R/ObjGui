@@ -12,6 +12,7 @@ using namespace std;
 ObjDumper::ObjDumper()
 {
     // Set default options
+    useCustomBinary = false;
     objdumpBinary = "objdump";
     outputSyntax = "intel";
     disassemblyFlag = "-d";
@@ -24,7 +25,14 @@ QString ObjDumper::getDump(QString args, QString file){
     ostringstream oss;
     FILE *in;
     char buff[100];
-    string cmd = objdumpBinary.toStdString() + " " + args.toStdString() + " " + file.toStdString() + " 2>&1";
+    string objdumpStr;
+
+    if (useCustomBinary && objdumpBinary != "")
+        objdumpStr = objdumpBinary.toStdString();
+    else
+        objdumpStr = "objdump";
+
+    string cmd = objdumpStr + " " + args.toStdString() + " " + file.toStdString() + " 2>&1";
 
     try{
         if(!(in = popen(cmd.c_str(),"r") )){
@@ -228,6 +236,10 @@ QString ObjDumper::removeHeading(QString dump, int numLines){
     }
 
     return dump.mid(i);
+}
+
+void ObjDumper::setUseCustomBinary(bool useCustom){
+    useCustomBinary = useCustom;
 }
 
 void ObjDumper::setobjdumpBinary(QString binary){

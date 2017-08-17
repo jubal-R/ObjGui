@@ -3,6 +3,7 @@
 #include "qfiledialog.h"
 #include "qmessagebox.h"
 #include "QScrollBar"
+#include "QSettings"
 
 // For debugging
 #include "iostream"
@@ -11,14 +12,13 @@
 #include "dataStructures/functionlist.h"
 #include "highlighter.h"
 #include "objdumper.h"
-#include "settings.h"
 
 using namespace std;
 
 Files files;
 FunctionList functionList;
 SectionList sectionList;
-Settings settings;
+QSettings settings;
 ObjDumper objDumper;
 Highlighter *disHighlighter = NULL;
 Highlighter *symbolsHighlighter = NULL;
@@ -96,19 +96,26 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("ObjGUI");
 
     // Set Window Size
-    MainWindow::resize(settings.getWindowWidth(), settings.getWindowHeight());
+    MainWindow::resize(settings.value("windowWidth", 1000).toInt(), settings.value("windowHeight", 600).toInt());
 
     // Indicate Current Preferences
-    if (settings.getSyntax() == "intel"){
+    if (settings.value("syntax", "intel") == "intel"){
         ui->actionIntel->setChecked(true);
         ui->syntaxComboBox->setCurrentIndex(0);
         objDumper.setOutputSyntax("intel");
-    }else if (settings.getSyntax() == "att"){
+    }else if (settings.value("syntax", "intel") == "att"){
         ui->actionAtt->setChecked(true);
         ui->syntaxComboBox->setCurrentIndex(1);
         objDumper.setOutputSyntax("att");
     }
     ui->allHeadersCheckBox->toggle();
+
+    if (settings.value("useCustomBinary", false).toBool()){
+        ui->customBinaryCheckBox->setChecked(true);
+        objDumper.setUseCustomBinary(true);
+    }
+    objDumper.setobjdumpBinary(settings.value("customBinary", "").toString());
+    ui->customBinaryLineEdit->setText(settings.value("customBinary", "").toString());
 
     // Style
     QString tabWidgetStyle = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
@@ -141,10 +148,8 @@ MainWindow::~MainWindow()
 
     // Get Window Size
     QRect windowRect = MainWindow::normalGeometry();
-    settings.setWindowWidth(windowRect.width());
-    settings.setWindowHeight(windowRect.height());
-
-    settings.saveSettings();
+    settings.setValue("windowWidth", windowRect.width());
+    settings.setValue("windowHeight", windowRect.height());
 
     delete ui;
 }
@@ -298,7 +303,7 @@ void MainWindow::on_actionShow_Containing_Folder_triggered()
 
 void MainWindow::on_actionIntel_triggered()
 {
-    settings.setSyntax("intel");
+    settings.setValue("syntax", "intel");
     objDumper.setOutputSyntax("intel");
     ui->actionIntel->setChecked(true);
     ui->actionAtt->setChecked(false);
@@ -307,7 +312,7 @@ void MainWindow::on_actionIntel_triggered()
 
 void MainWindow::on_actionAtt_triggered()
 {
-    settings.setSyntax("att");
+    settings.setValue("syntax", "att");
     objDumper.setOutputSyntax("att");
     ui->actionAtt->setChecked(true);
     ui->actionIntel->setChecked(false);
@@ -405,20 +410,22 @@ void MainWindow::on_checkBox_toggled(bool checked)
 void MainWindow::on_customBinaryButton_clicked()
 {
     QString objdumpBinary = QFileDialog::getOpenFileName(this, tr("Select Binary"), files.getCurrentDirectory(), tr("All (*)"));
-    ui->customBinaryLineEdit->setText(objdumpBinary);
-    objDumper.setobjdumpBinary(objdumpBinary);
+    if (objdumpBinary != ""){
+        ui->customBinaryLineEdit->setText(objdumpBinary);
+        objDumper.setobjdumpBinary(objdumpBinary);
+        settings.setValue("customBinary", objdumpBinary);
+    }
 }
 
 void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
 {
     if (checked){
         ui->customBinaryButton->setEnabled(true);
-
-        if (ui->customBinaryLineEdit->text() != ""){
-            objDumper.setobjdumpBinary(ui->customBinaryLineEdit->text());
-        }
+        settings.setValue("useCustomBinary", true);
+        objDumper.setUseCustomBinary(true);
     } else {
-        objDumper.setobjdumpBinary("objdump");
         ui->customBinaryButton->setEnabled(false);
+        settings.setValue("useCustomBinary", false);
+        objDumper.setUseCustomBinary(false);
     }
 }

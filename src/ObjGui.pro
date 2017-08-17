@@ -17,7 +17,6 @@ SOURCES += main.cpp\
     files.cpp \
     objdumper.cpp \
     highlighter.cpp \
-    settings.cpp \
     dataStructures/function.cpp \
     dataStructures/functionlist.cpp \
     dataStructures/functionnode.cpp \
@@ -29,7 +28,6 @@ HEADERS  += mainwindow.h \
     files.h \
     objdumper.h \
     highlighter.h \
-    settings.h \
     dataStructures/function.h \
     dataStructures/functionlist.h \
     dataStructures/functionnode.h \
