@@ -401,3 +401,24 @@ void MainWindow::on_checkBox_toggled(bool checked)
         objDumper.setOptionalFlags("");
     }
 }
+
+void MainWindow::on_customBinaryButton_clicked()
+{
+    QString objdumpBinary = QFileDialog::getOpenFileName(this, tr("Select Binary"), files.getCurrentDirectory(), tr("All (*)"));
+    ui->customBinaryLineEdit->setText(objdumpBinary);
+    objDumper.setobjdumpBinary(objdumpBinary);
+}
+
+void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
+{
+    if (checked){
+        ui->customBinaryButton->setEnabled(true);
+
+        if (ui->customBinaryLineEdit->text() != ""){
+            objDumper.setobjdumpBinary(ui->customBinaryLineEdit->text());
+        }
+    } else {
+        objDumper.setobjdumpBinary("objdump");
+        ui->customBinaryButton->setEnabled(false);
+    }
+}

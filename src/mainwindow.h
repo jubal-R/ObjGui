@@ -55,6 +55,10 @@ private slots:
 
     void on_checkBox_toggled(bool checked);
 
+    void on_customBinaryButton_clicked();
+
+    void on_customBinaryCheckBox_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
 };

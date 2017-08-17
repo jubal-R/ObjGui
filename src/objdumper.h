@@ -21,6 +21,7 @@ public:
     FunctionList getFunctionList(QString file);
     SectionList getSectionList(QString file);
 
+    void setobjdumpBinary(QString binary);
     void setOutputSyntax(QString syntax);
     void setDisassemblyFlag(QString flag);
     void setHeaderFlags(QString flags);
@@ -30,6 +31,7 @@ private:
     QString getDump(QString args, QString file);
     QString removeHeading(QString dump, int numLines);
 
+    QString objdumpBinary;
     QString outputSyntax;
     QString disassemblyFlag;
     QString headerFlags;

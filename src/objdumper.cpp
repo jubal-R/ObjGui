@@ -12,6 +12,7 @@ using namespace std;
 ObjDumper::ObjDumper()
 {
     // Set default options
+    objdumpBinary = "objdump";
     outputSyntax = "intel";
     disassemblyFlag = "-d";
     headerFlags = "-x";
@@ -23,7 +24,7 @@ QString ObjDumper::getDump(QString args, QString file){
     ostringstream oss;
     FILE *in;
     char buff[100];
-    string cmd = "objdump " + args.toStdString() + " " + file.toStdString() + " 2>&1";
+    string cmd = objdumpBinary.toStdString() + " " + args.toStdString() + " " + file.toStdString() + " 2>&1";
 
     try{
         if(!(in = popen(cmd.c_str(),"r") )){
@@ -227,6 +228,10 @@ QString ObjDumper::removeHeading(QString dump, int numLines){
     }
 
     return dump.mid(i);
+}
+
+void ObjDumper::setobjdumpBinary(QString binary){
+    objdumpBinary = binary;
 }
 
 void ObjDumper::setOutputSyntax(QString syntax){
