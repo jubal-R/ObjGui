@@ -97,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Set Window Size
     MainWindow::resize(settings.value("windowWidth", 1000).toInt(), settings.value("windowHeight", 600).toInt());
+    ui->splitter->restoreState(settings.value("splitterSizes").toByteArray());
 
     // Indicate Current Preferences
     if (settings.value("syntax", "intel") == "intel"){
@@ -150,6 +151,7 @@ MainWindow::~MainWindow()
     QRect windowRect = MainWindow::normalGeometry();
     settings.setValue("windowWidth", windowRect.width());
     settings.setValue("windowHeight", windowRect.height());
+    settings.setValue("splitterSizes", ui->splitter->saveState());
 
     delete ui;
 }

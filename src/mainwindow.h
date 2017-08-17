@@ -59,6 +59,7 @@ private slots:
 
     void on_customBinaryCheckBox_toggled(bool checked);
 
+
 private:
     Ui::MainWindow *ui;
 };
