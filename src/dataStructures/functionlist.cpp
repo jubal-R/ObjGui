@@ -28,6 +28,10 @@ bool FunctionList::isEmpty(){
         return false;
 }
 
+int FunctionList::getLength(){
+    return length;
+}
+
 bool FunctionList::containsFunction(QString name){
     if (!isEmpty()){
         if (head->getFunction().getName() == name)

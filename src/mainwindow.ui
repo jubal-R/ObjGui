@@ -298,32 +298,6 @@ border-top: 1px solid #d4d4d4;</string>
             <property name="spacing">
              <number>1</number>
             </property>
-            <item row="4" column="0">
-             <widget class="QTextBrowser" name="codeBrowser">
-              <property name="font">
-               <font>
-                <family>Monospace</family>
-                <pointsize>12</pointsize>
-                <weight>50</weight>
-                <italic>false</italic>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
-              </property>
-              <property name="lineWrapMode">
-               <enum>QTextEdit::NoWrap</enum>
-              </property>
-              <property name="cursorWidth">
-               <number>0</number>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <property name="leftMargin">
@@ -386,6 +360,32 @@ color: rgb(85, 85, 85);</string>
               </item>
              </layout>
             </item>
+            <item row="4" column="0">
+             <widget class="QPlainTextEdit" name="codeBrowser">
+              <property name="font">
+               <font>
+                <family>Monospace</family>
+                <pointsize>12</pointsize>
+                <weight>50</weight>
+                <italic>false</italic>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85);</string>
+              </property>
+              <property name="undoRedoEnabled">
+               <bool>false</bool>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QPlainTextEdit::NoWrap</enum>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="hexTab">
@@ -408,41 +408,6 @@ color: rgb(85, 85, 85);</string>
             <property name="spacing">
              <number>1</number>
             </property>
-            <item row="1" column="2">
-             <widget class="QTextBrowser" name="asciiBrowser"/>
-            </item>
-            <item row="1" column="1">
-             <widget class="QTextBrowser" name="hexBrowser">
-              <property name="minimumSize">
-               <size>
-                <width>450</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>450</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QTextBrowser" name="hexAddressBrowser">
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="hexAddressLabel">
               <property name="text">
@@ -461,6 +426,69 @@ color: rgb(85, 85, 85);</string>
              <widget class="QLabel" name="asciiLabel">
               <property name="text">
                <string>Ascii</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPlainTextEdit" name="hexBrowser">
+              <property name="minimumSize">
+               <size>
+                <width>450</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>450</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="undoRedoEnabled">
+               <bool>false</bool>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QPlainTextEdit::NoWrap</enum>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPlainTextEdit" name="hexAddressBrowser">
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="undoRedoEnabled">
+               <bool>false</bool>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QPlainTextEdit::NoWrap</enum>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QPlainTextEdit" name="asciiBrowser">
+              <property name="undoRedoEnabled">
+               <bool>false</bool>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QPlainTextEdit::NoWrap</enum>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -490,7 +518,7 @@ color: rgb(85, 85, 85);</string>
              <number>1</number>
             </property>
             <item row="0" column="0">
-             <widget class="QTextBrowser" name="symbolsBrowser">
+             <widget class="QPlainTextEdit" name="symbolsBrowser">
               <property name="font">
                <font>
                 <family>Monospace</family>
@@ -500,6 +528,15 @@ color: rgb(85, 85, 85);</string>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(250, 250, 250);
 color: rgb(85, 85, 85);</string>
+              </property>
+              <property name="undoRedoEnabled">
+               <bool>false</bool>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QPlainTextEdit::NoWrap</enum>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -529,7 +566,7 @@ color: rgb(85, 85, 85);</string>
              <number>1</number>
             </property>
             <item row="0" column="0">
-             <widget class="QTextBrowser" name="relocationsBrowser">
+             <widget class="QPlainTextEdit" name="relocationsBrowser">
               <property name="font">
                <font>
                 <family>Monospace</family>
@@ -539,6 +576,15 @@ color: rgb(85, 85, 85);</string>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(250, 250, 250);
 color: rgb(85, 85, 85)</string>
+              </property>
+              <property name="undoRedoEnabled">
+               <bool>false</bool>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QPlainTextEdit::NoWrap</enum>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -568,7 +614,7 @@ color: rgb(85, 85, 85)</string>
              <number>1</number>
             </property>
             <item row="0" column="0">
-             <widget class="QTextBrowser" name="headersBrowser">
+             <widget class="QPlainTextEdit" name="headersBrowser">
               <property name="font">
                <font>
                 <family>Monospace</family>
@@ -578,6 +624,15 @@ color: rgb(85, 85, 85)</string>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(250, 250, 250);
 color: rgb(85, 85, 85)</string>
+              </property>
+              <property name="undoRedoEnabled">
+               <bool>false</bool>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QPlainTextEdit::NoWrap</enum>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
             </item>

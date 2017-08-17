@@ -191,7 +191,7 @@ void MainWindow::open(QString file){
 
         // If functionlist is empty
         if (functionList.isEmpty()){
-            ui->codeBrowser->setText("File format not recognized.");
+            ui->codeBrowser->setPlainText("File format not recognized.");
             ui->addressLabel->setText("");
             ui->functionLabel->setText("");
 
@@ -215,13 +215,13 @@ void MainWindow::open(QString file){
                         displayFunctionData();
                     } else {
                         // Display error message
-                        ui->codeBrowser->setText(message);
+                        ui->codeBrowser->setPlainText(message);
                     }
                 }
 
             } else {
                 // Display error message
-                ui->codeBrowser->setText(message);
+                ui->codeBrowser->setPlainText(message);
             }
 
           // If all good, display disassembly data
@@ -232,6 +232,7 @@ void MainWindow::open(QString file){
         // Get section list and set hex values
         sectionList = objDumper.getSectionList(file);
         int len = sectionList.getLength();
+        setUpdatesEnabled(false);
         for (int i = 1; i < len; i++){
             Section section = sectionList.getSection(i);
 
@@ -240,12 +241,15 @@ void MainWindow::open(QString file){
             ui->hexBrowser->insertPlainText(section.getHexList().join("\n") + "\n");
             ui->asciiBrowser->insertPlainText("\n" + section.getAsciiList().join("\n") + "\n");
         }
+        setUpdatesEnabled(true);
 
         // Set file format value in statusbar
+        setUpdatesEnabled(false);
         ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
-        ui->symbolsBrowser->setText(objDumper.getSymbolsTable(file));
-        ui->relocationsBrowser->setText(objDumper.getRelocationEntries(file));
-        ui->headersBrowser->setText(objDumper.getHeaders(file));
+        ui->symbolsBrowser->setPlainText(objDumper.getSymbolsTable(file));
+        ui->relocationsBrowser->setPlainText(objDumper.getRelocationEntries(file));
+        ui->headersBrowser->setPlainText(objDumper.getHeaders(file));
+        setUpdatesEnabled(true);
 
         // Reset specified target
         objDumper.setTarget("");
@@ -281,10 +285,12 @@ void MainWindow::highlightCurrentLine(){
 void MainWindow::displayFunctionText(QString functionName){
     if (!functionList.isEmpty()){
         Function function = functionList.getFunction(functionName);
+        setUpdatesEnabled(false);
         ui->addressLabel->setText(function.getAddress());
         ui->functionLabel->setText(function.getName());
         ui->sectionLabel->setText(function.getSection());
-        ui->codeBrowser->setText(function.getContents());
+        ui->codeBrowser->setPlainText(function.getContents());
+        setUpdatesEnabled(true);
     }
 }
 

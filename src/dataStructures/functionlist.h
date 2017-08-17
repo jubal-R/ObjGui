@@ -10,6 +10,7 @@ class FunctionList
 public:
     FunctionList();
     void insert(QString name, QString address, QString contents, QString section);
+    int getLength();
     bool isEmpty();
     bool containsFunction(QString name);
     Function getFunction(QString name);
