@@ -18,6 +18,7 @@ ObjDumper::ObjDumper()
     disassemblyFlag = "-d";
     headerFlags = "-x";
     optionalFlags = "";
+    target = "";
 }
 
 // Runs objdump given arguments and file then returns outout
@@ -32,7 +33,7 @@ QString ObjDumper::getDump(QString args, QString file){
     else
         objdumpStr = "objdump";
 
-    string cmd = objdumpStr + " " + args.toStdString() + " " + file.toStdString() + " 2>&1";
+    string cmd = objdumpStr + " "  + target.toStdString() + " " + args.toStdString() + " " + file.toStdString() + " 2>&1";
 
     try{
         if(!(in = popen(cmd.c_str(),"r") )){
@@ -58,6 +59,24 @@ QString ObjDumper::getDump(QString args, QString file){
 FunctionList ObjDumper::getFunctionList(QString file){
    FunctionList functionList;
    QString dump = getDisassembly(file);
+
+   /*
+    *  Check for errors.
+    *
+    *  If dump contains errors return function list containing a single function
+    *  with an empty name and the error message stored in its contents.
+    *
+    */
+   if (dump == "format not recognized"){
+       functionList.insert("", "", "File format not recognized.", "");
+       return functionList;
+   } else if (dump == "architecture unknown"){
+       functionList.insert("", "", "Objdump can't disassemble this file because the architecture is unknown.", "");
+       return functionList;
+   } else if (dump.left(20).contains("Matching formats")){
+       functionList.insert("", "", dump, "");
+       return functionList;
+   }
 
     // Split dump into list of functions
     QStringList dumpList = dump.split("\n\n");
@@ -177,7 +196,12 @@ SectionList ObjDumper::getSectionList(QString file){
 
 QString ObjDumper::getDisassembly(QString file){
     QString disassembly = getDump(optionalFlags + " -M " + outputSyntax + " " + disassemblyFlag, file);
-    return removeHeading(disassembly, 4);
+    // Check first few lines for errors
+    QString errors = parseDumpForErrors(getHeading(disassembly, 10));   // Output formatting can differ so check more lines to be safe
+    if (errors == "")
+        return removeHeading(disassembly, 4);
+    else
+        return errors;
 }
 
 QString ObjDumper::getSymbolsTable(QString file){
@@ -225,6 +249,23 @@ QString ObjDumper::getFileFormat(QString file){
 
 }
 
+// Check for objdumps output errors. returns empty string if no errors found
+QString ObjDumper::parseDumpForErrors(QString dump){
+    if (dump.contains("architecture UNKNOWN")){
+        return "architecture unknown";
+    } else if (dump.contains("File format not recognized")){
+        return "format not recognized";
+    }else if (dump.contains("File format is ambiguous")){
+        QStringList dumpList = dump.split(":");
+        if (dumpList.length() == 5){
+            // returns "Matching formats:[format1] [format2] [format3]..."
+            return dumpList.at(3) + ":" + dumpList.at(4);
+        }
+    }
+
+    return "";
+}
+
 // Removes heading(first three lines of objdump output)
 QString ObjDumper::removeHeading(QString dump, int numLines){
     int i = 0;
@@ -236,6 +277,19 @@ QString ObjDumper::removeHeading(QString dump, int numLines){
     }
 
     return dump.mid(i);
+}
+
+// Returns first [numLines] of given string
+QString ObjDumper::getHeading(QString dump, int numLines){
+    int i = 0;
+    int newlineCount = 0;
+    while (i < dump.length() && newlineCount < numLines){
+        if (dump.at(i) == QChar('\n'))
+            newlineCount++;
+        i++;
+    }
+
+    return dump.left(i);
 }
 
 void ObjDumper::setUseCustomBinary(bool useCustom){
@@ -260,4 +314,9 @@ void ObjDumper::setHeaderFlags(QString flags){
 
 void ObjDumper::setOptionalFlags(QString flags){
     optionalFlags = flags;
+}
+
+// Set target flag: "-b [target]"
+void ObjDumper::setTarget(QString trgt){
+    target = trgt;
 }

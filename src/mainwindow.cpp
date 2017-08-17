@@ -4,6 +4,7 @@
 #include "qmessagebox.h"
 #include "QScrollBar"
 #include "QSettings"
+#include "QInputDialog"
 
 // For debugging
 #include "iostream"
@@ -162,38 +163,70 @@ void MainWindow::open(QString file){
     if (file != ""){
         this->setWindowTitle("ObjGUI - " + file);
 
-        // Clear old function list from sidebar
+        /*
+         *  Clear Old Values
+        */
         while (ui->functionList->count() > 0){
             ui->functionList->takeItem(0);
         }
-        // Clear old hex dump
-        ui->hexAddressBrowser->setText("");
-        ui->hexBrowser->setText("");
-        ui->asciiBrowser->setText("");
+        ui->addressLabel->clear();
+        ui->functionLabel->clear();
+        ui->sectionLabel->clear();
+        ui->codeBrowser->clear();
+        ui->hexAddressBrowser->clear();
+        ui->hexBrowser->clear();
+        ui->asciiBrowser->clear();
+        ui->fileFormatlabel->clear();
+        ui->symbolsBrowser->clear();
+        ui->relocationsBrowser->clear();
+        ui->headersBrowser->clear();
 
-        // Set file format value in statusbar
-        ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
 
+        /*
+         *  Disassemble Binary and Display Values
+        */
 
+        // Disassemble and get function list
         functionList = objDumper.getFunctionList(file);
 
-        // Populate function/section list in sidebar
-        ui->functionList->addItems(functionList.getFunctionNames());
+        // If functionlist is empty
+        if (functionList.isEmpty()){
+            ui->codeBrowser->setText("File format not recognized.");
+            ui->addressLabel->setText("");
+            ui->functionLabel->setText("");
 
-        // Set disassembly text
-        if (!functionList.isEmpty()){
-            // Display main function by default if it exists
-            if (functionList.containsFunction("main"))
-                displayFunctionText("main");
-            else {
-                QString firstIndexName = functionList.getFunction(0).getName();
-                displayFunctionText(firstIndexName);
+          // If objdump returned error message
+        } else if (functionList.getLength() == 1 and functionList.getFunction(0).getName() == ""){
+            QString message = functionList.getFunction(0).getContents();
+
+            // If format is ambigous message, let user user select format from list of matching formats
+            if (message.contains("Matching formats")){
+                QStringList formats = message.split(":");
+                if (formats.length() == 2){
+                    formats = formats.at(1).split(" ", QString::SkipEmptyParts);
+
+                    if (!formats.isEmpty()){
+                        // Get target format and set flag
+                        QString format = QInputDialog::getItem(this, "Select matching format", "Format is ambigous, select matching format:", formats, 0, false);
+                        objDumper.setTarget("-b " + format);
+
+                        // Generate new fumnctionlist
+                        functionList = objDumper.getFunctionList(file);
+                        displayFunctionData();
+                    } else {
+                        // Display error message
+                        ui->codeBrowser->setText(message);
+                    }
+                }
+
+            } else {
+                // Display error message
+                ui->codeBrowser->setText(message);
             }
 
+          // If all good, display disassembly data
         } else {
-           ui->codeBrowser->setText("File format not recognized.");
-           ui->addressLabel->setText("");
-           ui->functionLabel->setText("");
+            displayFunctionData();
         }
 
         // Get section list and set hex values
@@ -208,10 +241,14 @@ void MainWindow::open(QString file){
             ui->asciiBrowser->insertPlainText("\n" + section.getAsciiList().join("\n") + "\n");
         }
 
-
+        // Set file format value in statusbar
+        ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
         ui->symbolsBrowser->setText(objDumper.getSymbolsTable(file));
         ui->relocationsBrowser->setText(objDumper.getRelocationEntries(file));
         ui->headersBrowser->setText(objDumper.getHeaders(file));
+
+        // Reset specified target
+        objDumper.setTarget("");
 
     }
 }
@@ -248,6 +285,21 @@ void MainWindow::displayFunctionText(QString functionName){
         ui->functionLabel->setText(function.getName());
         ui->sectionLabel->setText(function.getSection());
         ui->codeBrowser->setText(function.getContents());
+    }
+}
+
+void MainWindow::displayFunctionData(){
+    if (!functionList.isEmpty()){
+        // Populate function/section list in sidebar
+        ui->functionList->addItems(functionList.getFunctionNames());
+
+        // Display main function by default if it exists
+        if (functionList.containsFunction("main"))
+            displayFunctionText("main");
+        else {
+            QString firstIndexName = functionList.getFunction(0).getName();
+            displayFunctionText(firstIndexName);
+        }
     }
 }
 

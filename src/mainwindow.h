@@ -27,6 +27,8 @@ private slots:
 
     void displayFunctionText(QString functionName);
 
+    void displayFunctionData();
+
     void on_actionProject_triggered();
 
     void on_actionExit_triggered();

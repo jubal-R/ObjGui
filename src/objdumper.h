@@ -27,10 +27,13 @@ public:
     void setDisassemblyFlag(QString flag);
     void setHeaderFlags(QString flags);
     void setOptionalFlags(QString);
+    void setTarget(QString trgt);
 
 private:
     QString getDump(QString args, QString file);
     QString removeHeading(QString dump, int numLines);
+    QString getHeading(QString dump, int numLines);
+    QString parseDumpForErrors(QString dump);
 
     bool useCustomBinary;
     QString objdumpBinary;
@@ -38,6 +41,7 @@ private:
     QString disassemblyFlag;
     QString headerFlags;
     QString optionalFlags;
+    QString target;
 
 };
 
