@@ -5,6 +5,7 @@
 #include "QScrollBar"
 #include "QSettings"
 #include "QInputDialog"
+#include "QProgressDialog"
 
 // For debugging
 #include "iostream"
@@ -13,6 +14,7 @@
 #include "dataStructures/functionlist.h"
 #include "highlighter.h"
 #include "objdumper.h"
+#include "ui_loadingdialog.h"
 
 using namespace std;
 
@@ -22,10 +24,7 @@ SectionList sectionList;
 QSettings settings;
 ObjDumper objDumper;
 Highlighter *disHighlighter = NULL;
-Highlighter *symbolsHighlighter = NULL;
-Highlighter *relocationsHighlighter = NULL;
 Highlighter *hexHighlighter = NULL;
-Highlighter *headersHighlighter = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -133,10 +132,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->menuBar->setStyleSheet(menuStyle);
 
     disHighlighter = new Highlighter("dis", "default", ui->codeBrowser->document());
-    symbolsHighlighter = new Highlighter("sym", "default", ui->symbolsBrowser->document());
-    relocationsHighlighter = new Highlighter("sym", "default", ui->relocationsBrowser->document());
     hexHighlighter = new Highlighter("hexdump", "default", ui->hexBrowser->document());
-    headersHighlighter = new Highlighter("sym", "default", ui->headersBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
@@ -232,7 +228,7 @@ void MainWindow::open(QString file){
         // Get section list and set hex values
         sectionList = objDumper.getSectionList(file);
         int len = sectionList.getLength();
-        setUpdatesEnabled(false);
+//        setUpdatesEnabled(false);
         for (int i = 1; i < len; i++){
             Section section = sectionList.getSection(i);
 
@@ -241,7 +237,7 @@ void MainWindow::open(QString file){
             ui->hexBrowser->insertPlainText(section.getHexList().join("\n") + "\n");
             ui->asciiBrowser->insertPlainText("\n" + section.getAsciiList().join("\n") + "\n");
         }
-        setUpdatesEnabled(true);
+//        setUpdatesEnabled(true);
 
         // Set file format value in statusbar
         setUpdatesEnabled(false);
@@ -260,9 +256,26 @@ void MainWindow::open(QString file){
 // Disassemble
 void MainWindow::on_actionOpen_triggered()
 {
+    // Setup loading message dialog
+    QDialog* dialog = new QDialog(this, Qt::FramelessWindowHint);
+    Ui_Dialog loadingDialogUi;
+    loadingDialogUi.setupUi(dialog);
+    dialog->show();
+
+    // Prompt user for file
     QString file = QFileDialog::getOpenFileName(this, tr("Open File"), files.getCurrentDirectory(), tr("All (*)"));
-    files.setCurrentDirectory(file);
-    open(file);
+
+    // Set and display loading message
+    loadingDialogUi.label->setText("Disassembling binary...");
+    qApp->processEvents();
+
+    // Update current directory and call disassembly function
+    if (file != ""){
+        files.setCurrentDirectory(file);
+        open(file);
+    }
+    // Delete loading dialog
+    delete dialog;
 }
 
 //  Highlight Current Line

@@ -35,7 +35,8 @@ HEADERS  += mainwindow.h \
     dataStructures/sectionlist.h \
     dataStructures/sectionnode.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    loadingdialog.ui
 
 RESOURCES += \
     resources.qrc
