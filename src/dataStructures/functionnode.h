@@ -7,7 +7,7 @@
 class FunctionNode
 {
 public:
-    FunctionNode(QString name, QString address, QString contents, QString section);
+    FunctionNode(QString name, QString address, QString contents, QString section, QString fileOffset);
     void setNext(FunctionNode *n);
     FunctionNode* getNext();
     Function getFunction();

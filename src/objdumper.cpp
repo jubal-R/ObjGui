@@ -68,13 +68,13 @@ FunctionList ObjDumper::getFunctionList(QString file){
     *
     */
    if (dump == "format not recognized"){
-       functionList.insert("", "", "File format not recognized.", "");
+       functionList.insert("", "", "File format not recognized.", "", "");
        return functionList;
    } else if (dump == "architecture unknown"){
-       functionList.insert("", "", "Objdump can't disassemble this file because the architecture is unknown.", "");
+       functionList.insert("", "", "Objdump can't disassemble this file because the architecture is unknown.", "", "");
        return functionList;
    } else if (dump.left(20).contains("Matching formats")){
-       functionList.insert("", "", dump, "");
+       functionList.insert("", "", dump, "", "");
        return functionList;
    }
 
@@ -102,22 +102,31 @@ FunctionList ObjDumper::getFunctionList(QString file){
         } else if (tmp.startsWith("0") /*tmp is hex*/){
             QString name = "";
             QString address = "";
+            QString fileOffest = "";
             QString contents = "";
 
+            // Get function address
             address = tmp;
 
+            // Get function name
             i += 2;
-            QString tmp2 = "";
             while (i < dumpStr.length()-1 && dumpStr.at(i) != QChar('>')){
-                tmp2.append(dumpStr.at(i));
+                name.append(dumpStr.at(i));
                 i++;
             }
-            name = tmp2;
+
+            // Get file offset
+            i += 16;
+            while (i < dumpStr.length()-1 && dumpStr.at(i) != QChar(')')){
+                fileOffest.append(dumpStr.at(i));
+                i++;
+            }
+
+            // Get function contents
             contents = dumpStr.mid(i+3);
 
-
             // Add to functionList
-            functionList.insert(name, address, contents, currentSection);
+            functionList.insert(name, address, contents, currentSection, fileOffest);
         }
 
 
@@ -195,7 +204,7 @@ SectionList ObjDumper::getSectionList(QString file){
 
 
 QString ObjDumper::getDisassembly(QString file){
-    QString disassembly = getDump(optionalFlags + " -M " + outputSyntax + " " + disassemblyFlag, file);
+    QString disassembly = getDump(optionalFlags + " -F -M " + outputSyntax + " " + disassemblyFlag, file);
     // Check first few lines for errors
     QString errors = parseDumpForErrors(getHeading(disassembly, 10));   // Output formatting can differ so check more lines to be safe
     if (errors == "")

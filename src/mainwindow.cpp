@@ -87,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     monoBold.setPointSize(13);
     monoBold.setBold(true);
     ui->addressLabel->setFont(monoBold);
+    ui->fileOffsetLabel->setFont(monoBold);
     ui->functionLabel->setFont(monoBold);
     ui->sectionLabel->setFont(monoBold);
     ui->hexAddressLabel->setFont(monoBold);
@@ -299,9 +300,10 @@ void MainWindow::displayFunctionText(QString functionName){
     if (!functionList.isEmpty()){
         Function function = functionList.getFunction(functionName);
         setUpdatesEnabled(false);
-        ui->addressLabel->setText(function.getAddress());
+        ui->addressLabel->setText("Address: " + function.getAddress());
+        ui->fileOffsetLabel->setText("File Offset: " + function.getFileOffset());
         ui->functionLabel->setText(function.getName());
-        ui->sectionLabel->setText(function.getSection());
+        ui->sectionLabel->setText("Section: " + function.getSection());
         ui->codeBrowser->setPlainText(function.getContents());
         setUpdatesEnabled(true);
     }

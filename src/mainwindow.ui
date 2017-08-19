@@ -300,6 +300,9 @@ border-top: 1px solid #d4d4d4;</string>
             </property>
             <item row="2" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <property name="spacing">
+               <number>10</number>
+              </property>
               <property name="leftMargin">
                <number>20</number>
               </property>
@@ -313,10 +316,28 @@ border-top: 1px solid #d4d4d4;</string>
                <number>2</number>
               </property>
               <item>
+               <widget class="QLabel" name="functionLabel">
+                <property name="font">
+                 <font>
+                  <family>Monospace</family>
+                  <pointsize>12</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QLabel" name="addressLabel">
                 <property name="maximumSize">
                  <size>
-                  <width>300</width>
+                  <width>16777215</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -337,15 +358,7 @@ border-top: 1px solid #d4d4d4;</string>
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="functionLabel">
-                <property name="font">
-                 <font>
-                  <family>Monospace</family>
-                  <pointsize>12</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
+               <widget class="QLabel" name="fileOffsetLabel">
                 <property name="text">
                  <string/>
                 </property>

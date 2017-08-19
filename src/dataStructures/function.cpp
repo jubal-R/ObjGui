@@ -6,12 +6,13 @@ Function::Function(){
     contents = "";
 }
 
-Function::Function(QString functionName, QString addr, QString functionContents, QString sect)
+Function::Function(QString functionName, QString addr, QString functionContents, QString sect, QString offset)
 {
     name = functionName;
     address = addr;
     contents = functionContents;
     section = sect;
+    fileOffset = offset;
 }
 
 //Get Values
@@ -30,4 +31,8 @@ QString Function::getContents(){
 
 QString Function::getSection(){
     return section;
+}
+
+QString Function::getFileOffset(){
+    return fileOffset;
 }

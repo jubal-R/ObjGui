@@ -119,17 +119,6 @@ Highlighter::Highlighter(QString type, QString theme, QTextDocument *parent)
             highlightingRules.append(rule);
         }
 
-        //Quotes
-        quotationFormat.setForeground(valueColor);
-        rule.pattern = QRegExp("\".*\"");
-        rule.format = quotationFormat;
-        highlightingRules.append(rule);
-
-        quotationFormat.setForeground(valueColor);
-        rule.pattern = QRegExp("'.*'");
-        rule.format = quotationFormat;
-        highlightingRules.append(rule);
-
         //Comments
         singleLineCommentFormat.setFontItalic(true);
         singleLineCommentFormat.setForeground(commentColor);
@@ -161,32 +150,6 @@ Highlighter::Highlighter(QString type, QString theme, QTextDocument *parent)
         classFormat.setForeground(numColor);
         classFormat.setFontWeight(0);
         rule.pattern = QRegExp("\\b[0-9a-f]+\\b");
-        rule.format = classFormat;
-        highlightingRules.append(rule);
-
-        //Comments
-        singleLineCommentFormat.setFontItalic(true);
-        singleLineCommentFormat.setForeground(commentColor);
-        rule.pattern = QRegExp("//[^\n]*");
-        rule.format = singleLineCommentFormat;
-        highlightingRules.append(rule);
-
-        singleLineCommentFormat.setForeground(commentColor);
-        rule.pattern = QRegExp(";[^\n]*");
-        rule.format = singleLineCommentFormat;
-        highlightingRules.append(rule);
-
-        multiLineCommentFormat.setFontItalic(true);
-        multiLineCommentFormat.setForeground(commentColor);
-
-        commentStartExpression = QRegExp("/\\*");
-        commentEndExpression = QRegExp("\\*/");
-
-    }else if(type == "sym"){
-
-        //Nums :D
-        classFormat.setForeground(numColor);
-        rule.pattern = QRegExp("\\b[0-9a-fx]+\\b");
         rule.format = classFormat;
         highlightingRules.append(rule);
 
