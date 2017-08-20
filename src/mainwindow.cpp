@@ -24,7 +24,6 @@ SectionList sectionList;
 QSettings settings;
 ObjDumper objDumper;
 Highlighter *disHighlighter = NULL;
-Highlighter *hexHighlighter = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -65,6 +64,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->syntaxLabel->setFont(sansBold);
     ui->disassemblyFlagLabel->setFont(sansBold);
     ui->headersLabel->setFont(sansBold);
+    ui->functionLabel->setFont(sansBold);
+    ui->addressLabel->setFont(sansBold);
+    ui->fileOffsetLabel->setFont(sansBold);
+    ui->sectionLabel->setFont(sansBold);
+    ui->hexAddressLabel->setFont(sansBold);
+    ui->hexLabel->setFont(sansBold);
+    ui->asciiLabel->setFont(sansBold);
 
     // Monospace
     int monoid = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro.ttf");
@@ -79,6 +85,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->hexBrowser->setFont(mono);
     ui->asciiBrowser->setFont(mono);
     ui->headersBrowser->setFont(mono);
+    ui->addressValueLabel->setFont(mono);
+    ui->fileOffsetValueLabel->setFont(mono);
+    ui->sectionValueLabel->setFont(mono);
 
     // Monospace Bold
     int monoBoldId = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro B.ttf");
@@ -86,13 +95,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QFont monoBold(monoBoldFamily);
     monoBold.setPointSize(13);
     monoBold.setBold(true);
-    ui->addressLabel->setFont(monoBold);
-    ui->fileOffsetLabel->setFont(monoBold);
-    ui->functionLabel->setFont(monoBold);
-    ui->sectionLabel->setFont(monoBold);
-    ui->hexAddressLabel->setFont(monoBold);
-    ui->hexLabel->setFont(monoBold);
-    ui->asciiLabel->setFont(monoBold);
+
 
     this->setWindowTitle("ObjGUI");
 
@@ -133,7 +136,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->menuBar->setStyleSheet(menuStyle);
 
     disHighlighter = new Highlighter("dis", "default", ui->codeBrowser->document());
-    hexHighlighter = new Highlighter("hexdump", "default", ui->hexBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
@@ -166,9 +168,10 @@ void MainWindow::open(QString file){
         while (ui->functionList->count() > 0){
             ui->functionList->takeItem(0);
         }
-        ui->addressLabel->clear();
+        ui->addressValueLabel->clear();
+        ui->fileOffsetValueLabel->clear();
         ui->functionLabel->clear();
-        ui->sectionLabel->clear();
+        ui->sectionValueLabel->clear();
         ui->codeBrowser->clear();
         ui->hexAddressBrowser->clear();
         ui->hexBrowser->clear();
@@ -233,10 +236,10 @@ void MainWindow::open(QString file){
         for (int i = 1; i < len; i++){
             Section section = sectionList.getSection(i);
 
-            ui->hexBrowser->insertPlainText(section.getSectionName() + "\n");
-            ui->hexAddressBrowser->insertPlainText("\n" + section.getAddressList().join("\n") + "\n");
+            ui->hexBrowser->appendHtml("<b><font color=#555555>" + section.getSectionName() + "</font></b><br>");
+            ui->hexAddressBrowser->insertPlainText("\n" + section.getAddressList().join("\n") + "\n\n");
             ui->hexBrowser->insertPlainText(section.getHexList().join("\n") + "\n");
-            ui->asciiBrowser->insertPlainText("\n" + section.getAsciiList().join("\n") + "\n");
+            ui->asciiBrowser->insertPlainText("\n" + section.getAsciiList().join("\n") + "\n\n");
         }
 //        setUpdatesEnabled(true);
 
@@ -300,10 +303,10 @@ void MainWindow::displayFunctionText(QString functionName){
     if (!functionList.isEmpty()){
         Function function = functionList.getFunction(functionName);
         setUpdatesEnabled(false);
-        ui->addressLabel->setText("Address: " + function.getAddress());
-        ui->fileOffsetLabel->setText("File Offset: " + function.getFileOffset());
+        ui->addressValueLabel->setText(function.getAddress());
+        ui->fileOffsetValueLabel->setText(function.getFileOffset());
         ui->functionLabel->setText(function.getName());
-        ui->sectionLabel->setText("Section: " + function.getSection());
+        ui->sectionValueLabel->setText(function.getSection());
         ui->codeBrowser->setPlainText(function.getContents());
         setUpdatesEnabled(true);
     }

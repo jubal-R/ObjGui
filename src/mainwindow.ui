@@ -122,6 +122,9 @@ font-size: 11pt;</string>
     </item>
     <item row="0" column="0">
      <widget class="QWidget" name="main" native="true">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="leftMargin">
         <number>0</number>
@@ -331,10 +334,26 @@ border-top: 1px solid #d4d4d4;</string>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                </property>
                </widget>
               </item>
               <item>
                <widget class="QLabel" name="addressLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Address:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="addressValueLabel">
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
@@ -355,19 +374,54 @@ border-top: 1px solid #d4d4d4;</string>
                 <property name="text">
                  <string/>
                 </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                </property>
                </widget>
               </item>
               <item>
                <widget class="QLabel" name="fileOffsetLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>File Offset:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="fileOffsetValueLabel">
                 <property name="text">
                  <string/>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QLabel" name="sectionLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Section:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="sectionValueLabel">
                 <property name="text">
                  <string/>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                 </property>
                </widget>
               </item>
@@ -456,6 +510,10 @@ color: rgb(85, 85, 85);</string>
                 <height>16777215</height>
                </size>
               </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(38, 139, 210);</string>
+              </property>
               <property name="verticalScrollBarPolicy">
                <enum>Qt::ScrollBarAlwaysOff</enum>
               </property>
@@ -478,6 +536,10 @@ color: rgb(85, 85, 85);</string>
                 <height>16777215</height>
                </size>
               </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85);</string>
+              </property>
               <property name="verticalScrollBarPolicy">
                <enum>Qt::ScrollBarAlwaysOff</enum>
               </property>
@@ -494,6 +556,10 @@ color: rgb(85, 85, 85);</string>
             </item>
             <item row="1" column="2">
              <widget class="QPlainTextEdit" name="asciiBrowser">
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85);</string>
+              </property>
               <property name="undoRedoEnabled">
                <bool>false</bool>
               </property>
@@ -653,7 +719,8 @@ color: rgb(85, 85, 85)</string>
           </widget>
           <widget class="QWidget" name="options_tab">
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">background-color: rgb(250, 250, 250);
+color: rgb(85, 85, 85);</string>
            </property>
            <attribute name="title">
             <string>Options</string>
