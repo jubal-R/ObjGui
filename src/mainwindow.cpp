@@ -241,6 +241,7 @@ void MainWindow::open(QString file){
             ui->hexBrowser->insertPlainText(section.getHexList().join("\n") + "\n");
             ui->asciiBrowser->insertPlainText("\n" + section.getAsciiList().join("\n") + "\n\n");
         }
+        ui->hexBrowser->insertPlainText("\n");  // Append additional newline to make even with other browsers
 //        setUpdatesEnabled(true);
 
         // Set file format value in statusbar

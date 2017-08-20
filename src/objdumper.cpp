@@ -2,6 +2,8 @@
 #include "dataStructures/function.h"
 #include "dataStructures/functionlist.h"
 #include "QString"
+#include "QVector"
+#include "QStringRef"
 #include <stdlib.h>
 #include <fstream>
 #include <iostream>
@@ -79,12 +81,12 @@ FunctionList ObjDumper::getFunctionList(QString file){
    }
 
     // Split dump into list of functions
-    QStringList dumpList = dump.split("\n\n");
+    QVector<QStringRef> dumpList = dump.splitRef("\n\n");
     QString currentSection = "";
 
     // Parse dumplist
     for (int listIndex = 0; listIndex < dumpList.length(); listIndex++){
-        QString dumpStr = dumpList.at(listIndex);
+        QStringRef dumpStr = dumpList.at(listIndex);
 
         // Parse first word
         QString tmp;
@@ -96,10 +98,10 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
         // Check if section or function
         if (tmp == "Disassembly"){
-            currentSection = dumpStr.mid(23);
+            currentSection = dumpStr.mid(23).toString();
             currentSection.chop(1);
 
-        } else if (tmp.startsWith("0") /*tmp is hex*/){
+        } else if (tmp.startsWith("0") /*tmp is address*/){
             QString name = "";
             QString address = "";
             QString fileOffest = "";
@@ -123,7 +125,7 @@ FunctionList ObjDumper::getFunctionList(QString file){
             }
 
             // Get function contents
-            contents = dumpStr.mid(i+3);
+            contents = dumpStr.mid(i+3).toString();
 
             // Add to functionList
             functionList.insert(name, address, contents, currentSection, fileOffest);
@@ -139,7 +141,7 @@ SectionList ObjDumper::getSectionList(QString file){
     SectionList sectionList;
     QString contents = getContents(file);
 
-    QStringList contentsList = contents.split("Contents of section ");
+    QVector<QStringRef> contentsList = contents.splitRef("Contents of section ");
 
     // Parse contents list
     for (int listIndex = 0; listIndex < contentsList.length(); listIndex++){
@@ -147,24 +149,23 @@ SectionList ObjDumper::getSectionList(QString file){
         QStringList addresses;
         QStringList hex;
         QStringList ascii;
-        QString contentsStr = contentsList.at(listIndex);
+        QStringRef contentsStr = contentsList.at(listIndex);
 
         // Get section name
-        QString tmp;
         int i = 0;
         while (i < contentsStr.length()-1 && contentsStr.at(i) != QChar(':')){
-            tmp.append(contentsStr.at(i));
+            sectionName.append(contentsStr.at(i));
             i++;
         }
-        sectionName = tmp;
-        contentsStr = contentsStr.mid(i+2);
+
+        QString sectionContents = contentsStr.mid(i+2).toString();
 
         // Split content into lines
-        QStringList lines = contentsStr.split("\n");
+        QVector<QStringRef> lines = sectionContents.splitRef("\n");
 
         // Parse each line and add data to lists
         for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
-            QString line = lines.at(lineNum);
+            QStringRef line = lines.at(lineNum);
 
             QString address;
             int pos = 1;
@@ -177,7 +178,7 @@ SectionList ObjDumper::getSectionList(QString file){
             pos++;
 
             // Next 35 chars are hex followed by 2 spaces
-            QString hexStr = line.mid(pos, 35);
+            QString hexStr = line.mid(pos, 35).toString();
 
             // Add space between each byte(default is space between 4 byte words)
             for (int i = 2; i < hexStr.length(); i+=3){
@@ -190,7 +191,7 @@ SectionList ObjDumper::getSectionList(QString file){
 
             pos += 37;
 
-            ascii.append(line.mid(pos));
+            ascii.append(line.mid(pos).toString());
 
         }
 
