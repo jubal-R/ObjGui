@@ -3,8 +3,8 @@
 
 //Function function;
 
-FunctionNode::FunctionNode(QString name, QString address, QString contents, QString section, QString fileOffset)
-    : function(name, address, contents, section, fileOffset)
+FunctionNode::FunctionNode(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QString> > contents)
+    : function(name, address, section, fileOffset, contents)
 {
     next = NULL;
 

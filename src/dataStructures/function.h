@@ -2,23 +2,26 @@
 #define FUNCTION_H
 
 #include "QString"
+#include "QVector"
 
 class Function
 {
 public:
     Function();
-    Function(QString functionName, QString addr, QString functionContents, QString section, QString offset);
+    Function(QString functionName, QString addr, QString section, QString offset, QVector< QVector<QString> > contents);
     QString getName();
     QString getAddress();
-    QString getContents();
     QString getSection();
     QString getFileOffset();
+    QVector<QString> getLine(int line);
+    QString getContents();
 private:
     QString name;
     QString address;
-    QString contents;
     QString section;
     QString fileOffset;
+    QVector< QVector<QString> > functionMatrix;
+    int matrixLen;
 
 };
 

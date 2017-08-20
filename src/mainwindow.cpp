@@ -191,14 +191,14 @@ void MainWindow::open(QString file){
         functionList = objDumper.getFunctionList(file);
 
         // If functionlist is empty
-        if (functionList.isEmpty()){
+        if (functionList.isEmpty() && functionList.successfullyCreated()){
             ui->codeBrowser->setPlainText("File format not recognized.");
             ui->addressLabel->setText("");
             ui->functionLabel->setText("");
 
           // If objdump returned error message
-        } else if (functionList.getLength() == 1 and functionList.getFunction(0).getName() == ""){
-            QString message = functionList.getFunction(0).getContents();
+        } else if (!functionList.successfullyCreated()){
+            QString message = functionList.getErrorMsg();
 
             // If format is ambigous message, let user user select format from list of matching formats
             if (message.contains("Matching formats")){

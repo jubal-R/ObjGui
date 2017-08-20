@@ -6,10 +6,11 @@ FunctionList::FunctionList()
     head = NULL;
     tail = NULL;
     length = 0;
+    errorMsg = "";
 }
 
-void FunctionList::insert(QString name, QString address, QString contents, QString section, QString fileOffset){
-    FunctionNode *newNode = new FunctionNode(name, address, contents, section, fileOffset);
+void FunctionList::insert(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QString> > contents){
+    FunctionNode *newNode = new FunctionNode(name, address, section, fileOffset, contents);
 
     if (isEmpty()){
         head = newNode;
@@ -60,7 +61,8 @@ Function FunctionList::getFunction(QString name){
         }
     }
     // If not found return empty function
-    Function f("", "", "", "", "");
+    QVector< QVector<QString> > empty;
+    Function f("", "", "", "", empty);
     return f;
 }
 
@@ -73,7 +75,8 @@ Function FunctionList::getFunction(int index){
         return p->getFunction();
     }
     // If not found return empty function
-    Function f("", "", "", "", "");
+    QVector< QVector<QString> > empty;
+    Function f("", "", "", "", empty);
     return f;
 }
 
@@ -92,3 +95,18 @@ QStringList FunctionList::getFunctionNames(){
 }
 
 
+void FunctionList::setErrorMsg(QString msg){
+    errorMsg = msg;
+}
+
+QString FunctionList::getErrorMsg(){
+    return errorMsg;
+}
+
+// Checks if list was created successfully(no errors)
+bool FunctionList::successfullyCreated(){
+    if (errorMsg == "")
+        return true;
+    else
+        return false;
+}

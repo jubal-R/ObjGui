@@ -42,6 +42,7 @@ private:
     QString headerFlags;
     QString optionalFlags;
     QString target;
+    int insnwidth;
 
 };
 

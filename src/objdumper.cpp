@@ -21,6 +21,7 @@ ObjDumper::ObjDumper()
     headerFlags = "-x";
     optionalFlags = "";
     target = "";
+    insnwidth = 10;
 }
 
 // Runs objdump given arguments and file then returns outout
@@ -70,13 +71,13 @@ FunctionList ObjDumper::getFunctionList(QString file){
     *
     */
    if (dump == "format not recognized"){
-       functionList.insert("", "", "File format not recognized.", "", "");
+       functionList.setErrorMsg("File format not recognized.");
        return functionList;
    } else if (dump == "architecture unknown"){
-       functionList.insert("", "", "Objdump can't disassemble this file because the architecture is unknown.", "", "");
+       functionList.setErrorMsg("Objdump can't disassemble this file because the architecture is unknown.");
        return functionList;
    } else if (dump.left(20).contains("Matching formats")){
-       functionList.insert("", "", dump, "", "");
+       functionList.setErrorMsg(dump);
        return functionList;
    }
 
@@ -105,7 +106,7 @@ FunctionList ObjDumper::getFunctionList(QString file){
             QString name = "";
             QString address = "";
             QString fileOffest = "";
-            QString contents = "";
+            QVector< QVector<QString> > functionMatrix;
 
             // Get function address
             address = tmp;
@@ -124,11 +125,56 @@ FunctionList ObjDumper::getFunctionList(QString file){
                 i++;
             }
 
-            // Get function contents
-            contents = dumpStr.mid(i+3).toString();
+            // Parse function contents
+            QString contents = dumpStr.mid(i+3).toString();
+            QVector<QStringRef> lines = contents.splitRef("\n");
+
+            for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
+                QStringRef line = lines.at(lineNum);
+                QVector<QString> row(4);
+
+                // Get address
+                QString address;
+                int pos = 0;
+                // Get address
+                while (pos < line.length() && line.at(pos) != QChar(':')){
+                    address.append(line.at(pos));
+                    pos++;
+                }
+                row[0] = address.trimmed();
+                pos++;
+
+                // Get hex
+                while (pos < line.length() && line.at(pos) == QChar(' ')){
+                    pos++;
+                }
+
+                QString hex = line.mid(pos, insnwidth * 3).toString();
+                row[1] = hex;
+                pos += insnwidth * 3;
+
+                // Get optcode
+                while (pos < line.length() && line.at(pos) == QChar(' ')){
+                    pos++;
+                }
+                QString opt;
+                while (pos < line.length() && line.at(pos) != QChar(' ')){
+                    opt.append(line.at(pos));
+                    pos++;
+                }
+
+                row[2] = opt;
+
+                pos++;
+
+                // Get args
+                row[3] = line.mid(pos).toString();
+
+                functionMatrix.append(row);
+            }
 
             // Add to functionList
-            functionList.insert(name, address, contents, currentSection, fileOffest);
+            functionList.insert(name, address, currentSection, fileOffest, functionMatrix);
         }
 
 
@@ -208,7 +254,7 @@ SectionList ObjDumper::getSectionList(QString file){
 
 
 QString ObjDumper::getDisassembly(QString file){
-    QString disassembly = getDump(optionalFlags + " -F -M " + outputSyntax + " " + disassemblyFlag, file);
+    QString disassembly = getDump("--insn-width=" + QString::number(insnwidth) + " " +optionalFlags + " -F -M " + outputSyntax + " " + disassemblyFlag, file);
     // Check first few lines for errors
     QString errors = parseDumpForErrors(getHeading(disassembly, 10));   // Output formatting can differ so check more lines to be safe
     if (errors == "")
