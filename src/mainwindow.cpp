@@ -6,6 +6,7 @@
 #include "QSettings"
 #include "QInputDialog"
 #include "QProgressDialog"
+#include "QVector"
 
 // For debugging
 #include "iostream"
@@ -232,17 +233,17 @@ void MainWindow::open(QString file){
         // Get section list and set hex values
         sectionList = objDumper.getSectionList(file);
         int len = sectionList.getLength();
-//        setUpdatesEnabled(false);
+        setUpdatesEnabled(false);
         for (int i = 1; i < len; i++){
             Section section = sectionList.getSection(i);
 
             ui->hexBrowser->appendHtml("<b><font color=#555555>" + section.getSectionName() + "</font></b><br>");
-            ui->hexAddressBrowser->insertPlainText("\n" + section.getAddressList().join("\n") + "\n\n");
-            ui->hexBrowser->insertPlainText(section.getHexList().join("\n") + "\n");
-            ui->asciiBrowser->insertPlainText("\n" + section.getAsciiList().join("\n") + "\n\n");
+            ui->hexAddressBrowser->insertPlainText("\n" + section.getAddressString() + "\n\n");
+            ui->hexBrowser->insertPlainText(section.getHexString() + "\n");
+            ui->asciiBrowser->insertPlainText("\n" + section.getAsciiString() + "\n\n");
         }
         ui->hexBrowser->insertPlainText("\n");  // Append additional newline to make even with other browsers
-//        setUpdatesEnabled(true);
+        setUpdatesEnabled(true);
 
         // Set file format value in statusbar
         setUpdatesEnabled(false);

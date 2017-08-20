@@ -146,9 +146,8 @@ SectionList ObjDumper::getSectionList(QString file){
     // Parse contents list
     for (int listIndex = 0; listIndex < contentsList.length(); listIndex++){
         QString sectionName;
-        QStringList addresses;
-        QStringList hex;
-        QStringList ascii;
+        QVector< QVector<QString> > sectionMatrix;
+
         QStringRef contentsStr = contentsList.at(listIndex);
 
         // Get section name
@@ -166,14 +165,16 @@ SectionList ObjDumper::getSectionList(QString file){
         // Parse each line and add data to lists
         for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
             QStringRef line = lines.at(lineNum);
+            QVector<QString> row(3);
 
+            // Get Address
             QString address;
             int pos = 1;
             while (pos < line.length() && line.at(pos) != QChar(' ')){
                 address.append(line.at(pos));
                 pos++;
             }
-            addresses.append(address);
+            row[0] = address;
 
             pos++;
 
@@ -187,16 +188,18 @@ SectionList ObjDumper::getSectionList(QString file){
                 }
             }
 
-            hex.append(hexStr);
+            row[1] = hexStr;
 
             pos += 37;
 
-            ascii.append(line.mid(pos).toString());
+            row[2] = line.mid(pos).toString();
+
+            sectionMatrix.append(row);
 
         }
 
         // Insert new section
-        sectionList.insert(sectionName, addresses, hex, ascii);
+        sectionList.insert(sectionName, sectionMatrix);
 
     }
 

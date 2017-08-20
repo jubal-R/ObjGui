@@ -1,7 +1,7 @@
 #include "sectionnode.h"
 
-SectionNode::SectionNode(QString sectionName, QStringList addresses, QStringList hex, QStringList ascii)
-    : section(sectionName, addresses, hex, ascii)
+SectionNode::SectionNode(QString sectionName, QVector< QVector<QString> > contents)
+    : section(sectionName, contents)
 {
     next = NULL;
 }

@@ -7,8 +7,8 @@ SectionList::SectionList()
     length = 0;
 }
 
-void SectionList::insert(QString section, QStringList addresses, QStringList hex, QStringList ascii){
-    SectionNode *newNode = new SectionNode(section, addresses, hex, ascii);
+void SectionList::insert(QString section, QVector< QVector<QString> > contents){
+    SectionNode *newNode = new SectionNode(section, contents);
 
     if (isEmpty()){
         head = newNode;
@@ -58,8 +58,9 @@ Section SectionList::getSection(QString name){
                 return p->getSection();
         }
     }
-    // If not found return empty function
-    Section s("", {}, {}, {});
+    // If not found return empty section
+    QVector< QVector<QString> > empty;
+    Section s("", empty);
     return s;
 }
 
@@ -71,8 +72,9 @@ Section SectionList::getSection(int index){
         }
         return p->getSection();
     }
-    // If not found return empty function
-    Section s("", {}, {}, {});
+    // If not found return empty section
+    QVector< QVector<QString> > empty;
+    Section s("", empty);
     return s;
 }
 

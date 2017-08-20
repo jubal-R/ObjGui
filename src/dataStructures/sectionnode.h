@@ -8,7 +8,7 @@
 class SectionNode
 {
 public:
-    SectionNode(QString sectionName, QStringList addresses, QStringList hex, QStringList ascii);
+    SectionNode(QString sectionName, QVector< QVector<QString> > contents);
     void setNext(SectionNode *n);
     SectionNode* getNext();
     Section getSection();

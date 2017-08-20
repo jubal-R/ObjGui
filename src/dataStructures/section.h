@@ -3,22 +3,24 @@
 
 #include "QString"
 #include "QStringList"
+#include "QVector"
 
 class Section
 {
 public:
     Section();
-    Section(QString section, QStringList addresses, QStringList hex, QStringList ascii);
+    Section(QString section, QVector< QVector<QString> > contents);
     QString getSectionName();
-    QStringList getAddressList();
-    QStringList getHexList();
-    QStringList getAsciiList();
+    int getNumLines();
+    QVector<QString> getLine(int line);
+    QString getHexString();
+    QString getAddressString();
+    QString getAsciiString();
 
 private:
     QString sectionName;
-    QStringList addressList;
-    QStringList hexList;
-    QStringList asciiList;
+    QVector< QVector<QString> > sectionMatrix;
+    int matrixLen;
 };
 
 #endif // SECTION_H

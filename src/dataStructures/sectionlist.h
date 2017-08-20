@@ -8,7 +8,7 @@ class SectionList
 {
 public:
     SectionList();
-    void insert(QString section, QStringList addresses, QStringList hex, QStringList ascii);
+    void insert(QString section, QVector< QVector<QString> > contents);
     bool isEmpty();
     bool containsSection(QString name);
     int getLength();
