@@ -283,19 +283,23 @@ QString ObjDumper::getHeaders(QString file){
 
 QString ObjDumper::getFileFormat(QString file){
     QString header = getDump("-f", file);
-    // Extract file format from header
-    int i = 0;
-    int newlineCount = 0;
-    while (i < header.length() && newlineCount < 2){
-        if (header.at(i) == QChar('\n'))
-            newlineCount++;
-        i++;
-    }
-    i-=2;
     QString fileFormat = "";
-    while (i >= 0 && header.at(i) != QChar(' ')) {
-        fileFormat.prepend(header.at(i));
-        i--;
+
+    if (!header.contains("File format not recognized")){
+        // Extract file format from header
+        int i = 0;
+        int newlineCount = 0;
+        while (i < header.length() && newlineCount < 2){
+            if (header.at(i) == QChar('\n'))
+                newlineCount++;
+            i++;
+        }
+
+        i-=2;
+        while (i >= 0 && header.at(i) != QChar(' ')) {
+            fileFormat.prepend(header.at(i));
+            i--;
+        }
     }
 
     return fileFormat;
