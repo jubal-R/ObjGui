@@ -1,5 +1,4 @@
 #include "functionnode.h"
-#include "function.h"
 
 //Function function;
 

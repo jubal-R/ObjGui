@@ -2,7 +2,6 @@
 #define SECTION_H
 
 #include "QString"
-#include "QStringList"
 #include "QVector"
 
 class Section

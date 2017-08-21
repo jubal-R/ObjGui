@@ -1,9 +1,6 @@
 #ifndef OBJDUMPER_H
 #define OBJDUMPER_H
 
-#include "QString"
-#include "QStringList"
-#include "QList"
 #include "dataStructures/functionlist.h"
 #include "dataStructures/sectionlist.h"
 

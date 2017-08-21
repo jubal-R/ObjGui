@@ -5,14 +5,8 @@
 #include "QScrollBar"
 #include "QSettings"
 #include "QInputDialog"
-#include "QProgressDialog"
-#include "QVector"
-
-// For debugging
-#include "iostream"
 
 #include "files.h"
-#include "dataStructures/functionlist.h"
 #include "disassemblyhighlighter.h"
 #include "objdumper.h"
 #include "ui_loadingdialog.h"

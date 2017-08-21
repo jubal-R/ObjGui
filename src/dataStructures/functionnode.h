@@ -2,7 +2,6 @@
 #define FUNCTIONNODE_H
 
 #include "function.h"
-#include "QString"
 
 class FunctionNode
 {

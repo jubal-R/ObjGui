@@ -1,7 +1,6 @@
 #ifndef SECTIONLIST_H
 #define SECTIONLIST_H
 
-#include "section.h"
 #include "sectionnode.h"
 
 class SectionList

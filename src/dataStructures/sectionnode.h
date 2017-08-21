@@ -2,8 +2,6 @@
 #define SECTIONNODE_H
 
 #include "section.h"
-#include "QString"
-#include "QStringList"
 
 class SectionNode
 {

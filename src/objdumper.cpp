@@ -1,15 +1,9 @@
 #include "objdumper.h"
-#include "dataStructures/function.h"
-#include "dataStructures/functionlist.h"
-#include "QString"
 #include "QVector"
 #include "QStringRef"
 #include <stdlib.h>
 #include <fstream>
-#include <iostream>
 #include <sstream>
-
-using namespace std;
 
 ObjDumper::ObjDumper()
 {
@@ -26,17 +20,17 @@ ObjDumper::ObjDumper()
 
 // Runs objdump given arguments and file then returns outout
 QString ObjDumper::getDump(QString args, QString file){
-    ostringstream oss;
+    std::ostringstream oss;
     FILE *in;
     char buff[100];
-    string objdumpStr;
+    std::string objdumpStr;
 
     if (useCustomBinary && objdumpBinary != "")
         objdumpStr = objdumpBinary.toStdString();
     else
         objdumpStr = "objdump";
 
-    string cmd = "\"" + objdumpStr + "\" "  + target.toStdString() + " " + args.toStdString() + " \"" + file.toStdString() + "\" 2>&1";
+    std::string cmd = "\"" + objdumpStr + "\" "  + target.toStdString() + " " + args.toStdString() + " \"" + file.toStdString() + "\" 2>&1";
 
     try{
         if(!(in = popen(cmd.c_str(),"r") )){

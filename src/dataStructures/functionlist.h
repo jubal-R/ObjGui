@@ -2,8 +2,6 @@
 #define FUNCTIONLIST_H
 
 #include "functionnode.h"
-#include "function.h"
-#include "QStringList"
 
 class FunctionList
 {

@@ -1,5 +1,4 @@
 #include "function.h"
-#include "QVector"
 
 /*
  * Function contents stored in a matrix where each row is a line of output.
