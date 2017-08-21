@@ -313,10 +313,10 @@ QString ObjDumper::parseDumpForErrors(QString dump){
     } else if (dump.contains("File format not recognized")){
         return "format not recognized";
     }else if (dump.contains("File format is ambiguous")){
-        QStringList dumpList = dump.split(":");
+        QVector<QStringRef> dumpList = dump.splitRef(":");
         if (dumpList.length() == 5){
             // returns "Matching formats:[format1] [format2] [format3]..."
-            return dumpList.at(3) + ":" + dumpList.at(4);
+            return dumpList.at(3).toString() + ":" + dumpList.at(4).toString();
         }
     }
 
