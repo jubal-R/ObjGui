@@ -13,7 +13,7 @@
 
 #include "files.h"
 #include "dataStructures/functionlist.h"
-#include "highlighter.h"
+#include "disassemblyhighlighter.h"
 #include "objdumper.h"
 #include "ui_loadingdialog.h"
 
@@ -24,7 +24,7 @@ FunctionList functionList;
 SectionList sectionList;
 QSettings settings;
 ObjDumper objDumper;
-Highlighter *disHighlighter = NULL;
+DisassemblyHighlighter *disHighlighter = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -136,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent) :
             "QMenuBar {border-bottom: 1px solid #cccccc;}";
     ui->menuBar->setStyleSheet(menuStyle);
 
-    disHighlighter = new Highlighter("dis", "default", ui->codeBrowser->document());
+    disHighlighter = new DisassemblyHighlighter(ui->codeBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
