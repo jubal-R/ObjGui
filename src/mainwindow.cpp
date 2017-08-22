@@ -418,6 +418,7 @@ void MainWindow::on_syntaxComboBox_currentIndexChanged(int index)
 void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 {
     displayFunctionText(item->text());
+    ui->tabWidget->setCurrentIndex(0);
 }
 
 
