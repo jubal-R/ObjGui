@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->headersLabel->setFont(sans);
     ui->functionListLabel->setFont(sans);
     ui->functionList->setFont(sans);
+    ui->customBinaryButton->setFont(sans);
 
     // Sans serif bold
     int sansBoldId = QFontDatabase::addApplicationFont(":/fonts/NotoSans-Bold.ttf");
@@ -123,10 +124,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Style
     QString tabWidgetStyle = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
-          "QTabBar::tab {background-color: #fafafa; min-width: 80px;}"
+          "QTabBar::tab {background-color: #E0E0E0; min-width: 80px;}"
           "QTabWidget::tab-bar {left: 5px;}"
           "QTabWidget::pane {border: none;}"
-          "QTextBrowser {border: 2px soild red;}"
           "QComboBox {background-color: #fafafa; color: #555555;}";
     ui->tabWidget->setStyleSheet(tabWidgetStyle);
     QString menuStyle = "QMenu::item:selected {background-color: #3ba1a1; color: #fafafa;}"
@@ -285,7 +285,7 @@ void MainWindow::on_actionOpen_triggered()
 
 //  Highlight Current Line
 void MainWindow::highlightCurrentLine(){
-   QColor lineColor = QColor(215, 215, 215);
+   QColor lineColor = QColor(215,215,215);
 
    QList<QTextEdit::ExtraSelection> extraSelections;
 
