@@ -348,7 +348,7 @@ border-top: 1px solid #d4d4d4;</string>
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>Address:</string>
+                 <string>ADDRESS:</string>
                 </property>
                </widget>
               </item>
@@ -388,7 +388,7 @@ border-top: 1px solid #d4d4d4;</string>
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>File Offset:</string>
+                 <string>FILE OFFSET:</string>
                 </property>
                </widget>
               </item>
@@ -411,7 +411,7 @@ border-top: 1px solid #d4d4d4;</string>
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>Section:</string>
+                 <string>SECTION:</string>
                 </property>
                </widget>
               </item>
@@ -478,21 +478,21 @@ color: rgb(85, 85, 85);</string>
             <item row="0" column="0">
              <widget class="QLabel" name="hexAddressLabel">
               <property name="text">
-               <string>Address</string>
+               <string>ADDRESS</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
              <widget class="QLabel" name="hexLabel">
               <property name="text">
-               <string>Hex</string>
+               <string>HEX</string>
               </property>
              </widget>
             </item>
             <item row="0" column="2">
              <widget class="QLabel" name="asciiLabel">
               <property name="text">
-               <string>Ascii</string>
+               <string>ASCII</string>
               </property>
              </widget>
             </item>
@@ -596,7 +596,7 @@ color: rgb(85, 85, 85);</string>
             <property name="spacing">
              <number>1</number>
             </property>
-            <item row="0" column="0">
+            <item row="2" column="0">
              <widget class="QPlainTextEdit" name="symbolsBrowser">
               <property name="font">
                <font>
@@ -616,6 +616,13 @@ color: rgb(85, 85, 85);</string>
               </property>
               <property name="readOnly">
                <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="symbolsTableLabel">
+              <property name="text">
+               <string>DYNAMIC SYMBOL TABLE</string>
               </property>
              </widget>
             </item>
@@ -644,7 +651,7 @@ color: rgb(85, 85, 85);</string>
             <property name="spacing">
              <number>1</number>
             </property>
-            <item row="0" column="0">
+            <item row="1" column="0">
              <widget class="QPlainTextEdit" name="relocationsBrowser">
               <property name="font">
                <font>
@@ -664,6 +671,13 @@ color: rgb(85, 85, 85)</string>
               </property>
               <property name="readOnly">
                <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="relocationsLabel">
+              <property name="text">
+               <string>DYNAMIC RELOCATION RECORDS</string>
               </property>
              </widget>
             </item>

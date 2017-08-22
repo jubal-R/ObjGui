@@ -68,6 +68,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->hexAddressLabel->setFont(sansBold);
     ui->hexLabel->setFont(sansBold);
     ui->asciiLabel->setFont(sansBold);
+    ui->symbolsTableLabel->setFont(sansBold);
+    ui->relocationsLabel->setFont(sansBold);
 
     // Monospace
     int monoid = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro.ttf");

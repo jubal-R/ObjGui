@@ -259,12 +259,12 @@ QString ObjDumper::getDisassembly(QString file){
 
 QString ObjDumper::getSymbolsTable(QString file){
     QString symbolsTable = getDump(optionalFlags + " -T", file);
-    return removeHeading(symbolsTable, 3);
+    return removeHeading(symbolsTable, 4);
 }
 
 QString ObjDumper::getRelocationEntries(QString file){
     QString relocationEntries = getDump(optionalFlags + " -R", file);
-    return removeHeading(relocationEntries, 3);
+    return removeHeading(relocationEntries, 4);
 }
 
 QString ObjDumper::getContents(QString file){
