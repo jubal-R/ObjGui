@@ -1,5 +1,4 @@
 #include <QtGui>
-
 #include "disassemblyhighlighter.h"
 
 DisassemblyHighlighter::DisassemblyHighlighter(QTextDocument *parent)

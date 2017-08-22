@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1143</width>
-    <height>575</height>
+    <width>1198</width>
+    <height>624</height>
    </rect>
   </property>
   <property name="font">
@@ -732,6 +732,13 @@ color: rgb(85, 85, 85);</string>
             <property name="topMargin">
              <number>15</number>
             </property>
+            <item row="1" column="1" colspan="3">
+             <widget class="QLineEdit" name="customBinaryLineEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
             <item row="1" column="0">
              <widget class="QCheckBox" name="customBinaryCheckBox">
               <property name="text">
@@ -799,6 +806,26 @@ color: rgb(85, 85, 85);</string>
               </property>
              </widget>
             </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="syntaxComboBox">
+              <property name="maximumSize">
+               <size>
+                <width>75</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>intel</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>att</string>
+               </property>
+              </item>
+             </widget>
+            </item>
             <item row="5" column="2">
              <widget class="QCheckBox" name="archiveHeadersCheckBox">
               <property name="maximumSize">
@@ -823,26 +850,6 @@ color: rgb(85, 85, 85);</string>
               <property name="text">
                <string>demangle</string>
               </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QComboBox" name="syntaxComboBox">
-              <property name="maximumSize">
-               <size>
-                <width>75</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <item>
-               <property name="text">
-                <string>intel</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>att</string>
-               </property>
-              </item>
              </widget>
             </item>
             <item row="3" column="0">
@@ -887,13 +894,6 @@ color: rgb(85, 85, 85);</string>
               </property>
               <property name="text">
                <string>all-headers</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" colspan="3">
-             <widget class="QLineEdit" name="customBinaryLineEdit">
-              <property name="readOnly">
-               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -942,19 +942,6 @@ color: rgb(85, 85, 85);</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="4">
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
             <item row="6" column="0">
              <spacer name="verticalSpacer">
               <property name="orientation">
@@ -967,6 +954,19 @@ color: rgb(85, 85, 85);</string>
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="5" column="5">
+             <widget class="QCheckBox" name="sectionHeadersCheckbox">
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>section-headers</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -983,7 +983,7 @@ color: rgb(85, 85, 85);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1143</width>
+     <width>1198</width>
      <height>28</height>
     </rect>
    </property>

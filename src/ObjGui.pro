@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     dataStructures/section.cpp \
     dataStructures/sectionlist.cpp \
     dataStructures/sectionnode.cpp \
-    disassemblyhighlighter.cpp
+    highlighters/disassemblyhighlighter.cpp \
+    highlighters/headerhighlighter.cpp
 
 HEADERS  += mainwindow.h \
     files.h \
@@ -33,7 +34,8 @@ HEADERS  += mainwindow.h \
     dataStructures/section.h \
     dataStructures/sectionlist.h \
     dataStructures/sectionnode.h \
-    disassemblyhighlighter.h
+    highlighters/disassemblyhighlighter.h \
+    highlighters/headerhighlighter.h
 
 FORMS    += mainwindow.ui \
     loadingdialog.ui

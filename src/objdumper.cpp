@@ -12,7 +12,7 @@ ObjDumper::ObjDumper()
     objdumpBinary = "objdump";
     outputSyntax = "intel";
     disassemblyFlag = "-d";
-    headerFlags = "-x";
+    headerFlags = "-a -f -p -h";
     optionalFlags = "";
     target = "";
     insnwidth = 10;

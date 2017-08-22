@@ -7,7 +7,8 @@
 #include "QInputDialog"
 
 #include "files.h"
-#include "disassemblyhighlighter.h"
+#include "highlighters/disassemblyhighlighter.h"
+#include "highlighters/headerhighlighter.h"
 #include "objdumper.h"
 #include "ui_loadingdialog.h"
 
@@ -19,6 +20,7 @@ SectionList sectionList;
 QSettings settings;
 ObjDumper objDumper;
 DisassemblyHighlighter *disHighlighter = NULL;
+HeaderHighlighter *headerHighlighter = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -131,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->menuBar->setStyleSheet(menuStyle);
 
     disHighlighter = new DisassemblyHighlighter(ui->codeBrowser->document());
+    headerHighlighter = new HeaderHighlighter(ui->headersBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
@@ -421,56 +424,65 @@ void MainWindow::on_disassemblyFlagcheckBox_toggled(bool checked)
 void MainWindow::on_allHeadersCheckBox_toggled(bool checked)
 {
     if (checked){
-        objDumper.setHeaderFlags("-x");
         // Check all boxes
         ui->archiveHeadersCheckBox->setChecked(true);
         ui->fileHeadersCheckBox->setChecked(true);
         ui->privateHeadersCheckBox->setChecked(true);
+        ui->sectionHeadersCheckbox->setChecked(true);
         // Disable other options
         ui->archiveHeadersCheckBox->setEnabled(false);
         ui->fileHeadersCheckBox->setEnabled(false);
         ui->privateHeadersCheckBox->setEnabled(false);
+        ui->sectionHeadersCheckbox->setEnabled(false);
     } else {
         // Re-enble other options
         ui->archiveHeadersCheckBox->setEnabled(true);
         ui->fileHeadersCheckBox->setEnabled(true);
         ui->privateHeadersCheckBox->setEnabled(true);
+        ui->sectionHeadersCheckbox->setEnabled(true);
     }
+    objDumper.setHeaderFlags(getHeaderFlags());
 }
 
 QString MainWindow::getHeaderFlags(){
     QString flags = "";
-    if (!ui->allHeadersCheckBox->isChecked()){
-        if (ui->archiveHeadersCheckBox->isChecked())
-            flags.append("-a ");
-        if (ui->fileHeadersCheckBox->isChecked())
-            flags.append("-f ");
-        if (ui->privateHeadersCheckBox->isChecked())
-            flags.append("-p ");
 
-        return flags;
-    } else {
-        return "-x";
-    }
+    if (ui->archiveHeadersCheckBox->isChecked())
+        flags.append("-a ");
+    if (ui->fileHeadersCheckBox->isChecked())
+        flags.append("-f ");
+    if (ui->privateHeadersCheckBox->isChecked())
+        flags.append("-p ");
+    if (ui->sectionHeadersCheckbox->isChecked())
+        flags.append("-h ");
+
+    return flags;
 }
 
-void MainWindow::on_archiveHeadersCheckBox_toggled(bool checked)
+void MainWindow::on_archiveHeadersCheckBox_clicked()
 {
     if (!ui->allHeadersCheckBox->isChecked())
         objDumper.setHeaderFlags(getHeaderFlags());
 }
 
-void MainWindow::on_fileHeadersCheckBox_toggled(bool checked)
+void MainWindow::on_fileHeadersCheckBox_clicked()
 {
     if (!ui->allHeadersCheckBox->isChecked())
         objDumper.setHeaderFlags(getHeaderFlags());
 }
 
-void MainWindow::on_privateHeadersCheckBox_toggled(bool checked)
+void MainWindow::on_privateHeadersCheckBox_clicked()
 {
     if (!ui->allHeadersCheckBox->isChecked())
         objDumper.setHeaderFlags(getHeaderFlags());
 }
+
+void MainWindow::on_sectionHeadersCheckbox_clicked()
+{
+    if (!ui->allHeadersCheckBox->isChecked())
+        objDumper.setHeaderFlags(getHeaderFlags());
+}
+
 
 void MainWindow::on_checkBox_toggled(bool checked)
 {

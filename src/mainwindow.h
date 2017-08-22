@@ -49,18 +49,19 @@ private slots:
 
     void on_allHeadersCheckBox_toggled(bool checked);
 
-    void on_archiveHeadersCheckBox_toggled(bool checked);
-
-    void on_fileHeadersCheckBox_toggled(bool checked);
-
-    void on_privateHeadersCheckBox_toggled(bool checked);
-
     void on_checkBox_toggled(bool checked);
 
     void on_customBinaryButton_clicked();
 
     void on_customBinaryCheckBox_toggled(bool checked);
 
+    void on_archiveHeadersCheckBox_clicked();
+
+    void on_fileHeadersCheckBox_clicked();
+
+    void on_privateHeadersCheckBox_clicked();
+
+    void on_sectionHeadersCheckbox_clicked();
 
 private:
     Ui::MainWindow *ui;
