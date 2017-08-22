@@ -8,6 +8,7 @@
 
 #include "files.h"
 #include "highlighters/disassemblyhighlighter.h"
+#include "highlighters/sectionhighlighter.h"
 #include "highlighters/headerhighlighter.h"
 #include "objdumper.h"
 #include "ui_loadingdialog.h"
@@ -20,6 +21,7 @@ SectionList sectionList;
 QSettings settings;
 ObjDumper objDumper;
 DisassemblyHighlighter *disHighlighter = NULL;
+SectionHighlighter *sectionHighlighter = NULL;
 HeaderHighlighter *headerHighlighter = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -135,6 +137,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->menuBar->setStyleSheet(menuStyle);
 
     disHighlighter = new DisassemblyHighlighter(ui->codeBrowser->document());
+    sectionHighlighter = new SectionHighlighter(ui->hexBrowser->document());
     headerHighlighter = new HeaderHighlighter(ui->headersBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
@@ -232,16 +235,20 @@ void MainWindow::open(QString file){
         // Get section list and set hex values
         sectionList = objDumper.getSectionList(file);
         int len = sectionList.getLength();
+        QString addressStr;
+        QString hexStr;
+        QString asciiStr;
         setUpdatesEnabled(false);
         for (int i = 1; i < len; i++){
             Section section = sectionList.getSection(i);
 
-            ui->hexBrowser->appendHtml("<b><font color=#555555>" + section.getSectionName() + "</font></b><br>");
-            ui->hexAddressBrowser->insertPlainText("\n" + section.getAddressString() + "\n\n");
-            ui->hexBrowser->insertPlainText(section.getHexString() + "\n");
-            ui->asciiBrowser->insertPlainText("\n" + section.getAsciiString() + "\n\n");
+            addressStr.append("\n" + section.getAddressString() + "\n");
+            hexStr.append(section.getSectionName() + "\n" + section.getHexString() + "\n");
+            asciiStr.append("\n" + section.getAsciiString() + "\n");
         }
-        ui->hexBrowser->insertPlainText("\n");  // Append additional newline to make even with other browsers
+        ui->hexAddressBrowser->setPlainText(addressStr);
+        ui->hexBrowser->setPlainText(hexStr);
+        ui->asciiBrowser->setPlainText(asciiStr);
         setUpdatesEnabled(true);
 
         // Set file format value in statusbar

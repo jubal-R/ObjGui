@@ -1,14 +1,14 @@
-#ifndef HEADERHIGHLIGHTER_H
-#define HEADERHIGHLIGHTER_H
+#ifndef SECTIONHIGHLIGHTER_H
+#define SECTIONHIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
 
 class QTextDocument;
 
-class HeaderHighlighter : public QSyntaxHighlighter
+class SectionHighlighter : public QSyntaxHighlighter
 {
 public:
-    HeaderHighlighter(QTextDocument *parent = 0);
+    SectionHighlighter(QTextDocument *parent = 0);
 
 protected:
     void highlightBlock(const QString &text);
@@ -21,10 +21,9 @@ private:
     };
     QVector<HighlightingRule> highlightingRules;
 
-    QTextCharFormat labelFormat;
-    QTextCharFormat numberFormat;
+    QTextCharFormat sectionFormat;
 
-    QColor numColor;
+    QColor sectionColor;
 };
 
-#endif // HEADERHIGHLIGHTER_H
+#endif // SECTIONHIGHLIGHTER_H
