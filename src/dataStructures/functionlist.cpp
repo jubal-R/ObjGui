@@ -93,6 +93,53 @@ QStringList FunctionList::getFunctionNames(){
     return functionNames;
 }
 
+QVector<int> FunctionList::getAddressLocation(QString targetAddress){
+    QVector<int> location(2);
+
+    // Search each function
+    for (int functionIndex = 0; functionIndex < length; functionIndex++){
+        Function function = getFunction(functionIndex);
+
+        // Check if matrix is empty
+        if (function.getMatrixLen() > 0){
+            // Binary search
+            int upperLimit = function.getMatrixLen() - 1;
+            int lowerLimit = 0;
+            int currentIndex = upperLimit / 2;
+
+            while (lowerLimit != upperLimit){
+                QString currentAddress = function.getAddressAt(currentIndex);
+
+                if (currentAddress == targetAddress){
+                    location[0] = functionIndex;
+                    location[1] = currentIndex;
+                    return location;
+                } else if (targetAddress < currentAddress){
+                    upperLimit = currentIndex - 1;
+                    currentIndex = (upperLimit + lowerLimit) / 2;
+                } else{
+                    lowerLimit = currentIndex + 1;
+                    currentIndex = (upperLimit + lowerLimit) / 2;
+                }
+
+            }
+            // Final check
+            if (function.getAddressAt(currentIndex) == targetAddress){
+                location[0] = functionIndex;
+                location[1] = currentIndex;
+                return location;
+            }
+        }
+
+
+    }
+
+    // If not found return [-1,-1]
+    location[0],location[1] = -1;
+
+    return location;
+}
+
 
 void FunctionList::setErrorMsg(QString msg){
     errorMsg = msg;

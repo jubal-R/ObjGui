@@ -27,6 +27,8 @@ private slots:
 
     void displayFunctionText(QString functionName);
 
+    void displayFunctionText(int functionIndex);
+
     void displayFunctionData();
 
     void on_actionProject_triggered();
@@ -62,6 +64,8 @@ private slots:
     void on_privateHeadersCheckBox_clicked();
 
     void on_sectionHeadersCheckbox_clicked();
+
+    void on_actionGo_To_Address_triggered();
 
 private:
     Ui::MainWindow *ui;

@@ -17,6 +17,7 @@ public:
     Function getFunction(int index);
     QStringList getFunctionNames();
     QString getErrorMsg();
+    QVector<int> getAddressLocation(QString targetAddress);
 private:
     FunctionNode *head;
     FunctionNode *tail;

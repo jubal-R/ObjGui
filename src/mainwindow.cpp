@@ -6,6 +6,8 @@
 #include "QSettings"
 #include "QInputDialog"
 
+#include "QDebug"
+
 #include "files.h"
 #include "highlighters/disassemblyhighlighter.h"
 #include "highlighters/sectionhighlighter.h"
@@ -320,6 +322,19 @@ void MainWindow::displayFunctionText(QString functionName){
     }
 }
 
+void MainWindow::displayFunctionText(int functionIndex){
+    if (!functionList.isEmpty()){
+        Function function = functionList.getFunction(functionIndex);
+        setUpdatesEnabled(false);
+        ui->addressValueLabel->setText(function.getAddress());
+        ui->fileOffsetValueLabel->setText(function.getFileOffset());
+        ui->functionLabel->setText(function.getName());
+        ui->sectionValueLabel->setText(function.getSection());
+        ui->codeBrowser->setPlainText(function.getContents());
+        setUpdatesEnabled(true);
+    }
+}
+
 void MainWindow::displayFunctionData(){
     if (!functionList.isEmpty()){
         // Populate function/section list in sidebar
@@ -524,4 +539,30 @@ void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
         settings.setValue("useCustomBinary", false);
         objDumper.setUseCustomBinary(false);
     }
+}
+
+void MainWindow::on_actionGo_To_Address_triggered()
+{
+    bool ok =true;
+
+    QString targetAddress = QInputDialog::getText(this, tr("Go to Address"),tr("Go to Address:"), QLineEdit::Normal,"", &ok).trimmed();
+
+    if (targetAddress != ""){
+        // Find address index
+        QVector<int> location = functionList.getAddressLocation(targetAddress);
+
+        // Check if address was found
+        if(location[0] > 0){
+            // Display function
+            displayFunctionText(location[0]);
+            ui->functionList->setCurrentRow(location[0]);
+            // Go to Line
+            QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(location[1]));
+            ui->codeBrowser->setTextCursor(cursor);
+
+        } else {
+            QMessageBox::information(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);
+        }
+    }
+
 }

@@ -42,7 +42,13 @@ QString Function::getContents(){
     return contents;
 }
 
-//Get Values
+QString Function::getAddressAt(int index){
+    return functionMatrix.at(index)[0];
+}
+
+int Function::getMatrixLen(){
+    return matrixLen;
+}
 
 QString Function::getName(){
     return name;

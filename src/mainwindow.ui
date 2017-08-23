@@ -1059,7 +1059,7 @@ padding: 3px;</string>
     <property name="title">
      <string>Search</string>
     </property>
-    <addaction name="actionFind"/>
+    <addaction name="actionGo_To_Address"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -1136,6 +1136,14 @@ padding: 3px;</string>
   <action name="actionDisassemble_all_D">
    <property name="text">
     <string>disassemble-all -D</string>
+   </property>
+  </action>
+  <action name="actionGo_To_Address">
+   <property name="text">
+    <string>Go to Address</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
  </widget>
