@@ -144,6 +144,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
+    currentFunctionIndex = 0;
+
 }
 
 MainWindow::~MainWindow()
@@ -319,6 +321,11 @@ void MainWindow::displayFunctionText(QString functionName){
         ui->sectionValueLabel->setText(function.getSection());
         ui->codeBrowser->setPlainText(function.getContents());
         setUpdatesEnabled(true);
+
+        int index = functionList.getFunctionIndex(functionName);
+        if (index >= 0){
+            currentFunctionIndex = index;
+        }
     }
 }
 
@@ -332,6 +339,8 @@ void MainWindow::displayFunctionText(int functionIndex){
         ui->sectionValueLabel->setText(function.getSection());
         ui->codeBrowser->setPlainText(function.getContents());
         setUpdatesEnabled(true);
+
+        currentFunctionIndex = functionIndex;
     }
 }
 
@@ -553,12 +562,16 @@ void MainWindow::on_actionGo_To_Address_triggered()
 
         // Check if address was found
         if(location[0] > 0){
+            setUpdatesEnabled(false);
             // Display function
-            displayFunctionText(location[0]);
-            ui->functionList->setCurrentRow(location[0]);
+            if (location[0] != currentFunctionIndex){
+                displayFunctionText(location[0]);
+                ui->functionList->setCurrentRow(location[0]);
+            }
             // Go to Line
             QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(location[1]));
             ui->codeBrowser->setTextCursor(cursor);
+            setUpdatesEnabled(true);
 
         } else {
             QMessageBox::information(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);

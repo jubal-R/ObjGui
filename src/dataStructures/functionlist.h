@@ -15,6 +15,7 @@ public:
     bool successfullyCreated();
     Function getFunction(QString name);
     Function getFunction(int index);
+    int getFunctionIndex(QString functionName);
     QStringList getFunctionNames();
     QString getErrorMsg();
     QVector<int> getAddressLocation(QString targetAddress);

@@ -79,6 +79,24 @@ Function FunctionList::getFunction(int index){
     return f;
 }
 
+int FunctionList::getFunctionIndex(QString functionName){
+    if (!isEmpty()){
+        int counter = 0;
+        if (head->getFunction().getName() == functionName)
+            return counter;
+
+        FunctionNode *p = head;
+        while (p->getNext() != NULL){
+            p = p->getNext();
+            counter++;
+            if (p->getFunction().getName() == functionName)
+                return counter;
+        }
+    }
+    // If not found return -1
+    return -1;
+}
+
 QStringList FunctionList::getFunctionNames(){
     QStringList functionNames;
     if (!isEmpty()){

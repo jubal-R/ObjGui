@@ -69,6 +69,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    int currentFunctionIndex;
 };
 
 #endif // MAINWINDOW_H
