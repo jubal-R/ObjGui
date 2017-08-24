@@ -8,17 +8,17 @@ class Section
 {
 public:
     Section();
-    Section(QString section, QVector< QVector<QString> > contents);
+    Section(QString section, QVector< QVector<QByteArray> > contents);
     QString getSectionName();
     int getNumLines();
-    QVector<QString> getLine(int line);
-    QString getHexString();
-    QString getAddressString();
-    QString getAsciiString();
+    QVector<QByteArray> getLine(int line);
+    QByteArray getHexString();
+    QByteArray getAddressString();
+    QByteArray getAsciiString();
 
 private:
     QString sectionName;
-    QVector< QVector<QString> > sectionMatrix;
+    QVector< QVector<QByteArray> > sectionMatrix;
     int matrixLen;
 };
 

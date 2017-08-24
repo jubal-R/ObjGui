@@ -6,7 +6,7 @@
 class SectionNode
 {
 public:
-    SectionNode(QString sectionName, QVector< QVector<QString> > contents);
+    SectionNode(QString sectionName, QVector< QVector<QByteArray> > contents);
     void setNext(SectionNode *n);
     SectionNode* getNext();
     Section getSection();

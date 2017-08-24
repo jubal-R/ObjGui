@@ -7,8 +7,9 @@ class FunctionList
 {
 public:
     FunctionList();
-    void insert(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QString> > contents);
+    void insert(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QByteArray> > contents);
     void setErrorMsg(QString msg);
+    void nukeList();
     int getLength();
     bool isEmpty();
     bool containsFunction(QString name);

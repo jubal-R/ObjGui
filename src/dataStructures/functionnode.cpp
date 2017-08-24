@@ -2,7 +2,7 @@
 
 //Function function;
 
-FunctionNode::FunctionNode(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QString> > contents)
+FunctionNode::FunctionNode(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QByteArray> > contents)
     : function(name, address, section, fileOffset, contents)
 {
     next = NULL;

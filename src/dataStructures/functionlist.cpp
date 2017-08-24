@@ -8,7 +8,7 @@ FunctionList::FunctionList()
     errorMsg = "";
 }
 
-void FunctionList::insert(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QString> > contents){
+void FunctionList::insert(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QByteArray> > contents){
     FunctionNode *newNode = new FunctionNode(name, address, section, fileOffset, contents);
 
     if (isEmpty()){
@@ -19,6 +19,27 @@ void FunctionList::insert(QString name, QString address, QString section, QStrin
         tail = tail->getNext();
     }
     length++;
+}
+
+// Deletes all nodes in the list
+void FunctionList::nukeList(){
+    if (!isEmpty()){
+        FunctionNode *current = head;
+        FunctionNode *prev = head;
+
+        while(current->getNext() != NULL){
+            current = current->getNext();
+            delete prev;
+            prev = current;
+        }
+        delete current;
+
+        head = NULL;
+        tail = NULL;
+        length = 0;
+        errorMsg = "";
+
+    }
 }
 
 bool FunctionList::isEmpty(){
@@ -60,7 +81,7 @@ Function FunctionList::getFunction(QString name){
         }
     }
     // If not found return empty function
-    QVector< QVector<QString> > empty;
+    QVector< QVector<QByteArray> > empty;
     Function f("", "", "", "", empty);
     return f;
 }
@@ -74,7 +95,7 @@ Function FunctionList::getFunction(int index){
         return p->getFunction();
     }
     // If not found return empty function
-    QVector< QVector<QString> > empty;
+    QVector< QVector<QByteArray> > empty;
     Function f("", "", "", "", empty);
     return f;
 }
@@ -174,3 +195,5 @@ bool FunctionList::successfullyCreated(){
     else
         return false;
 }
+
+

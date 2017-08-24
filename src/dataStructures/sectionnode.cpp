@@ -1,6 +1,6 @@
 #include "sectionnode.h"
 
-SectionNode::SectionNode(QString sectionName, QVector< QVector<QString> > contents)
+SectionNode::SectionNode(QString sectionName, QVector< QVector<QByteArray> > contents)
     : section(sectionName, contents)
 {
     next = NULL;

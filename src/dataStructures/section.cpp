@@ -15,7 +15,7 @@ Section::Section()
 
 }
 
-Section::Section(QString section, QVector< QVector<QString> > contents){
+Section::Section(QString section, QVector< QVector<QByteArray> > contents){
     sectionName = section;
     sectionMatrix = contents;
     matrixLen = sectionMatrix.length();
@@ -30,13 +30,13 @@ int Section::getNumLines(){
 }
 
 // Return a line(row) from the matrix
-QVector<QString> Section::getLine(int line){
+QVector<QByteArray> Section::getLine(int line){
     return sectionMatrix.at(line);
 }
 
 // Get a string of all hex values seperated by line breaks
-QString Section::getHexString(){
-    QString hexStr = "";
+QByteArray Section::getHexString(){
+    QByteArray hexStr;
     for (int i = 0; i < matrixLen; i++){
         hexStr.append(sectionMatrix.at(i)[1] + "\n");
     }
@@ -45,8 +45,8 @@ QString Section::getHexString(){
 }
 
 // Get a string of all address values seperated by line breaks
-QString Section::getAddressString(){
-    QString addrStr = "";
+QByteArray Section::getAddressString(){
+    QByteArray addrStr = "";
     for (int i = 0; i < matrixLen; i++){
         addrStr.append(sectionMatrix.at(i)[0] + "\n");
     }
@@ -55,8 +55,8 @@ QString Section::getAddressString(){
 }
 
 // Get a string of all ascii values seperated by line breaks
-QString Section::getAsciiString(){
-    QString asciiStr = "";
+QByteArray Section::getAsciiString(){
+    QByteArray asciiStr = "";
     for (int i = 0; i < matrixLen; i++){
         asciiStr.append(sectionMatrix.at(i)[2] + "\n");
     }

@@ -8,21 +8,21 @@ class Function
 {
 public:
     Function();
-    Function(QString functionName, QString addr, QString section, QString offset, QVector< QVector<QString> > contents);
+    Function(QString functionName, QString addr, QString section, QString offset, QVector< QVector<QByteArray> > contents);
     int getMatrixLen();
     QString getName();
     QString getAddress();
     QString getSection();
     QString getFileOffset();
     QString getAddressAt(int index);
-    QVector<QString> getLine(int line);
-    QString getContents();
+    QVector<QByteArray> getLine(int line);
+    QByteArray getContents();
 private:
     QString name;
     QString address;
     QString section;
     QString fileOffset;
-    QVector< QVector<QString> > functionMatrix;
+    QVector< QVector<QByteArray> > functionMatrix;
     int matrixLen;
 
 };

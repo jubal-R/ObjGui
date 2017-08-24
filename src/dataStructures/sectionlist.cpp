@@ -7,7 +7,7 @@ SectionList::SectionList()
     length = 0;
 }
 
-void SectionList::insert(QString section, QVector< QVector<QString> > contents){
+void SectionList::insert(QString section, QVector< QVector<QByteArray> > contents){
     SectionNode *newNode = new SectionNode(section, contents);
 
     if (isEmpty()){
@@ -18,6 +18,25 @@ void SectionList::insert(QString section, QVector< QVector<QString> > contents){
         tail = tail->getNext();
     }
     length++;
+}
+
+void SectionList::nukeList(){
+    if (!isEmpty()){
+        SectionNode *current = head;
+        SectionNode *prev = head;
+
+        while(current->getNext() != NULL){
+            current = current->getNext();
+            delete prev;
+            prev = current;
+        }
+        delete current;
+
+        head = NULL;
+        tail = NULL;
+        length = 0;
+
+    }
 }
 
 bool SectionList::isEmpty(){
@@ -59,7 +78,7 @@ Section SectionList::getSection(QString name){
         }
     }
     // If not found return empty section
-    QVector< QVector<QString> > empty;
+    QVector< QVector<QByteArray> > empty;
     Section s("", empty);
     return s;
 }
@@ -73,7 +92,7 @@ Section SectionList::getSection(int index){
         return p->getSection();
     }
     // If not found return empty section
-    QVector< QVector<QString> > empty;
+    QVector< QVector<QByteArray> > empty;
     Section s("", empty);
     return s;
 }

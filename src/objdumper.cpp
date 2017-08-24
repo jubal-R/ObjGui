@@ -100,7 +100,7 @@ FunctionList ObjDumper::getFunctionList(QString file){
             QString name = "";
             QString address = "";
             QString fileOffest = "";
-            QVector< QVector<QString> > functionMatrix;
+            QVector< QVector<QByteArray> > functionMatrix;
 
             // Get function address
             address = tmp;
@@ -125,10 +125,10 @@ FunctionList ObjDumper::getFunctionList(QString file){
 
             for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
                 QStringRef line = lines.at(lineNum);
-                QVector<QString> row(4);
+                QVector<QByteArray> row(4);
 
                 // Get address
-                QString address;
+                QByteArray address;
                 int pos = 0;
                 // Get address
                 while (pos < line.length() && line.at(pos) != QChar(':')){
@@ -143,15 +143,14 @@ FunctionList ObjDumper::getFunctionList(QString file){
                     pos++;
                 }
 
-                QString hex = line.mid(pos, insnwidth * 3).toString();
-                row[1] = hex;
+                row[1] = line.mid(pos, insnwidth * 3).toLocal8Bit();
                 pos += insnwidth * 3;
 
                 // Get optcode
                 while (pos < line.length() && line.at(pos) == QChar(' ')){
                     pos++;
                 }
-                QString opt;
+                QByteArray opt;
                 while (pos < line.length() && line.at(pos) != QChar(' ')){
                     opt.append(line.at(pos));
                     pos++;
@@ -162,7 +161,13 @@ FunctionList ObjDumper::getFunctionList(QString file){
                 pos++;
 
                 // Get args
-                row[3] = line.mid(pos).toString();
+                row[3] = line.mid(pos).toLocal8Bit();
+
+                // Remove extra space from byte array
+                row[0].squeeze();
+                row[1].squeeze();
+                row[2].squeeze();
+                row[3].squeeze();
 
                 functionMatrix.append(row);
             }
@@ -186,7 +191,7 @@ SectionList ObjDumper::getSectionList(QString file){
     // Parse contents list
     for (int listIndex = 0; listIndex < contentsList.length(); listIndex++){
         QString sectionName;
-        QVector< QVector<QString> > sectionMatrix;
+        QVector< QVector<QByteArray> > sectionMatrix;
 
         QStringRef contentsStr = contentsList.at(listIndex);
 
@@ -205,10 +210,10 @@ SectionList ObjDumper::getSectionList(QString file){
         // Parse each line and add data to lists
         for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
             QStringRef line = lines.at(lineNum);
-            QVector<QString> row(3);
+            QVector<QByteArray> row(3);
 
             // Get Address
-            QString address;
+            QByteArray address;
             int pos = 1;
             while (pos < line.length() && line.at(pos) != QChar(' ')){
                 address.append(line.at(pos));
@@ -219,7 +224,7 @@ SectionList ObjDumper::getSectionList(QString file){
             pos++;
 
             // Next 35 chars are hex followed by 2 spaces
-            QString hexStr = line.mid(pos, 35).toString();
+            QByteArray hexStr = line.mid(pos, 35).toLocal8Bit();
 
             // Add space between each byte(default is space between 4 byte words)
             for (int i = 2; i < hexStr.length(); i+=3){
@@ -232,7 +237,12 @@ SectionList ObjDumper::getSectionList(QString file){
 
             pos += 37;
 
-            row[2] = line.mid(pos).toString();
+            row[2] = line.mid(pos).toLocal8Bit();
+
+            // Remove extra space from byte array
+            row[0].squeeze();
+            row[1].squeeze();
+            row[2].squeeze();
 
             sectionMatrix.append(row);
 

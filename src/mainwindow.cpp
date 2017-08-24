@@ -194,6 +194,7 @@ void MainWindow::open(QString file){
         */
 
         // Disassemble and get function list
+        functionList.nukeList();
         functionList = objDumper.getFunctionList(file);
 
         // If functionlist is empty
@@ -218,6 +219,7 @@ void MainWindow::open(QString file){
                         objDumper.setTarget("-b " + format);
 
                         // Generate new fumnctionlist
+                        functionList.nukeList();
                         functionList = objDumper.getFunctionList(file);
                         displayFunctionData();
                     } else {
@@ -237,12 +239,13 @@ void MainWindow::open(QString file){
         }
 
         // Get section list and set hex values
+        sectionList.nukeList();
         sectionList = objDumper.getSectionList(file);
         int len = sectionList.getLength();
-        QString addressStr;
-        QString hexStr;
-        QString asciiStr;
-        setUpdatesEnabled(false);
+        QByteArray addressStr;
+        QByteArray hexStr;
+        QByteArray asciiStr;
+
         for (int i = 1; i < len; i++){
             Section section = sectionList.getSection(i);
 
@@ -250,13 +253,12 @@ void MainWindow::open(QString file){
             hexStr.append(section.getSectionName() + "\n" + section.getHexString() + "\n");
             asciiStr.append("\n" + section.getAsciiString() + "\n");
         }
+        setUpdatesEnabled(false);
         ui->hexAddressBrowser->setPlainText(addressStr);
         ui->hexBrowser->setPlainText(hexStr);
         ui->asciiBrowser->setPlainText(asciiStr);
-        setUpdatesEnabled(true);
 
         // Set file format value in statusbar
-        setUpdatesEnabled(false);
         ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
         ui->symbolsBrowser->setPlainText(objDumper.getSymbolsTable(file));
         ui->relocationsBrowser->setPlainText(objDumper.getRelocationEntries(file));

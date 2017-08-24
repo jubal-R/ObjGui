@@ -14,7 +14,7 @@ Function::Function(){
 
 }
 
-Function::Function(QString functionName, QString addr, QString sect, QString offset, QVector< QVector<QString> > contents)
+Function::Function(QString functionName, QString addr, QString sect, QString offset, QVector< QVector<QByteArray> > contents)
 {
     name = functionName;
     address = addr;
@@ -25,14 +25,14 @@ Function::Function(QString functionName, QString addr, QString sect, QString off
 }
 
 // Return a line(row) from the matrix
-QVector<QString> Function::getLine(int line){
+QVector<QByteArray> Function::getLine(int line){
     return functionMatrix.at(line);
 }
 
-QString Function::getContents(){
-    QString contents = "";
+QByteArray Function::getContents(){
+    QByteArray contents;
     for (int i = 0; i < matrixLen; i++){
-        QVector<QString> line = getLine(i);
+        QVector<QByteArray> line = getLine(i);
         contents.append(line[0] + "    ");
         contents.append(line[1] + "    ");
         contents.append(line[2] + "    ");
