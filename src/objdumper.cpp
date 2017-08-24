@@ -120,8 +120,8 @@ FunctionList ObjDumper::getFunctionList(QString file){
             }
 
             // Parse function contents
-            QString contents = dumpStr.mid(i+3).toString();
-            QVector<QStringRef> lines = contents.splitRef("\n");
+            QStringRef contents = dumpStr.mid(i+3);
+            QVector<QStringRef> lines = contents.split("\n");
 
             for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
                 QStringRef line = lines.at(lineNum);
@@ -139,7 +139,7 @@ FunctionList ObjDumper::getFunctionList(QString file){
                 pos++;
 
                 // Get hex
-                while (pos < line.length() && line.at(pos) == QChar(' ')){
+                while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
                     pos++;
                 }
 
@@ -147,7 +147,7 @@ FunctionList ObjDumper::getFunctionList(QString file){
                 pos += insnwidth * 3;
 
                 // Get optcode
-                while (pos < line.length() && line.at(pos) == QChar(' ')){
+                while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
                     pos++;
                 }
                 QByteArray opt;
@@ -202,10 +202,10 @@ SectionList ObjDumper::getSectionList(QString file){
             i++;
         }
 
-        QString sectionContents = contentsStr.mid(i+2).toString();
+        QStringRef sectionContents = contentsStr.mid(i+2);
 
         // Split content into lines
-        QVector<QStringRef> lines = sectionContents.splitRef("\n");
+        QVector<QStringRef> lines = sectionContents.split("\n");
 
         // Parse each line and add data to lists
         for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){

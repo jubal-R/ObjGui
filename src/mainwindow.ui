@@ -439,9 +439,15 @@ background-color: rgb(250, 250, 250);</string>
                 <bold>false</bold>
                </font>
               </property>
+              <property name="acceptDrops">
+               <bool>false</bool>
+              </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(250, 250, 250);
 color: rgb(85, 85, 85);</string>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
               </property>
               <property name="undoRedoEnabled">
                <bool>false</bool>
