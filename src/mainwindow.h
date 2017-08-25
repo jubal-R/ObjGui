@@ -67,6 +67,8 @@ private slots:
 
     void on_actionGo_To_Address_triggered();
 
+    void on_actionGet_Offset_triggered();
+
 private:
     Ui::MainWindow *ui;
     int currentFunctionIndex;

@@ -364,6 +364,86 @@ void MainWindow::displayFunctionData(){
     }
 }
 
+// Go to virtual memory address
+void MainWindow::on_actionGo_To_Address_triggered()
+{
+    bool ok =true;
+
+    QString targetAddress = QInputDialog::getText(this, tr("Go to Address"),tr("Go to Address:"), QLineEdit::Normal,"", &ok).trimmed();
+
+    if (targetAddress != ""){
+        // Find address index
+        QVector<int> location = functionList.getAddressLocation(targetAddress);
+
+        // Check if address was found
+        if(location[0] > 0){
+            setUpdatesEnabled(false);
+            // Display function
+            if (location[0] != currentFunctionIndex){
+                displayFunctionText(location[0]);
+                ui->functionList->setCurrentRow(location[0]);
+            }
+            // Go to Line
+            QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(location[1]));
+            ui->codeBrowser->setTextCursor(cursor);
+            ui->tabWidget->setCurrentIndex(0);
+            ui->codeBrowser->setFocus();
+            setUpdatesEnabled(true);
+
+        } else {
+            QMessageBox::information(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);
+        }
+    }
+
+}
+
+// Get file offset of current line of disassembly
+void MainWindow::on_actionGet_Offset_triggered()
+{
+    /*
+     * Offset calculated by [function offset] + [current line offset from function start]
+     * Note: file offset often last part of virtual memory address, but not always.
+     */
+    if (!functionList.isEmpty()){
+        Function function = functionList.getFunction(currentFunctionIndex);
+        QTextCursor cursor = ui->codeBrowser->textCursor();
+        int lineNum = cursor.blockNumber();
+
+        if (function.getMatrixLen() > 0 && lineNum < function.getMatrixLen()){
+
+            // Get addresses
+            QString currentLineAddressStr = function.getAddressAt(lineNum);
+            QString functionAddressStr = function.getAddress();
+
+            // Convert addresses from hex string to longs
+            bool currentAddrOk;
+            bool functAddrOk;
+            long addr = currentLineAddressStr.toInt(&currentAddrOk, 16);
+            long functAddr = functionAddressStr.toInt(&functAddrOk, 16);
+
+            if (currentAddrOk && functAddrOk){
+                // Offset of current line from function start
+                long lineOffset = addr - functAddr;
+
+                // Get functions file offset
+                bool functOffsetOk;
+                long functOffset = function.getFileOffset().toInt(&functOffsetOk, 16);
+
+                if (functOffsetOk){
+                    // Calculate file offset of current line
+                    long lineFileOffset = functOffset + lineOffset;
+                    QString lineOffsetHexStr = "0x" + QString::number(lineFileOffset, 16);
+
+                    QString offsetMsg = "File Offset of " + currentLineAddressStr + "\nHex: " + lineOffsetHexStr + "\nDecimal: " + QString::number(lineFileOffset);
+
+                    QMessageBox::information(this, tr("File Offset"), offsetMsg,QMessageBox::Close);
+
+                }
+            }
+        }
+    }
+}
+
 /*
  * Window
 */
@@ -555,34 +635,3 @@ void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
     }
 }
 
-void MainWindow::on_actionGo_To_Address_triggered()
-{
-    bool ok =true;
-
-    QString targetAddress = QInputDialog::getText(this, tr("Go to Address"),tr("Go to Address:"), QLineEdit::Normal,"", &ok).trimmed();
-
-    if (targetAddress != ""){
-        // Find address index
-        QVector<int> location = functionList.getAddressLocation(targetAddress);
-
-        // Check if address was found
-        if(location[0] > 0){
-            setUpdatesEnabled(false);
-            // Display function
-            if (location[0] != currentFunctionIndex){
-                displayFunctionText(location[0]);
-                ui->functionList->setCurrentRow(location[0]);
-            }
-            // Go to Line
-            QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(location[1]));
-            ui->codeBrowser->setTextCursor(cursor);
-            ui->tabWidget->setCurrentIndex(0);
-            ui->codeBrowser->setFocus();
-            setUpdatesEnabled(true);
-
-        } else {
-            QMessageBox::information(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);
-        }
-    }
-
-}
