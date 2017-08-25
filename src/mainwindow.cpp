@@ -268,6 +268,9 @@ void MainWindow::open(QString file){
         // Reset specified target
         objDumper.setTarget("");
 
+        ui->tabWidget->setCurrentIndex(0);
+        ui->codeBrowser->setFocus();
+
     }
 }
 
@@ -573,6 +576,8 @@ void MainWindow::on_actionGo_To_Address_triggered()
             // Go to Line
             QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(location[1]));
             ui->codeBrowser->setTextCursor(cursor);
+            ui->tabWidget->setCurrentIndex(0);
+            ui->codeBrowser->setFocus();
             setUpdatesEnabled(true);
 
         } else {
