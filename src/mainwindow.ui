@@ -523,7 +523,7 @@ background-color: rgb(250, 250, 250);</string>
               </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(38, 139, 210);</string>
+color: rgb(85, 85, 85);</string>
               </property>
               <property name="verticalScrollBarPolicy">
                <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -549,7 +549,7 @@ color: rgb(38, 139, 210);</string>
               </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
+color: rgb(38, 139, 210);</string>
               </property>
               <property name="verticalScrollBarPolicy">
                <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -569,7 +569,7 @@ color: rgb(85, 85, 85);</string>
              <widget class="QPlainTextEdit" name="asciiBrowser">
               <property name="styleSheet">
                <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
+color: rgb(128, 129, 141);</string>
               </property>
               <property name="undoRedoEnabled">
                <bool>false</bool>
