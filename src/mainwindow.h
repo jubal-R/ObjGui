@@ -31,6 +31,8 @@ private slots:
 
     void displayFunctionData();
 
+    void goToAddress(QString targetAddress);
+
     void on_actionProject_triggered();
 
     void on_actionExit_triggered();
@@ -68,6 +70,8 @@ private slots:
     void on_actionGo_To_Address_triggered();
 
     void on_actionGet_Offset_triggered();
+
+    void on_actionGo_to_Address_at_Cursor_triggered();
 
 private:
     Ui::MainWindow *ui;

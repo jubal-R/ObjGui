@@ -365,12 +365,7 @@ void MainWindow::displayFunctionData(){
 }
 
 // Go to virtual memory address
-void MainWindow::on_actionGo_To_Address_triggered()
-{
-    bool ok =true;
-
-    QString targetAddress = QInputDialog::getText(this, tr("Go to Address"),tr("Go to Address:"), QLineEdit::Normal,"", &ok).trimmed();
-
+void MainWindow::goToAddress(QString targetAddress){
     if (targetAddress != ""){
         // Find address index
         QVector<int> location = functionList.getAddressLocation(targetAddress);
@@ -394,7 +389,24 @@ void MainWindow::on_actionGo_To_Address_triggered()
             QMessageBox::information(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);
         }
     }
+}
 
+void MainWindow::on_actionGo_To_Address_triggered()
+{
+    bool ok = true;
+
+    QString targetAddress = QInputDialog::getText(this, tr("Go to Address"),tr("Go to Address:"), QLineEdit::Normal,"", &ok).trimmed();
+    goToAddress(targetAddress);
+
+}
+
+void MainWindow::on_actionGo_to_Address_at_Cursor_triggered()
+{
+    QTextCursor cursor = ui->codeBrowser->textCursor();
+    cursor.select(QTextCursor::WordUnderCursor);
+    QString targetAddress = cursor.selectedText();
+
+    goToAddress(targetAddress);
 }
 
 // Get file offset of current line of disassembly
@@ -634,4 +646,5 @@ void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
         objDumper.setUseCustomBinary(false);
     }
 }
+
 

@@ -1,4 +1,5 @@
 #include "functionlist.h"
+#include "QDebug"
 
 FunctionList::FunctionList()
 {
@@ -146,7 +147,7 @@ QVector<int> FunctionList::getAddressLocation(QString targetAddress){
             int lowerLimit = 0;
             int currentIndex = upperLimit / 2;
 
-            while (lowerLimit != upperLimit){
+            while (lowerLimit != upperLimit && currentIndex != 0){
                 QString currentAddress = function.getAddressAt(currentIndex);
 
                 if (currentAddress == targetAddress){

@@ -465,7 +465,7 @@ color: rgb(85, 85, 85);</string>
                <string/>
               </property>
               <property name="cursorWidth">
-               <number>0</number>
+               <number>1</number>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -1075,9 +1075,10 @@ padding: 3px;</string>
    </widget>
    <widget class="QMenu" name="menuSearch">
     <property name="title">
-     <string>Search</string>
+     <string>Navigation</string>
     </property>
     <addaction name="actionGo_To_Address"/>
+    <addaction name="actionGo_to_Address_at_Cursor"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -1097,8 +1098,8 @@ padding: 3px;</string>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuSearch"/>
-   <addaction name="menuPreferences"/>
    <addaction name="menuTools"/>
+   <addaction name="menuPreferences"/>
    <addaction name="menuAbout"/>
   </widget>
   <action name="actionOpen">
@@ -1177,6 +1178,14 @@ padding: 3px;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionGo_to_Address_at_Cursor">
+   <property name="text">
+    <string>Go to Address at Cursor</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Return</string>
    </property>
   </action>
  </widget>
