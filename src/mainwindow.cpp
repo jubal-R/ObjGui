@@ -424,8 +424,9 @@ void MainWindow::on_actionGet_Offset_triggered()
         if (function.getMatrixLen() > 0 && lineNum < function.getMatrixLen()){
 
             // Get addresses
-            QString currentLineAddressStr = function.getAddressAt(lineNum);
-            QString functionAddressStr = function.getAddress();
+            // Note: 8 digit hex number FFFFFFFF is the maximum capacity of long
+            QString currentLineAddressStr = function.getAddressAt(lineNum).right(8);
+            QString functionAddressStr = function.getAddress().right(8);
 
             // Convert addresses from hex string to longs
             bool currentAddrOk;
@@ -446,7 +447,7 @@ void MainWindow::on_actionGet_Offset_triggered()
                     long lineFileOffset = functOffset + lineOffset;
                     QString lineOffsetHexStr = "0x" + QString::number(lineFileOffset, 16);
 
-                    QString offsetMsg = "File Offset of " + currentLineAddressStr + "\nHex: " + lineOffsetHexStr + "\nDecimal: " + QString::number(lineFileOffset);
+                    QString offsetMsg = "File Offset of " + function.getAddressAt(lineNum) + "\nHex: " + lineOffsetHexStr + "\nDecimal: " + QString::number(lineFileOffset);
 
                     QMessageBox::information(this, tr("File Offset"), offsetMsg,QMessageBox::Close);
 
