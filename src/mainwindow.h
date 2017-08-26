@@ -53,8 +53,6 @@ private slots:
 
     void on_allHeadersCheckBox_toggled(bool checked);
 
-    void on_checkBox_toggled(bool checked);
-
     void on_customBinaryButton_clicked();
 
     void on_customBinaryCheckBox_toggled(bool checked);
@@ -72,6 +70,8 @@ private slots:
     void on_actionGet_Offset_triggered();
 
     void on_actionGo_to_Address_at_Cursor_triggered();
+
+    void on_demanlgeCheckBox_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;

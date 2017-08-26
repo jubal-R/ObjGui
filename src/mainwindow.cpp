@@ -107,18 +107,47 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::resize(settings.value("windowWidth", 1000).toInt(), settings.value("windowHeight", 600).toInt());
     ui->splitter->restoreState(settings.value("splitterSizes").toByteArray());
 
-    // Indicate Current Preferences
+    /*
+     * Set options from saved settings
+     */
+
+    // Syntax
     if (settings.value("syntax", "intel") == "intel"){
         ui->actionIntel->setChecked(true);
         ui->syntaxComboBox->setCurrentIndex(0);
         objDumper.setOutputSyntax("intel");
+
     }else if (settings.value("syntax", "intel") == "att"){
         ui->actionAtt->setChecked(true);
         ui->syntaxComboBox->setCurrentIndex(1);
         objDumper.setOutputSyntax("att");
     }
-    ui->allHeadersCheckBox->toggle();
 
+    // Optional flags
+    if (settings.value("demangle", false) == true){
+        ui->demanlgeCheckBox->setChecked(true);
+        objDumper.setOptionalFlags("-C");
+    }
+
+    // Header flags
+    QString headerFlags = settings.value("headerFlags", "").toString();
+    if (headerFlags != ""){
+        if (headerFlags == "-a -f -p -h "){
+            ui->allHeadersCheckBox->setChecked(true);
+        } else {
+            if (headerFlags.contains('a'))
+                ui->archiveHeadersCheckBox->setChecked(true);
+            if (headerFlags.contains('f'))
+                ui->fileHeadersCheckBox->setChecked(true);
+            if (headerFlags.contains('p'))
+                ui->privateHeadersCheckBox->setChecked(true);
+            if (headerFlags.contains('h'))
+                ui->sectionHeadersCheckbox->setChecked(true);
+        }
+        objDumper.setHeaderFlags(headerFlags);
+    }
+
+    // Custom binary
     if (settings.value("useCustomBinary", false).toBool()){
         ui->customBinaryCheckBox->setChecked(true);
         objDumper.setUseCustomBinary(true);
@@ -160,6 +189,7 @@ MainWindow::~MainWindow()
     settings.setValue("windowWidth", windowRect.width());
     settings.setValue("windowHeight", windowRect.height());
     settings.setValue("splitterSizes", ui->splitter->saveState());
+    settings.setValue("headerFlags", getHeaderFlags());
 
     delete ui;
 }
@@ -624,13 +654,14 @@ void MainWindow::on_sectionHeadersCheckbox_clicked()
         objDumper.setHeaderFlags(getHeaderFlags());
 }
 
-
-void MainWindow::on_checkBox_toggled(bool checked)
+void MainWindow::on_demanlgeCheckBox_toggled(bool checked)
 {
     if (checked){
         objDumper.setOptionalFlags("-C");
+        settings.setValue("demangle", true);
     } else {
         objDumper.setOptionalFlags("");
+        settings.setValue("demangle", false);
     }
 }
 
@@ -656,5 +687,4 @@ void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
         objDumper.setUseCustomBinary(false);
     }
 }
-
 
