@@ -134,6 +134,7 @@ MainWindow::MainWindow(QWidget *parent) :
           "QComboBox {background-color: #fafafa; color: #555555;}";
     ui->tabWidget->setStyleSheet(tabWidgetStyle);
     QString menuStyle = "QMenu::item:selected {background-color: #3ba1a1; color: #fafafa;}"
+            "QMenu::item::disabled {color: #aaaaaa}"
             "QMenuBar::item {background-color: #fafafa; color: #555555;}"
             "QMenuBar {border-bottom: 1px solid #cccccc;}";
     ui->menuBar->setStyleSheet(menuStyle);
@@ -231,6 +232,10 @@ void MainWindow::open(QString file){
             } else {
                 // Display error message
                 ui->codeBrowser->setPlainText(message);
+                // Disable navigation and tools
+                ui->actionGo_To_Address->setEnabled(false);
+                ui->actionGo_to_Address_at_Cursor->setEnabled(false);
+                ui->actionGet_Offset->setEnabled(false);
             }
 
           // If all good, display disassembly data
@@ -361,6 +366,11 @@ void MainWindow::displayFunctionData(){
             QString firstIndexName = functionList.getFunction(0).getName();
             displayFunctionText(firstIndexName);
         }
+
+        // Enable navigation and tools
+        ui->actionGo_To_Address->setEnabled(true);
+        ui->actionGo_to_Address_at_Cursor->setEnabled(true);
+        ui->actionGet_Offset->setEnabled(true);
     }
 }
 

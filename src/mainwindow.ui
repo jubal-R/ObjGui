@@ -1161,6 +1161,9 @@ padding: 3px;</string>
    </property>
   </action>
   <action name="actionGo_To_Address">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Go to Address</string>
    </property>
@@ -1169,6 +1172,9 @@ padding: 3px;</string>
    </property>
   </action>
   <action name="actionGet_Offset">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Get File Offset</string>
    </property>
@@ -1177,6 +1183,9 @@ padding: 3px;</string>
    </property>
   </action>
   <action name="actionGo_to_Address_at_Cursor">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Go to Address at Cursor</string>
    </property>
