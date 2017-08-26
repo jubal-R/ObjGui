@@ -105,15 +105,26 @@ FunctionList ObjDumper::getFunctionList(QString file){
             // Get function address
             address = tmp;
 
-            // Get function name
+            // Find end of line, then count back to find begining of offset
             i += 2;
-            while (i < dumpStr.length()-1 && dumpStr.at(i) != QChar('>')){
-                name.append(dumpStr.at(i));
-                i++;
+            int eolCounter = i;
+            // Count to end of line
+            while (eolCounter < dumpStr.length()-1 && dumpStr.at(eolCounter) != QChar('\n')){
+                eolCounter++;
             }
+            int offsetPosCounter = eolCounter - 1;
+            while (offsetPosCounter > 0 && dumpStr.at(offsetPosCounter) != QChar('(')){
+                offsetPosCounter--;
+            }
+            offsetPosCounter -= 2;
+
+            int nameLen = offsetPosCounter - i;
+
+            // Get function name
+            name = dumpStr.mid(i, nameLen).toString();
 
             // Get file offset
-            i += 16;
+            i += nameLen + 16;
             while (i < dumpStr.length()-1 && dumpStr.at(i) != QChar(')')){
                 fileOffest.append(dumpStr.at(i));
                 i++;

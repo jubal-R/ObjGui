@@ -321,6 +321,12 @@ background-color: rgb(250, 250, 250);</string>
               </property>
               <item>
                <widget class="QLabel" name="functionLabel">
+                <property name="maximumSize">
+                 <size>
+                  <width>600</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
                   <family>Monospace</family>
@@ -1152,16 +1158,6 @@ padding: 3px;</string>
   <action name="actionShow_Containing_Folder">
    <property name="text">
     <string>Show Containing Folder</string>
-   </property>
-  </action>
-  <action name="actionDisassemble_d">
-   <property name="text">
-    <string>disassemble -d</string>
-   </property>
-  </action>
-  <action name="actionDisassemble_all_D">
-   <property name="text">
-    <string>disassemble-all -D</string>
    </property>
   </action>
   <action name="actionGo_To_Address">
