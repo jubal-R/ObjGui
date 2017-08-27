@@ -1201,6 +1201,7 @@ border-bottom: 2px solid #d4d4d4;</string>
      <string>Search</string>
     </property>
     <addaction name="actionFind_Calls_to_Current_Function"/>
+    <addaction name="actionFind_Calls_to_Current_Location"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -1313,10 +1314,18 @@ border-bottom: 2px solid #d4d4d4;</string>
   </action>
   <action name="actionFind_Calls_to_Current_Function">
    <property name="text">
-    <string>Find Calls to Function</string>
+    <string>Find Calls to Current Function</string>
    </property>
    <property name="shortcut">
     <string>Shift+X</string>
+   </property>
+  </action>
+  <action name="actionFind_Calls_to_Current_Location">
+   <property name="text">
+    <string>Find Calls to Current Location</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+X</string>
    </property>
   </action>
  </widget>

@@ -612,6 +612,7 @@ void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
 {
     QString functionName = functionList.getFunction(currentFunctionIndex).getName();
     QVector< QVector<QString> > results = functionList.findCallsToFunction(functionName);
+
     if (!results.isEmpty()){
         QString resultsStr = "";
         for (int i = 0; i < results.length(); i++){
@@ -625,6 +626,29 @@ void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
         QMessageBox::information(this, tr("Calls to Function"), "No calls found to function " + functionName,QMessageBox::Close);
     }
 }
+
+// Find all calls to current location
+void MainWindow::on_actionFind_Calls_to_Current_Location_triggered()
+{
+    QTextCursor cursor = ui->codeBrowser->textCursor();
+    int lineNum = cursor.blockNumber();
+    QString targetLocation = functionList.getFunction(currentFunctionIndex).getAddressAt(lineNum);
+    QVector< QVector<QString> > results = functionList.findCallsToAddress(targetLocation);
+
+    if (!results.isEmpty()){
+        QString resultsStr = "";
+        for (int i = 0; i < results.length(); i++){
+            QVector<QString> result = results[i];
+            resultsStr.append(result[1] + "  " + result[0] + "\n");
+        }
+
+        QMessageBox::information(this, tr("Calls to Location"), resultsStr,QMessageBox::Close);
+
+    } else {
+        QMessageBox::information(this, tr("Calls to Location"), "No calls found to location " + targetLocation,QMessageBox::Close);
+    }
+}
+
 
 /*
  *  Options
@@ -814,4 +838,3 @@ void MainWindow::on_actionShow_Containing_Folder_triggered()
     // Open current directory in file manager
     files.openFileManager(files.getCurrentDirectory());
 }
-

@@ -21,6 +21,7 @@ public:
     QString getErrorMsg();
     QVector<int> getAddressLocation(QString targetAddress);
     QVector< QVector<QString> > findCallsToFunction(QString targetFunction);
+    QVector< QVector<QString> > findCallsToAddress(QString targetAddress);
 private:
     FunctionNode *head;
     FunctionNode *tail;

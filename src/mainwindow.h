@@ -85,6 +85,8 @@ private slots:
 
     void on_actionFind_Calls_to_Current_Function_triggered();
 
+    void on_actionFind_Calls_to_Current_Location_triggered();
+
 private:
     Ui::MainWindow *ui;
     int currentFunctionIndex;

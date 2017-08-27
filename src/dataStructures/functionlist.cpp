@@ -211,6 +211,36 @@ QVector< QVector<QString> > FunctionList::findCallsToFunction(QString targetFunc
     return results;
 }
 
+// Find all calls to specific address
+QVector< QVector<QString> > FunctionList::findCallsToAddress(QString targetAddress){
+    QVector< QVector<QString> > results;
+
+    // Search each function
+    for (int functionIndex = 0; functionIndex < length; functionIndex++){
+        Function function = getFunction(functionIndex);
+
+        // Check if matrix is empty
+        if (function.getMatrixLen() > 0){
+            // Search function
+            int matrixLen = function.getMatrixLen();
+            for (int i = 0; i < matrixLen; i++){
+                QVector<QByteArray> line = function.getLine(i);
+                // Check for call to target function
+                if (QString::fromLocal8Bit(line[3]).contains(targetAddress)){
+                    QVector<QString> result(2);
+                    result[0] = function.getName();
+                    result[1] = line[0];
+                    results.append(result);
+                }
+            }
+
+        }
+    }
+
+    return results;
+}
+
+
 void FunctionList::setErrorMsg(QString msg){
     errorMsg = msg;
 }
