@@ -14,6 +14,7 @@
 #include "highlighters/headerhighlighter.h"
 #include "objdumper.h"
 #include "ui_loadingdialog.h"
+#include "resultsdialog.h"
 
 using namespace std;
 
@@ -617,10 +618,15 @@ void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
         QString resultsStr = "";
         for (int i = 0; i < results.length(); i++){
             QVector<QString> result = results[i];
-            resultsStr.append(result[1] + "  " + result[0] + "\n");
+            resultsStr.append(result[1] + "    " + result[0] + "\n");
         }
 
-        QMessageBox::information(this, tr("Calls to Function"), resultsStr,QMessageBox::Close);
+        // Display results
+        ResultsDialog resultsDialog;
+        resultsDialog.setWindowModality(Qt::WindowModal);
+        resultsDialog.setResultsLabelText("Calls to function " + functionName);
+        resultsDialog.setResultsText(resultsStr);
+        resultsDialog.exec();
 
     } else {
         QMessageBox::information(this, tr("Calls to Function"), "No calls found to function " + functionName,QMessageBox::Close);
@@ -642,7 +648,12 @@ void MainWindow::on_actionFind_Calls_to_Current_Location_triggered()
             resultsStr.append(result[1] + "  " + result[0] + "\n");
         }
 
-        QMessageBox::information(this, tr("Calls to Location"), resultsStr,QMessageBox::Close);
+        // Display results
+        ResultsDialog resultsDialog;
+        resultsDialog.setWindowModality(Qt::WindowModal);
+        resultsDialog.setResultsLabelText("Calls to location " + targetLocation);
+        resultsDialog.setResultsText(resultsStr);
+        resultsDialog.exec();
 
     } else {
         QMessageBox::information(this, tr("Calls to Location"), "No calls found to location " + targetLocation,QMessageBox::Close);

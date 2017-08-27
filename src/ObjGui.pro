@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     dataStructures/sectionnode.cpp \
     highlighters/disassemblyhighlighter.cpp \
     highlighters/headerhighlighter.cpp \
-    highlighters/sectionhighlighter.cpp
+    highlighters/sectionhighlighter.cpp \
+    resultsdialog.cpp
 
 HEADERS  += mainwindow.h \
     files.h \
@@ -37,10 +38,12 @@ HEADERS  += mainwindow.h \
     dataStructures/sectionnode.h \
     highlighters/disassemblyhighlighter.h \
     highlighters/headerhighlighter.h \
-    highlighters/sectionhighlighter.h
+    highlighters/sectionhighlighter.h \
+    resultsdialog.h
 
 FORMS    += mainwindow.ui \
-    loadingdialog.ui
+    loadingdialog.ui \
+    resultsdialog.ui
 
 RESOURCES += \
     resources.qrc
