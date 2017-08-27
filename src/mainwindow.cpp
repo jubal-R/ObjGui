@@ -156,8 +156,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customBinaryLineEdit->setText(settings.value("customBinary", "").toString());
 
     // Style
-    QString tabWidgetStyle = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}"
-          "QTabBar::tab {background-color: #E0E0E0; min-width: 80px;}"
+    QString tabWidgetStyle = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1; border-top: 2px solid #d4d4d4;}"
+          "QTabBar::tab {background-color: #E0E0E0; min-width: 102px;}"
           "QTabWidget::tab-bar {left: 5px;}"
           "QTabWidget::pane {border: none;}"
           "QComboBox {background-color: #fafafa; color: #555555;}";
@@ -218,6 +218,9 @@ void MainWindow::open(QString file){
         ui->symbolsBrowser->clear();
         ui->relocationsBrowser->clear();
         ui->headersBrowser->clear();
+
+        // Clear history
+        history.clear();
 
 
         /*
@@ -397,6 +400,9 @@ void MainWindow::displayFunctionData(){
             displayFunctionText(firstIndexName);
         }
 
+        // Add initial location to history
+        addToHistory(currentFunctionIndex, 0);
+
         // Enable navigation and tools
         ui->actionGo_To_Address->setEnabled(true);
         ui->actionGo_to_Address_at_Cursor->setEnabled(true);
@@ -412,6 +418,11 @@ void MainWindow::goToAddress(QString targetAddress){
 
         // Check if address was found
         if(location[0] > 0){
+            // Add old location to history
+            QTextCursor prevCursor = ui->codeBrowser->textCursor();
+            int lineNum = prevCursor.blockNumber();
+            addToHistory(currentFunctionIndex, lineNum);
+
             setUpdatesEnabled(false);
             // Display function
             if (location[0] != currentFunctionIndex){
@@ -424,6 +435,9 @@ void MainWindow::goToAddress(QString targetAddress){
             ui->tabWidget->setCurrentIndex(0);
             ui->codeBrowser->setFocus();
             setUpdatesEnabled(true);
+
+            // Add new location to history
+            addToHistory(currentFunctionIndex, location[1]);
 
         } else {
             QMessageBox::information(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);
@@ -495,6 +509,87 @@ void MainWindow::on_actionGet_Offset_triggered()
         }
     }
 }
+
+void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
+{
+    // Display function
+    displayFunctionText(item->text());
+    ui->tabWidget->setCurrentIndex(0);
+    // Add new location to history
+    addToHistory(currentFunctionIndex, 0);
+}
+
+
+/*
+ * History
+*/
+
+// Add location to history and update iterator
+void MainWindow::addToHistory(int functionIndex, int lineNum){
+    QVector<int> item(2);
+    item[0] = functionIndex;
+    item[1] = lineNum;
+
+    // Note: constEnd() points to imaginary item after last item
+    if (historyIterator != history.constEnd() - 1)
+        history = history.mid(0, historyIterator - history.constBegin() + 1);
+
+    history.append(item);
+    historyIterator = history.constEnd() - 1;
+}
+
+void MainWindow::on_backButton_clicked()
+{
+    if (!history.isEmpty() && historyIterator != history.constBegin()){
+        historyIterator--;
+        QVector<int> prevLocation = historyIterator.i->t();
+
+        // Display prev function
+        setUpdatesEnabled(false);
+        if (currentFunctionIndex != prevLocation[0]){
+            displayFunctionText(prevLocation[0]);
+            ui->functionList->setCurrentRow(prevLocation[0]);
+        }
+        // Go to prev line
+        QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(prevLocation[1]));
+        ui->codeBrowser->setTextCursor(cursor);
+        ui->tabWidget->setCurrentIndex(0);
+        ui->codeBrowser->setFocus();
+        setUpdatesEnabled(true);
+    }
+}
+
+void MainWindow::on_forwardButton_clicked()
+{
+    if (!history.isEmpty() && historyIterator != history.constEnd() - 1){
+        historyIterator++;
+        QVector<int> nextLocation = historyIterator.i->t();
+
+        // Display prev function
+        setUpdatesEnabled(false);
+        if (currentFunctionIndex != nextLocation[0]){
+            displayFunctionText(nextLocation[0]);
+            ui->functionList->setCurrentRow(nextLocation[0]);
+        }
+        // Go to prev line
+        QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(nextLocation[1]));
+        ui->codeBrowser->setTextCursor(cursor);
+        ui->tabWidget->setCurrentIndex(0);
+        ui->codeBrowser->setFocus();
+        setUpdatesEnabled(true);
+    }
+}
+
+void MainWindow::on_actionBack_triggered()
+{
+    on_backButton_clicked();
+}
+
+void MainWindow::on_actionForward_triggered()
+{
+    on_forwardButton_clicked();
+}
+
 
 /*
  * Window
@@ -575,14 +670,6 @@ void MainWindow::on_syntaxComboBox_currentIndexChanged(int index)
         on_actionAtt_triggered();
     }
 }
-
-void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
-{
-    displayFunctionText(item->text());
-    ui->tabWidget->setCurrentIndex(0);
-}
-
-
 
 void MainWindow::on_disassemblyFlagcheckBox_toggled(bool checked)
 {

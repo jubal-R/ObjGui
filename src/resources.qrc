@@ -6,5 +6,7 @@
         <file>fonts/Anonymous Pro BI.ttf</file>
         <file>fonts/Anonymous Pro I.ttf</file>
         <file>fonts/NotoSans-Bold.ttf</file>
+        <file>icons/ic_navigate_before_black_24dp_1x.png</file>
+        <file>icons/ic_navigate_next_black_24dp_1x.png</file>
     </qresource>
 </RCC>

@@ -32,6 +32,9 @@ objdump is part of GNU binutils and can be found here <https://ftp.gnu.org/gnu/b
 - Additional user preferences
 - Searching
 
+## Acknowledgements
+Icons: <https://material.io/icons>
+
 ## License
 ObjGui is licensed under the GNU General Public License version 3.0.  
 <https://www.gnu.org/licenses/gpl-3.0.en.html>

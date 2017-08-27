@@ -33,6 +33,8 @@ private slots:
 
     void goToAddress(QString targetAddress);
 
+    void addToHistory(int functionIndex, int lineNum);
+
     void on_actionProject_triggered();
 
     void on_actionExit_triggered();
@@ -73,9 +75,19 @@ private slots:
 
     void on_demanlgeCheckBox_toggled(bool checked);
 
+    void on_backButton_clicked();
+
+    void on_forwardButton_clicked();
+
+    void on_actionBack_triggered();
+
+    void on_actionForward_triggered();
+
 private:
     Ui::MainWindow *ui;
     int currentFunctionIndex;
+    QList< QVector<int> > history;
+    QList< QVector<int> >::const_iterator historyIterator;
 };
 
 #endif // MAINWINDOW_H
