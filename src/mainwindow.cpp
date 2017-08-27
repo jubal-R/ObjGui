@@ -596,8 +596,8 @@ void MainWindow::on_actionForward_triggered()
 */
 void MainWindow::on_actionProject_triggered()
 {
-    QString aboutStr = "ObjGui - GUI frontend for objdump\n"
-                       "Project page: https://github.com/jubal-R/ObjGui\n\n"
+    QString aboutStr = "ObjGui is a binary analysis tool and GUI frontend for objdump.\n\n"
+                       "Project Page: https://github.com/jubal-R/ObjGui\n\n"
 
                        "Copyright (C) 2017\n\n"
 
