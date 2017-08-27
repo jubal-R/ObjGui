@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->asciiBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->hexBrowser->verticalScrollBar(), SLOT(setValue(int)));
 
     /*
-     * Setup builtin fonts
+     *  Setup builtin fonts
     */
 
     // Sans serif
@@ -108,8 +108,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->splitter->restoreState(settings.value("splitterSizes").toByteArray());
 
     /*
-     * Set options from saved settings
-     */
+     *  Set options from saved settings
+    */
 
     // Syntax
     if (settings.value("syntax", "intel") == "intel"){
@@ -193,6 +193,10 @@ MainWindow::~MainWindow()
 
     delete ui;
 }
+
+/*
+ *  Disassembly
+*/
 
 //  Open Binary
 void MainWindow::open(QString file){
@@ -337,22 +341,9 @@ void MainWindow::on_actionOpen_triggered()
     delete dialog;
 }
 
-//  Highlight Current Line
-void MainWindow::highlightCurrentLine(){
-   QColor lineColor = QColor(215,215,215);
-
-   QList<QTextEdit::ExtraSelection> extraSelections;
-
-   QTextEdit::ExtraSelection selections;
-   selections.format.setBackground(lineColor);
-   selections.format.setProperty(QTextFormat::FullWidthSelection, true);
-   selections.cursor = ui->codeBrowser->textCursor();
-   selections.cursor.clearSelection();
-   extraSelections.append(selections);
-
-   ui->codeBrowser->setExtraSelections(extraSelections);
-
-}
+/*
+ *  Function Data
+*/
 
 void MainWindow::displayFunctionText(QString functionName){
     if (!functionList.isEmpty()){
@@ -410,6 +401,27 @@ void MainWindow::displayFunctionData(){
     }
 }
 
+//  Highlight current line of function
+void MainWindow::highlightCurrentLine(){
+   QColor lineColor = QColor(215,215,215);
+
+   QList<QTextEdit::ExtraSelection> extraSelections;
+
+   QTextEdit::ExtraSelection selections;
+   selections.format.setBackground(lineColor);
+   selections.format.setProperty(QTextFormat::FullWidthSelection, true);
+   selections.cursor = ui->codeBrowser->textCursor();
+   selections.cursor.clearSelection();
+   extraSelections.append(selections);
+
+   ui->codeBrowser->setExtraSelections(extraSelections);
+
+}
+
+/*
+ *  Navigation
+*/
+
 // Go to virtual memory address
 void MainWindow::goToAddress(QString targetAddress){
     if (targetAddress != ""){
@@ -463,13 +475,23 @@ void MainWindow::on_actionGo_to_Address_at_Cursor_triggered()
     goToAddress(targetAddress);
 }
 
+// Function list
+void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
+{
+    // Display function
+    displayFunctionText(item->text());
+    ui->tabWidget->setCurrentIndex(0);
+    // Add new location to history
+    addToHistory(currentFunctionIndex, 0);
+}
+
 // Get file offset of current line of disassembly
 void MainWindow::on_actionGet_Offset_triggered()
 {
     /*
      * Offset calculated by [function offset] + [current line offset from function start]
      * Note: file offset often last part of virtual memory address, but not always.
-     */
+    */
     if (!functionList.isEmpty()){
         Function function = functionList.getFunction(currentFunctionIndex);
         QTextCursor cursor = ui->codeBrowser->textCursor();
@@ -510,18 +532,9 @@ void MainWindow::on_actionGet_Offset_triggered()
     }
 }
 
-void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
-{
-    // Display function
-    displayFunctionText(item->text());
-    ui->tabWidget->setCurrentIndex(0);
-    // Add new location to history
-    addToHistory(currentFunctionIndex, 0);
-}
-
 
 /*
- * History
+ *  History
 */
 
 // Add location to history and update iterator
@@ -592,56 +605,8 @@ void MainWindow::on_actionForward_triggered()
 
 
 /*
- * Window
+ *  Options
 */
-void MainWindow::on_actionProject_triggered()
-{
-    QString aboutStr = "ObjGui is a binary analysis tool and GUI frontend for objdump.\n\n"
-                       "Project Page: https://github.com/jubal-R/ObjGui\n\n"
-
-                       "Copyright (C) 2017\n\n"
-
-                       "This program is free software: you can redistribute it and/or modify "
-                       "it under the terms of the GNU General Public License as published by "
-                       "the Free Software Foundation, either version 3 of the License, or "
-                       "(at your option) any later version.\n\n"
-
-                       "This program is distributed in the hope that it will be useful,"
-                       "but WITHOUT ANY WARRANTY; without even the implied warranty of "
-                       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
-                       "GNU General Public License for more details.\n\n"
-
-                       "You should have received a copy of the GNU General Public License "
-                       "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n";
-    QMessageBox::information(this, tr("About ObjGui"), aboutStr,QMessageBox::Close);
-}
-
-void MainWindow::on_actionExit_triggered()
-{
-    QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Exit", "Are you sure you want to exit?", QMessageBox::Yes|QMessageBox::No);
-
-        if (reply == QMessageBox::Yes) {
-          QApplication::quit();
-        }
-}
-
-void MainWindow::on_actionFullscreen_triggered()
-{
-    if(MainWindow::isFullScreen())
-        {
-            MainWindow::showNormal();
-        }else{
-            MainWindow::showFullScreen();
-        }
-}
-
-
-void MainWindow::on_actionShow_Containing_Folder_triggered()
-{
-    // Open current directory in file manager
-    files.openFileManager(files.getCurrentDirectory());
-}
 
 void MainWindow::on_actionIntel_triggered()
 {
@@ -773,5 +738,58 @@ void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
         settings.setValue("useCustomBinary", false);
         objDumper.setUseCustomBinary(false);
     }
+}
+
+/*
+ *  Window
+*/
+
+void MainWindow::on_actionProject_triggered()
+{
+    QString aboutStr = "ObjGui is a binary analysis tool and GUI frontend for objdump.\n\n"
+                       "Project Page: https://github.com/jubal-R/ObjGui\n\n"
+
+                       "Copyright (C) 2017\n\n"
+
+                       "This program is free software: you can redistribute it and/or modify "
+                       "it under the terms of the GNU General Public License as published by "
+                       "the Free Software Foundation, either version 3 of the License, or "
+                       "(at your option) any later version.\n\n"
+
+                       "This program is distributed in the hope that it will be useful,"
+                       "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+                       "GNU General Public License for more details.\n\n"
+
+                       "You should have received a copy of the GNU General Public License "
+                       "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n";
+    QMessageBox::information(this, tr("About ObjGui"), aboutStr,QMessageBox::Close);
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Exit", "Are you sure you want to exit?", QMessageBox::Yes|QMessageBox::No);
+
+        if (reply == QMessageBox::Yes) {
+          QApplication::quit();
+        }
+}
+
+void MainWindow::on_actionFullscreen_triggered()
+{
+    if(MainWindow::isFullScreen())
+        {
+            MainWindow::showNormal();
+        }else{
+            MainWindow::showFullScreen();
+        }
+}
+
+
+void MainWindow::on_actionShow_Containing_Folder_triggered()
+{
+    // Open current directory in file manager
+    files.openFileManager(files.getCurrentDirectory());
 }
 
