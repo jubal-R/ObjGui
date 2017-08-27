@@ -1,15 +1,16 @@
 # ObjGui
-ObjGui is a GUI frontend for objdump made for readability and easy analysis. ObjGui uses objdump to disassemble executables, then provides an easy way to navigate through the disassembly. ObjGui is a handy tool for debugging and reverse engineering.
+ObjGui is a binary analysis tool and GUI frontend for objdump made for readability and easy analysis. ObjGui uses objdump to disassemble executables, then provides an easy way to navigate through the disassembly. ObjGui is meant to be a handy tool for debugging and reverse engineering.
 
 ## Screenshot
 ![ObjGui](https://github.com/jubal-R/ObjGui/blob/master/screenshots/objGui.png)
 
 ## Features
 - Sidebar navigation to jump between functions
+- Go to address feature to follow jumps and calls
+- Get file offset of any line of disassembly
 - Support for custom objdump binaries
 - Support for many objdump flags(syntax, demangle, etc.)
 - Output separated into tabs
-- Highlighting for readability
 
 ## Dependencies
 qt5-default qt5-qmake objdump
@@ -27,13 +28,16 @@ ObjGui will disassemble any file format supported by the objdump executable you 
 objdump is part of GNU binutils and can be found here <https://ftp.gnu.org/gnu/binutils/>
 
 ## To Be Added
-- Follow jump/call instructions
+- Searching
 - Export disassembly
 - Additional user preferences
-- Searching
 
 ## Acknowledgements
-Icons: <https://material.io/icons>
+### Fonts
+Noto Sans <https://www.google.com/get/noto/>  
+Anonymous Pro <http://www.marksimonson.com/fonts/view/anonymous-pro>
+### Icons
+<https://material.io/icons>
 
 ## License
 ObjGui is licensed under the GNU General Public License version 3.0.  
