@@ -1196,9 +1196,16 @@ border-bottom: 2px solid #d4d4d4;</string>
     </property>
     <addaction name="actionGet_Offset"/>
    </widget>
+   <widget class="QMenu" name="menuSearch_2">
+    <property name="title">
+     <string>Search</string>
+    </property>
+    <addaction name="actionFind_Calls_to_Current_Function"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuSearch"/>
+   <addaction name="menuSearch_2"/>
    <addaction name="menuTools"/>
    <addaction name="menuPreferences"/>
    <addaction name="menuAbout"/>
@@ -1302,6 +1309,14 @@ border-bottom: 2px solid #d4d4d4;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+]</string>
+   </property>
+  </action>
+  <action name="actionFind_Calls_to_Current_Function">
+   <property name="text">
+    <string>Find Calls to Function</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+X</string>
    </property>
   </action>
  </widget>

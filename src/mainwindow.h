@@ -83,6 +83,8 @@ private slots:
 
     void on_actionForward_triggered();
 
+    void on_actionFind_Calls_to_Current_Function_triggered();
+
 private:
     Ui::MainWindow *ui;
     int currentFunctionIndex;

@@ -20,6 +20,7 @@ public:
     QStringList getFunctionNames();
     QString getErrorMsg();
     QVector<int> getAddressLocation(QString targetAddress);
+    QVector< QVector<QString> > findCallsToFunction(QString targetFunction);
 private:
     FunctionNode *head;
     FunctionNode *tail;

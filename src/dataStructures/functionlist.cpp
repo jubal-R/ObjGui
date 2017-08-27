@@ -133,6 +133,7 @@ QStringList FunctionList::getFunctionNames(){
     return functionNames;
 }
 
+// Get the location of a target address
 QVector<int> FunctionList::getAddressLocation(QString targetAddress){
     QVector<int> location(2);
 
@@ -180,6 +181,35 @@ QVector<int> FunctionList::getAddressLocation(QString targetAddress){
     return location;
 }
 
+// Find all calls to a target function and return list of each calling function and address of call
+QVector< QVector<QString> > FunctionList::findCallsToFunction(QString targetFunction){
+    QVector< QVector<QString> > results;
+    targetFunction = "<" + targetFunction + ">";
+
+    // Search each function
+    for (int functionIndex = 0; functionIndex < length; functionIndex++){
+        Function function = getFunction(functionIndex);
+
+        // Check if matrix is empty
+        if (function.getMatrixLen() > 0){
+            // Search function
+            int matrixLen = function.getMatrixLen();
+            for (int i = 0; i < matrixLen; i++){
+                QVector<QByteArray> line = function.getLine(i);
+                // Check for call to target function
+                if (line[2] == "call" && QString::fromLocal8Bit(line[3]).contains(targetFunction)){
+                    QVector<QString> result(2);
+                    result[0] = function.getName();
+                    result[1] = line[0];
+                    results.append(result);
+                }
+            }
+
+        }
+    }
+
+    return results;
+}
 
 void FunctionList::setErrorMsg(QString msg){
     errorMsg = msg;

@@ -603,6 +603,28 @@ void MainWindow::on_actionForward_triggered()
     on_forwardButton_clicked();
 }
 
+/*
+ *  Searching
+*/
+
+// Find calls to the current function
+void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
+{
+    QString functionName = functionList.getFunction(currentFunctionIndex).getName();
+    QVector< QVector<QString> > results = functionList.findCallsToFunction(functionName);
+    if (!results.isEmpty()){
+        QString resultsStr = "";
+        for (int i = 0; i < results.length(); i++){
+            QVector<QString> result = results[i];
+            resultsStr.append(result[1] + "  " + result[0] + "\n");
+        }
+
+        QMessageBox::information(this, tr("Calls to Function"), resultsStr,QMessageBox::Close);
+
+    } else {
+        QMessageBox::information(this, tr("Calls to Function"), "No calls found to function " + functionName,QMessageBox::Close);
+    }
+}
 
 /*
  *  Options
