@@ -170,7 +170,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->menuBar->setStyleSheet(menuStyle);
 
     disHighlighter = new DisassemblyHighlighter(ui->codeBrowser->document());
-    sectionHighlighter = new SectionHighlighter(ui->hexBrowser->document());
     headerHighlighter = new HeaderHighlighter(ui->headersBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
@@ -430,7 +429,7 @@ void MainWindow::goToAddress(QString targetAddress){
         QVector<int> location = functionList.getAddressLocation(targetAddress);
 
         // Check if address was found
-        if(location[0] > 0){
+        if(location[0] >= 0){
             // Add old location to history
             QTextCursor prevCursor = ui->codeBrowser->textCursor();
             int lineNum = prevCursor.blockNumber();
@@ -472,6 +471,9 @@ void MainWindow::on_actionGo_to_Address_at_Cursor_triggered()
     QTextCursor cursor = ui->codeBrowser->textCursor();
     cursor.select(QTextCursor::WordUnderCursor);
     QString targetAddress = cursor.selectedText();
+    if (targetAddress.startsWith("0x")){
+        targetAddress = targetAddress.mid(2);
+    }
 
     goToAddress(targetAddress);
 }

@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "QDebug"
+
 ObjDumper::ObjDumper()
 {
     // Set default options
@@ -16,6 +18,8 @@ ObjDumper::ObjDumper()
     optionalFlags = "";
     target = "";
     insnwidth = 10;
+
+    addressRegex.setPattern("[0-9a-f]+");
 }
 
 // Runs objdump given arguments and file then returns outout
@@ -146,41 +150,49 @@ FunctionList ObjDumper::getFunctionList(QString file){
                     address.append(line.at(pos));
                     pos++;
                 }
-                row[0] = address.trimmed();
-                pos++;
+                address = address.trimmed();
 
-                // Get hex
-                while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
+                // Validate address
+                QRegularExpressionMatch addressMatch = addressRegex.match(address);
+
+                if (addressMatch.hasMatch() && addressMatch.capturedLength(0) == address.length()){
+                    row[0] = address.trimmed();
+
                     pos++;
-                }
 
-                row[1] = line.mid(pos, insnwidth * 3).toLocal8Bit();
-                pos += insnwidth * 3;
+                    // Get hex
+                    while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
+                        pos++;
+                    }
 
-                // Get optcode
-                while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
+                    row[1] = line.mid(pos, insnwidth * 3).toLocal8Bit();
+                    pos += insnwidth * 3;
+
+                    // Get optcode
+                    while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
+                        pos++;
+                    }
+                    QByteArray opt;
+                    while (pos < line.length() && line.at(pos) != QChar(' ')){
+                        opt.append(line.at(pos));
+                        pos++;
+                    }
+
+                    row[2] = opt;
+
                     pos++;
+
+                    // Get args
+                    row[3] = line.mid(pos).toLocal8Bit();
+
+                    // Remove extra space from byte array
+                    row[0].squeeze();
+                    row[1].squeeze();
+                    row[2].squeeze();
+                    row[3].squeeze();
+
+                    functionMatrix.append(row);
                 }
-                QByteArray opt;
-                while (pos < line.length() && line.at(pos) != QChar(' ')){
-                    opt.append(line.at(pos));
-                    pos++;
-                }
-
-                row[2] = opt;
-
-                pos++;
-
-                // Get args
-                row[3] = line.mid(pos).toLocal8Bit();
-
-                // Remove extra space from byte array
-                row[0].squeeze();
-                row[1].squeeze();
-                row[2].squeeze();
-                row[3].squeeze();
-
-                functionMatrix.append(row);
             }
 
             // Add to functionList

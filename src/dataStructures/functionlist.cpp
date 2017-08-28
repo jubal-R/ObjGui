@@ -164,10 +164,14 @@ QVector<int> FunctionList::getAddressLocation(QString targetAddress){
                 }
 
             }
-            // Final check
+            // Final checks
             if (function.getAddressAt(currentIndex) == targetAddress){
                 location[0] = functionIndex;
                 location[1] = currentIndex;
+                return location;
+            } else if (function.getMatrixLen() > 1 && function.getAddressAt(1) == targetAddress){
+                location[0] = functionIndex;
+                location[1] = 1;
                 return location;
             }
         }
@@ -176,7 +180,8 @@ QVector<int> FunctionList::getAddressLocation(QString targetAddress){
     }
 
     // If not found return [-1,-1]
-    location[0],location[1] = -1;
+    location[0] = -1;
+    location[1] = -1;
 
     return location;
 }

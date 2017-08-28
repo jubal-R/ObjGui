@@ -3,6 +3,7 @@
 
 #include "dataStructures/functionlist.h"
 #include "dataStructures/sectionlist.h"
+#include "QRegularExpression"
 
 
 class ObjDumper
@@ -40,6 +41,7 @@ private:
     QString optionalFlags;
     QString target;
     int insnwidth;
+    QRegularExpression addressRegex;
 
 };
 
