@@ -87,6 +87,14 @@ private slots:
 
     void on_actionFind_Calls_to_Current_Location_triggered();
 
+    void on_actionFind_2_triggered();
+
+    void on_findButton_clicked();
+
+    void on_findLineEdit_returnPressed();
+
+    void on_findPrevButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     int currentFunctionIndex;

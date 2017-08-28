@@ -108,6 +108,8 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::resize(settings.value("windowWidth", 1000).toInt(), settings.value("windowHeight", 600).toInt());
     ui->splitter->restoreState(settings.value("splitterSizes").toByteArray());
 
+    ui->searchBar->hide();
+
     /*
      *  Set options from saved settings
     */
@@ -662,6 +664,77 @@ void MainWindow::on_actionFind_Calls_to_Current_Location_triggered()
     }
 }
 
+// Toggle searchbar
+void MainWindow::on_actionFind_2_triggered()
+{
+    if (ui->searchBar->isHidden()){
+        ui->searchBar->show();
+        ui->findLineEdit->setFocus();
+    }else {
+        ui->searchBar->hide();
+    }
+}
+
+// Find
+void MainWindow::on_findButton_clicked()
+{
+    QString searchTerm = ui->findLineEdit->text();
+    int currentTabIndex = ui->tabWidget->currentIndex();
+
+    switch (currentTabIndex) {
+    case 0:
+        ui->codeBrowser->find(searchTerm);
+        break;
+    case 1:
+//        ui->hexAddressBrowser->find(searchTerm);
+//        ui->hexBrowser->find(searchTerm);
+        ui->asciiBrowser->find(searchTerm);
+        break;
+    case 2:
+        ui->symbolsBrowser->find(searchTerm);
+        break;
+    case 3:
+        ui->relocationsBrowser->find(searchTerm);
+        break;
+    case 4:
+        ui->headersBrowser->find(searchTerm);
+        break;
+    default:
+        break;
+    }
+}
+
+void MainWindow::on_findLineEdit_returnPressed()
+{
+    on_findButton_clicked();
+}
+
+// Find Prev
+void MainWindow::on_findPrevButton_clicked()
+{
+    QString searchTerm = ui->findLineEdit->text();
+    int currentTabIndex = ui->tabWidget->currentIndex();
+
+    switch (currentTabIndex) {
+    case 0:
+        ui->codeBrowser->find(searchTerm, QTextDocument::FindBackward);
+        break;
+    case 1:
+        ui->asciiBrowser->find(searchTerm, QTextDocument::FindBackward);
+        break;
+    case 2:
+        ui->symbolsBrowser->find(searchTerm, QTextDocument::FindBackward);
+        break;
+    case 3:
+        ui->relocationsBrowser->find(searchTerm, QTextDocument::FindBackward);
+        break;
+    case 4:
+        ui->headersBrowser->find(searchTerm, QTextDocument::FindBackward);
+        break;
+    default:
+        break;
+    }
+}
 
 /*
  *  Options
@@ -851,3 +924,4 @@ void MainWindow::on_actionShow_Containing_Folder_triggered()
     // Open current directory in file manager
     files.openFileManager(files.getCurrentDirectory());
 }
+
