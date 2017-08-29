@@ -100,6 +100,7 @@ private:
     int currentFunctionIndex;
     QList< QVector<int> > history;
     QList< QVector<int> >::const_iterator historyIterator;
+    QVector<QString> baseOffsets;
 };
 
 #endif // MAINWINDOW_H

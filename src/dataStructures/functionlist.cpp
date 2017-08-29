@@ -6,7 +6,6 @@ FunctionList::FunctionList()
     head = NULL;
     tail = NULL;
     length = 0;
-    errorMsg = "";
 }
 
 void FunctionList::insert(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QByteArray> > contents){
@@ -38,7 +37,6 @@ void FunctionList::nukeList(){
         head = NULL;
         tail = NULL;
         length = 0;
-        errorMsg = "";
 
     }
 }
@@ -244,22 +242,3 @@ QVector< QVector<QString> > FunctionList::findCallsToAddress(QString targetAddre
 
     return results;
 }
-
-
-void FunctionList::setErrorMsg(QString msg){
-    errorMsg = msg;
-}
-
-QString FunctionList::getErrorMsg(){
-    return errorMsg;
-}
-
-// Checks if list was created successfully(no errors)
-bool FunctionList::successfullyCreated(){
-    if (errorMsg == "")
-        return true;
-    else
-        return false;
-}
-
-

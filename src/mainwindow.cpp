@@ -234,28 +234,14 @@ void MainWindow::open(QString file){
         // Clear history
         history.clear();
 
+        // Check for errors or invalid file
+        QString errorMsg = objDumper.checkForErrors(file);
+        bool canDisassemble = true;
 
-        /*
-         *  Disassemble Binary and Display Values
-        */
-
-        // Disassemble and get function list
-        functionList.nukeList();
-        functionList = objDumper.getFunctionList(file);
-
-        // If functionlist is empty
-        if (functionList.isEmpty() && functionList.successfullyCreated()){
-            ui->codeBrowser->setPlainText("File format not recognized.");
-            ui->addressLabel->setText("");
-            ui->functionLabel->setText("");
-
-          // If objdump returned error message
-        } else if (!functionList.successfullyCreated()){
-            QString message = functionList.getErrorMsg();
-
-            // If format is ambigous message, let user user select format from list of matching formats
-            if (message.contains("Matching formats")){
-                QStringList formats = message.split(":");
+        // If format is ambigous message, let user user select format from list of matching formats
+        if (!errorMsg.isEmpty()){
+            if (errorMsg.contains("Matching formats")){
+                QStringList formats = errorMsg.split(":");
                 if (formats.length() == 2){
                     formats = formats.at(1).split(" ", QString::SkipEmptyParts);
 
@@ -263,66 +249,78 @@ void MainWindow::open(QString file){
                         // Get target format and set flag
                         QString format = QInputDialog::getItem(this, "Select matching format", "Format is ambigous, select matching format:", formats, 0, false);
                         objDumper.setTarget("-b " + format);
-
-                        // Generate new fumnctionlist
-                        functionList.nukeList();
-                        functionList = objDumper.getFunctionList(file);
-                        displayFunctionData();
                     } else {
                         // Display error message
-                        ui->codeBrowser->setPlainText(message);
+                        ui->codeBrowser->setPlainText(errorMsg);
+                        canDisassemble = false;
                     }
                 }
 
             } else {
                 // Display error message
-                ui->codeBrowser->setPlainText(message);
-                // Disable navigation and tools
-                ui->actionGo_To_Address->setEnabled(false);
-                ui->actionGo_to_Address_at_Cursor->setEnabled(false);
-                ui->actionGet_Offset->setEnabled(false);
+                ui->codeBrowser->setPlainText(errorMsg);
+                canDisassemble = false;
+            }
+        }
+
+        if (canDisassemble) {
+            /*
+             *  Disassemble Binary and Display Values
+            */
+
+            // Get base offsets
+            baseOffsets = objDumper.getBaseOffset(file);
+
+            // Disassemble and get function list
+            functionList.nukeList();
+            functionList = objDumper.getFunctionList(file, baseOffsets);
+
+            // If functionlist is empty
+            if (functionList.isEmpty()){
+                ui->codeBrowser->setPlainText("File format not recognized.");
+                ui->addressLabel->setText("");
+                ui->functionLabel->setText("");
+
+            } else {
+                // If all good, display disassembly data
+                displayFunctionData();
             }
 
-          // If all good, display disassembly data
-        } else {
-            displayFunctionData();
+            // Get section list and set hex values
+            sectionList.nukeList();
+            sectionList = objDumper.getSectionList(file);
+            int len = sectionList.getLength();
+            QByteArray addressStr;
+            QByteArray hexStr;
+
+            for (int i = 1; i < len; i++){
+                Section section = sectionList.getSection(i);
+
+                addressStr.append("\n" + section.getAddressString() + "\n");
+                hexStr.append(section.getSectionName() + "\n" + section.getHexString() + "\n");
+            }
+            setUpdatesEnabled(false);
+            ui->hexAddressBrowser->setPlainText(addressStr);
+            ui->hexBrowser->setPlainText(hexStr);
+
+            // Set file format value in statusbar
+            ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
+            ui->symbolsBrowser->setPlainText(objDumper.getSymbolsTable(file));
+            ui->relocationsBrowser->setPlainText(objDumper.getRelocationEntries(file));
+            ui->headersBrowser->setPlainText(objDumper.getHeaders(file));
+            setUpdatesEnabled(true);
+
+            // Reset specified target
+            objDumper.setTarget("");
+
+            // Load strings data
+            strings.setStringsData(files.strings(file));
+            ui->stringsOffsetBrowser->setPlainText(strings.getStringsOffsets());
+            ui->stringsBrowser->setPlainText(strings.getStrings());
+
+            ui->tabWidget->setCurrentIndex(0);
+            ui->codeBrowser->setFocus();
         }
-
-        // Get section list and set hex values
-        sectionList.nukeList();
-        sectionList = objDumper.getSectionList(file);
-        int len = sectionList.getLength();
-        QByteArray addressStr;
-        QByteArray hexStr;
-
-        for (int i = 1; i < len; i++){
-            Section section = sectionList.getSection(i);
-
-            addressStr.append("\n" + section.getAddressString() + "\n");
-            hexStr.append(section.getSectionName() + "\n" + section.getHexString() + "\n");
-        }
-        setUpdatesEnabled(false);
-        ui->hexAddressBrowser->setPlainText(addressStr);
-        ui->hexBrowser->setPlainText(hexStr);
-
-        // Set file format value in statusbar
-        ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
-        ui->symbolsBrowser->setPlainText(objDumper.getSymbolsTable(file));
-        ui->relocationsBrowser->setPlainText(objDumper.getRelocationEntries(file));
-        ui->headersBrowser->setPlainText(objDumper.getHeaders(file));
-        setUpdatesEnabled(true);
-
-        // Reset specified target
-        objDumper.setTarget("");
-
-        // Load strings data
-        strings.setStringsData(files.strings(file));
-        ui->stringsOffsetBrowser->setPlainText(strings.getStringsOffsets());
-        ui->stringsBrowser->setPlainText(strings.getStrings());
-
-        ui->tabWidget->setCurrentIndex(0);
-        ui->codeBrowser->setFocus();
-
     }
 }
 
@@ -501,46 +499,20 @@ void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 // Get file offset of current line of disassembly
 void MainWindow::on_actionGet_Offset_triggered()
 {
-    /*
-     * Offset calculated by [function offset] + [current line offset from function start]
-     * Note: file offset often last part of virtual memory address, but not always.
-    */
-    if (!functionList.isEmpty()){
+    if (!functionList.isEmpty() && !baseOffsets.isEmpty()){
         Function function = functionList.getFunction(currentFunctionIndex);
         QTextCursor cursor = ui->codeBrowser->textCursor();
         int lineNum = cursor.blockNumber();
 
         if (function.getMatrixLen() > 0 && lineNum < function.getMatrixLen()){
-
             // Get addresses
             QString currentLineAddressStr = function.getAddressAt(lineNum);
-            QString functionAddressStr = function.getAddress();
+            // Get file offset of address
+            QVector<QString> offset = objDumper.getFileOffset(currentLineAddressStr, baseOffsets);
+            QString offsetMsg = "File Offset of " + function.getAddressAt(lineNum) + "\nHex: " + offset[0] + "\nDecimal: " + offset[1];
 
-            // Convert addresses from hex string to longs
-            bool currentAddrOk;
-            bool functAddrOk;
-            qlonglong addr = currentLineAddressStr.toLongLong(&currentAddrOk, 16);
-            qlonglong functAddr = functionAddressStr.toLongLong(&functAddrOk, 16);
+            QMessageBox::information(this, tr("File Offset"), offsetMsg,QMessageBox::Close);
 
-            if (currentAddrOk && functAddrOk){
-                // Offset of current line from function start
-                qlonglong lineOffset = addr - functAddr;
-
-                // Get functions file offset
-                bool functOffsetOk;
-                qlonglong functOffset = function.getFileOffset().toLongLong(&functOffsetOk, 16);
-
-                if (functOffsetOk){
-                    // Calculate file offset of current line
-                    qlonglong lineFileOffset = functOffset + lineOffset;
-                    QString lineOffsetHexStr = "0x" + QString::number(lineFileOffset, 16);
-
-                    QString offsetMsg = "File Offset of " + function.getAddressAt(lineNum) + "\nHex: " + lineOffsetHexStr + "\nDecimal: " + QString::number(lineFileOffset);
-
-                    QMessageBox::information(this, tr("File Offset"), offsetMsg,QMessageBox::Close);
-
-                }
-            }
         }
     }
 }

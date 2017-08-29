@@ -16,8 +16,11 @@ public:
     QString getContents(QString file);
     QString getHeaders(QString file);
     QString getFileFormat(QString file);
-    FunctionList getFunctionList(QString file);
+    FunctionList getFunctionList(QString file, QVector<QString> baseOffsets);
     SectionList getSectionList(QString file);
+    QVector<QString> getBaseOffset(QString file);
+    QVector<QString> getFileOffset(QString targetAddress, QVector<QString> baseOffsets);
+    QString checkForErrors(QString file);
 
     void setUseCustomBinary(bool useCustom);
     void setobjdumpBinary(QString binary);

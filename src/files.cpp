@@ -1,7 +1,6 @@
 #include "files.h"
 #include <stdlib.h>
 #include <fstream>
-#include <string>
 #include <sstream>
 #include "QVector"
 #include "QFile"

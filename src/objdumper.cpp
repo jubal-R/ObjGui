@@ -57,27 +57,9 @@ QString ObjDumper::getDump(QString args, QString file){
 }
 
 // Parses disassembly and populates functionList
-FunctionList ObjDumper::getFunctionList(QString file){
+FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffsets){
    FunctionList functionList;
    QString dump = getDisassembly(file);
-
-   /*
-    *  Check for errors.
-    *
-    *  If dump contains errors return function list containing a single function
-    *  with an empty name and the error message stored in its contents.
-    *
-    */
-   if (dump == "format not recognized"){
-       functionList.setErrorMsg("File format not recognized.");
-       return functionList;
-   } else if (dump == "architecture unknown"){
-       functionList.setErrorMsg("Objdump can't disassemble this file because the architecture is unknown.");
-       return functionList;
-   } else if (dump.left(20).contains("Matching formats")){
-       functionList.setErrorMsg(dump);
-       return functionList;
-   }
 
     // Split dump into list of functions
     QVector<QStringRef> dumpList = dump.splitRef("\n\n");
@@ -109,30 +91,16 @@ FunctionList ObjDumper::getFunctionList(QString file){
             // Get function address
             address = tmp;
 
-            // Find end of line, then count back to find begining of offset
-            i += 2;
-            int eolCounter = i;
-            // Count to end of line
-            while (eolCounter < dumpStr.length()-1 && dumpStr.at(eolCounter) != QChar('\n')){
-                eolCounter++;
-            }
-            int offsetPosCounter = eolCounter - 1;
-            while (offsetPosCounter > 0 && dumpStr.at(offsetPosCounter) != QChar('(')){
-                offsetPosCounter--;
-            }
-            offsetPosCounter -= 2;
-
-            int nameLen = offsetPosCounter - i;
+            // Get file offset
+            fileOffest = getFileOffset(address, baseOffsets)[0];
 
             // Get function name
-            name = dumpStr.mid(i, nameLen).toString();
-
-            // Get file offset
-            i += nameLen + 16;
-            while (i < dumpStr.length()-1 && dumpStr.at(i) != QChar(')')){
-                fileOffest.append(dumpStr.at(i));
+            i += 2;
+            while (i < dumpStr.length()-1 && dumpStr.at(i) != QChar('\n')){
+                name.append(dumpStr.at(i));
                 i++;
             }
+            name.chop(2);
 
             // Parse function contents
             QStringRef contents = dumpStr.mid(i+3);
@@ -278,7 +246,7 @@ SectionList ObjDumper::getSectionList(QString file){
 
 
 QString ObjDumper::getDisassembly(QString file){
-    QString disassembly = getDump("--insn-width=" + QString::number(insnwidth) + " " +optionalFlags + " -F -M " + outputSyntax + " " + disassemblyFlag, file);
+    QString disassembly = getDump("--insn-width=" + QString::number(insnwidth) + " " +optionalFlags + " -M " + outputSyntax + " " + disassemblyFlag, file);
     // Check first few lines for errors
     QString errors = parseDumpForErrors(getHeading(disassembly, 10));   // Output formatting can differ so check more lines to be safe
     if (errors == "")
@@ -336,12 +304,52 @@ QString ObjDumper::getFileFormat(QString file){
 
 }
 
+// Returns base offset [base vma, base file offset]
+QVector<QString> ObjDumper::getBaseOffset(QString file){
+    QVector<QString> baseOffset(2);
+    QString sectionHeader = getDump("-h", file);
+
+    if (!sectionHeader.isEmpty() && !sectionHeader.contains("File format not recognized")){
+        QStringRef firstSection = sectionHeader.splitRef('\n').at(5);
+        QVector<QStringRef> sectionVector = firstSection.split(' ', QString::SkipEmptyParts);
+        baseOffset[0] = sectionVector.at(3).toString();
+        baseOffset[1] = sectionVector.at(5).toString();
+    }
+
+    return baseOffset;
+}
+
+// Get file offset of virtual memory address as vecotor [hex value, decimal value]
+QVector<QString> ObjDumper::getFileOffset(QString targetAddress, QVector<QString> baseOffsets){
+    QVector<QString> fileOffset(2);
+    bool targetAddrOk;
+    bool baseAddrOk;
+    bool baseOffsetOk;
+    qlonglong targetAddr = targetAddress.toLongLong(&targetAddrOk, 16);
+    qlonglong baseAddr = baseOffsets[0].toLongLong(&baseAddrOk, 16);
+    qlonglong baseOffset = baseOffsets[1].toLongLong(&baseOffsetOk, 16);
+
+    if (targetAddrOk && baseAddrOk && baseOffsetOk){
+       qlonglong targetOffset = (targetAddr - baseAddr) + baseOffset;
+       fileOffset[0] = "0x" + QString::number(targetOffset, 16);
+       fileOffset[1] = QString::number(targetOffset);
+    }
+
+    return fileOffset;
+}
+
+// Try to dump a header with objdump and return any errors
+QString ObjDumper::checkForErrors(QString file){
+    QString dumpStr = getDump("-f", file);
+    return parseDumpForErrors(dumpStr);
+}
+
 // Check for objdumps output errors. returns empty string if no errors found
 QString ObjDumper::parseDumpForErrors(QString dump){
-    if (dump.contains("architecture UNKNOWN")){
-        return "architecture unknown";
+    if (dump.contains("UNKNOWN")){
+        return "Architecture unknown.";
     } else if (dump.contains("File format not recognized")){
-        return "format not recognized";
+        return "Format not recognized.";
     }else if (dump.contains("File format is ambiguous")){
         QVector<QStringRef> dumpList = dump.splitRef(":");
         if (dumpList.length() == 5){
