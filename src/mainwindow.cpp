@@ -13,6 +13,7 @@
 #include "highlighters/sectionhighlighter.h"
 #include "highlighters/headerhighlighter.h"
 #include "objdumper.h"
+#include "dataStructures/strings.h"
 #include "ui_loadingdialog.h"
 #include "resultsdialog.h"
 
@@ -21,6 +22,7 @@ using namespace std;
 Files files;
 FunctionList functionList;
 SectionList sectionList;
+Strings strings;
 QSettings settings;
 ObjDumper objDumper;
 DisassemblyHighlighter *disHighlighter = NULL;
@@ -35,8 +37,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(ui->hexAddressBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->hexBrowser->verticalScrollBar(), SLOT(setValue(int)));
     QObject::connect(ui->hexBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->hexAddressBrowser->verticalScrollBar(), SLOT(setValue(int)));
-    QObject::connect(ui->hexBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->asciiBrowser->verticalScrollBar(), SLOT(setValue(int)));
-    QObject::connect(ui->asciiBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->hexBrowser->verticalScrollBar(), SLOT(setValue(int)));
+
+    QObject::connect(ui->stringsOffsetBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->stringsBrowser->verticalScrollBar(), SLOT(setValue(int)));
+    QObject::connect(ui->stringsBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->stringsOffsetBrowser->verticalScrollBar(), SLOT(setValue(int)));
 
     /*
      *  Setup builtin fonts
@@ -73,9 +76,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->sectionLabel->setFont(sansBold);
     ui->hexAddressLabel->setFont(sansBold);
     ui->hexLabel->setFont(sansBold);
-    ui->asciiLabel->setFont(sansBold);
     ui->symbolsTableLabel->setFont(sansBold);
     ui->relocationsLabel->setFont(sansBold);
+    ui->stringsOffsetLabel->setFont(sansBold);
+    ui->stringsLabel->setFont(sansBold);
 
     // Monospace
     int monoid = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro.ttf");
@@ -88,11 +92,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->relocationsBrowser->setFont(mono);
     ui->hexAddressBrowser->setFont(mono);
     ui->hexBrowser->setFont(mono);
-    ui->asciiBrowser->setFont(mono);
     ui->headersBrowser->setFont(mono);
     ui->addressValueLabel->setFont(mono);
     ui->fileOffsetValueLabel->setFont(mono);
     ui->sectionValueLabel->setFont(mono);
+    ui->stringsOffsetBrowser->setFont(mono);
+    ui->stringsBrowser->setFont(mono);
 
     // Monospace Bold
     int monoBoldId = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro B.ttf");
@@ -219,11 +224,12 @@ void MainWindow::open(QString file){
         ui->codeBrowser->clear();
         ui->hexAddressBrowser->clear();
         ui->hexBrowser->clear();
-        ui->asciiBrowser->clear();
         ui->fileFormatlabel->clear();
         ui->symbolsBrowser->clear();
         ui->relocationsBrowser->clear();
         ui->headersBrowser->clear();
+        ui->stringsOffsetBrowser->clear();
+        ui->stringsBrowser->clear();
 
         // Clear history
         history.clear();
@@ -288,19 +294,16 @@ void MainWindow::open(QString file){
         int len = sectionList.getLength();
         QByteArray addressStr;
         QByteArray hexStr;
-        QByteArray asciiStr;
 
         for (int i = 1; i < len; i++){
             Section section = sectionList.getSection(i);
 
             addressStr.append("\n" + section.getAddressString() + "\n");
             hexStr.append(section.getSectionName() + "\n" + section.getHexString() + "\n");
-            asciiStr.append("\n" + section.getAsciiString() + "\n");
         }
         setUpdatesEnabled(false);
         ui->hexAddressBrowser->setPlainText(addressStr);
         ui->hexBrowser->setPlainText(hexStr);
-        ui->asciiBrowser->setPlainText(asciiStr);
 
         // Set file format value in statusbar
         ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
@@ -311,6 +314,11 @@ void MainWindow::open(QString file){
 
         // Reset specified target
         objDumper.setTarget("");
+
+        // Load strings data
+        strings.setStringsData(files.strings(file));
+        ui->stringsOffsetBrowser->setPlainText(strings.getStringsOffsets());
+        ui->stringsBrowser->setPlainText(strings.getStrings());
 
         ui->tabWidget->setCurrentIndex(0);
         ui->codeBrowser->setFocus();
@@ -686,9 +694,7 @@ void MainWindow::on_findButton_clicked()
         ui->codeBrowser->find(searchTerm);
         break;
     case 1:
-//        ui->hexAddressBrowser->find(searchTerm);
-//        ui->hexBrowser->find(searchTerm);
-        ui->asciiBrowser->find(searchTerm);
+        ui->hexBrowser->find(searchTerm);
         break;
     case 2:
         ui->symbolsBrowser->find(searchTerm);
@@ -697,8 +703,10 @@ void MainWindow::on_findButton_clicked()
         ui->relocationsBrowser->find(searchTerm);
         break;
     case 4:
-        ui->headersBrowser->find(searchTerm);
+        ui->stringsBrowser->find(searchTerm);
         break;
+    case 5:
+        ui->headersBrowser->find(searchTerm);
     default:
         break;
     }
@@ -720,7 +728,7 @@ void MainWindow::on_findPrevButton_clicked()
         ui->codeBrowser->find(searchTerm, QTextDocument::FindBackward);
         break;
     case 1:
-        ui->asciiBrowser->find(searchTerm, QTextDocument::FindBackward);
+        ui->hexBrowser->find(searchTerm, QTextDocument::FindBackward);
         break;
     case 2:
         ui->symbolsBrowser->find(searchTerm, QTextDocument::FindBackward);
@@ -729,8 +737,10 @@ void MainWindow::on_findPrevButton_clicked()
         ui->relocationsBrowser->find(searchTerm, QTextDocument::FindBackward);
         break;
     case 4:
-        ui->headersBrowser->find(searchTerm, QTextDocument::FindBackward);
+        ui->stringsBrowser->find(searchTerm, QTextDocument::FindBackward);
         break;
+    case 5:
+        ui->headersBrowser->find(searchTerm, QTextDocument::FindBackward);
     default:
         break;
     }

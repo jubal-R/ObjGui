@@ -2,11 +2,11 @@
 
 /*
  * Section contents stored in a matrix where each row is a line of output.
- * Colomns contain {address, hex, ascii}
+ * Colomns contain {address, hex}
  * Example:
- *      [000000]    [0b 0a 3c]    [1..hello ]
- *      [000010]    [0b 0a 3c]    [world....]
- *      [000020]    [12 c9 5d]    [..c.h.cv.]
+ *      [000000]    [0b 0a 3c]
+ *      [000010]    [0b 0a 3c]
+ *      [000020]    [12 c9 5d]
  *      ...
  */
 
@@ -52,14 +52,4 @@ QByteArray Section::getAddressString(){
     }
 
     return addrStr;
-}
-
-// Get a string of all ascii values seperated by line breaks
-QByteArray Section::getAsciiString(){
-    QByteArray asciiStr = "";
-    for (int i = 0; i < matrixLen; i++){
-        asciiStr.append(sectionMatrix.at(i)[2] + "\n");
-    }
-
-    return asciiStr;
 }

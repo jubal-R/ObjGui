@@ -7,8 +7,8 @@ class Files
 {
 public:
     Files();
-    QString read(QString file);
-    bool write(QString fileName, QString content);
+    QVector< QVector<QByteArray> > strings(QString file);
+    bool isPrintableChar(char c);
     QString getHomeDir();
     QString getDirectory(QString file);
     QString getCurrentDirectory();

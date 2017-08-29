@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     highlighters/disassemblyhighlighter.cpp \
     highlighters/headerhighlighter.cpp \
     highlighters/sectionhighlighter.cpp \
-    resultsdialog.cpp
+    resultsdialog.cpp \
+    dataStructures/strings.cpp
 
 HEADERS  += mainwindow.h \
     files.h \
@@ -39,7 +40,8 @@ HEADERS  += mainwindow.h \
     highlighters/disassemblyhighlighter.h \
     highlighters/headerhighlighter.h \
     highlighters/sectionhighlighter.h \
-    resultsdialog.h
+    resultsdialog.h \
+    dataStructures/strings.h
 
 FORMS    += mainwindow.ui \
     loadingdialog.ui \

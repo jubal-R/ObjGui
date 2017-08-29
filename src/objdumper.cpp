@@ -233,7 +233,7 @@ SectionList ObjDumper::getSectionList(QString file){
         // Parse each line and add data to lists
         for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
             QStringRef line = lines.at(lineNum);
-            QVector<QByteArray> row(3);
+            QVector<QByteArray> row(2);
 
             // Get Address
             QByteArray address;
@@ -258,14 +258,11 @@ SectionList ObjDumper::getSectionList(QString file){
 
             row[1] = hexStr;
 
-            pos += 37;
-
-            row[2] = line.mid(pos).toLocal8Bit();
+            // Ignore ascii
 
             // Remove extra space from byte array
             row[0].squeeze();
             row[1].squeeze();
-            row[2].squeeze();
 
             sectionMatrix.append(row);
 

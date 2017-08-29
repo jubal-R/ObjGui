@@ -14,7 +14,6 @@ public:
     QVector<QByteArray> getLine(int line);
     QByteArray getHexString();
     QByteArray getAddressString();
-    QByteArray getAsciiString();
 
 private:
     QString sectionName;
