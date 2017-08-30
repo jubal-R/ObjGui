@@ -19,6 +19,12 @@ QVector< QVector<QString> > Files::strings(QString filename, QVector<QString> ba
     if(!file.open(QIODevice::ReadOnly))
         return stringsData;
 
+    // Seek to start of first section
+    bool ok;
+    qint64 startPos = baseOffsets[1].toLongLong(&ok, 16);
+    if (ok)
+        file.seek(startPos);
+
     // Read each byte
     while (!file.atEnd()) {
         QByteArray bytes = file.read(1);

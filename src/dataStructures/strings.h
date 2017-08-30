@@ -10,6 +10,7 @@ public:
     Strings(QVector< QVector<QString> > stringsData);
     void setStringsData(QVector< QVector<QString> > stringsData);
     int getMatrixLen();
+    int getIndexByAddress(QString address);
     QString getStringsAddresses();
     QString getStrings();
 private:

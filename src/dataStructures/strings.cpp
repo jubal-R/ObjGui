@@ -14,6 +14,38 @@ void Strings::setStringsData(QVector<QVector<QString> > stringsData){
     matrixLen = stringsMatrix.length();
 }
 
+int Strings::getIndexByAddress(QString targetAddress){
+    if (!stringsMatrix.isEmpty()){
+        // Binary search
+        int upperLimit = matrixLen - 1;
+        int lowerLimit = 0;
+        int currentIndex = upperLimit / 2;
+
+        while (lowerLimit != upperLimit && currentIndex != 0){
+            QString currentAddress = stringsMatrix[currentIndex][0];
+
+            if (currentAddress == targetAddress){
+                return currentIndex;
+            } else if (targetAddress < currentAddress){
+                upperLimit = currentIndex - 1;
+                currentIndex = (upperLimit + lowerLimit) / 2;
+            } else{
+                lowerLimit = currentIndex + 1;
+                currentIndex = (upperLimit + lowerLimit) / 2;
+            }
+
+        }
+        // Final checks
+        if (stringsMatrix[currentIndex][0] == targetAddress){
+            return currentIndex;
+        } else if (matrixLen > 1 && stringsMatrix[1][0] == targetAddress){
+            return 1;
+        }
+    }
+    // If not found return -1
+    return -1;
+}
+
 QString Strings::getStrings(){
     QString strings;
     for (int i = 0; i < matrixLen; i++){

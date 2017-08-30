@@ -436,6 +436,8 @@ void MainWindow::highlightCurrentLine(){
 // Go to virtual memory address
 void MainWindow::goToAddress(QString targetAddress){
     if (targetAddress != ""){
+        // Search functions list
+
         // Find address index
         QVector<int> location = functionList.getAddressLocation(targetAddress);
 
@@ -463,7 +465,20 @@ void MainWindow::goToAddress(QString targetAddress){
             addToHistory(currentFunctionIndex, location[1]);
 
         } else {
-            QMessageBox::information(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);
+            // Search strings
+            int stringsIndex = strings.getIndexByAddress(targetAddress);
+
+            if (stringsIndex >= 0){
+                ui->tabWidget->setCurrentIndex(4);
+                QTextCursor cursor(ui->stringsBrowser->document()->findBlockByLineNumber(stringsIndex));
+                cursor.select(QTextCursor::LineUnderCursor);
+                ui->stringsBrowser->setTextCursor(cursor);
+                ui->stringsBrowser->setFocus();
+
+            } else {
+                QMessageBox::information(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);
+            }
+
         }
     }
 }
