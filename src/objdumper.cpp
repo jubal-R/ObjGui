@@ -103,7 +103,7 @@ FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffse
             name.chop(2);
 
             // Parse function contents
-            QStringRef contents = dumpStr.mid(i+3);
+            QStringRef contents = dumpStr.mid(i);
             QVector<QStringRef> lines = contents.split("\n");
 
             for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
