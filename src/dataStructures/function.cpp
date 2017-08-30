@@ -43,7 +43,10 @@ QByteArray Function::getContents(){
 }
 
 QString Function::getAddressAt(int index){
-    return functionMatrix.at(index)[0];
+    if (index >= 0 && index < matrixLen)
+        return functionMatrix.at(index)[0];
+    else
+        return "";
 }
 
 int Function::getMatrixLen(){

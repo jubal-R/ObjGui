@@ -111,4 +111,3 @@ QStringList SectionList::getSectionNames(){
     return sectionNames;
 }
 
-

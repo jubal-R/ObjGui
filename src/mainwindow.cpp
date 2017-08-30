@@ -406,6 +406,7 @@ void MainWindow::displayFunctionData(){
         ui->actionGo_To_Address->setEnabled(true);
         ui->actionGo_to_Address_at_Cursor->setEnabled(true);
         ui->actionGet_Offset->setEnabled(true);
+        ui->actionGet_File_Offset_of_Current_Line->setEnabled(true);
         ui->actionFind_References->setEnabled(true);
         ui->actionFind_Calls_to_Current_Function->setEnabled(true);
         ui->actionFind_Calls_to_Current_Location->setEnabled(true);
@@ -517,21 +518,55 @@ void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 // Get file offset of current line of disassembly
 void MainWindow::on_actionGet_Offset_triggered()
 {
+    bool ok;
+    QString targetAddress = QInputDialog::getText(this, tr("Get File Offset"),tr("Get file offset of address:"), QLineEdit::Normal,"", &ok).trimmed();
+    if (ok){
+        // Get file offset of address
+        QVector<QString> offset = objDumper.getFileOffset(targetAddress, baseOffsets);
+        if(!offset.isEmpty()){
+            QString offsetMsg = "File Offset of " + targetAddress+ "\nHex: " + offset[0] + "\nDecimal: " + offset[1];
+            QMessageBox::information(this, tr("File Offset"), offsetMsg,QMessageBox::Close);
+        } else {
+            QMessageBox::information(this, tr("File Offset"), "Invalid address.",QMessageBox::Close);
+        }
+    }
+}
+
+void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
+{
     if (!functionList.isEmpty() && !baseOffsets.isEmpty()){
-        Function function = functionList.getFunction(currentFunctionIndex);
-        QTextCursor cursor = ui->codeBrowser->textCursor();
-        int lineNum = cursor.blockNumber();
+        int currentTab = ui->tabWidget->currentIndex();
+        QString offsetMsg = "";
 
-        if (function.getMatrixLen() > 0 && lineNum < function.getMatrixLen()){
-            // Get addresses
+        if (currentTab == 0){
+            Function function = functionList.getFunction(currentFunctionIndex);
+            QTextCursor cursor = ui->codeBrowser->textCursor();
+            int lineNum = cursor.blockNumber();
+            // Get address
             QString currentLineAddressStr = function.getAddressAt(lineNum);
-            // Get file offset of address
-            QVector<QString> offset = objDumper.getFileOffset(currentLineAddressStr, baseOffsets);
-            QString offsetMsg = "File Offset of " + function.getAddressAt(lineNum) + "\nHex: " + offset[0] + "\nDecimal: " + offset[1];
 
+            if (!currentLineAddressStr.isEmpty()){
+                // Get file offset of address
+                QVector<QString> offset = objDumper.getFileOffset(currentLineAddressStr, baseOffsets);
+                offsetMsg = "File Offset of " + currentLineAddressStr + "\nHex: " + offset[0] + "\nDecimal: " + offset[1];
+            }
+
+        } else if (currentTab == 4){
+            QTextCursor cursor = ui->stringsBrowser->textCursor();
+            int lineNum = cursor.blockNumber();
+            // Get address
+            QString currentLineAddressStr = strings.getAddressAt(lineNum);
+
+            if (!currentLineAddressStr.isEmpty()){
+                // Get file offset of address
+                QVector<QString> offset = objDumper.getFileOffset(currentLineAddressStr, baseOffsets);
+                offsetMsg = "File Offset of " + currentLineAddressStr + "\nHex: " + offset[0] + "\nDecimal: " + offset[1];
+            }
+        }
+
+        if (!offsetMsg.isEmpty())
             QMessageBox::information(this, tr("File Offset"), offsetMsg,QMessageBox::Close);
 
-        }
     }
 }
 

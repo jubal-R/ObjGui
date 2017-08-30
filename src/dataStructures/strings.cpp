@@ -46,6 +46,13 @@ int Strings::getIndexByAddress(QString targetAddress){
     return -1;
 }
 
+QString Strings::getAddressAt(int index){
+    if(index >= 0 && index < matrixLen)
+        return stringsMatrix[index][0];
+    else
+        return "";
+}
+
 QString Strings::getStrings(){
     QString strings;
     for (int i = 0; i < matrixLen; i++){

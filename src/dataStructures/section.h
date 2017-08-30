@@ -10,7 +10,8 @@ public:
     Section();
     Section(QString section, QVector< QVector<QByteArray> > contents);
     QString getSectionName();
-    int getNumLines();
+    QString getAddressAt(int index);
+    int getMatrixLen();
     QVector<QByteArray> getLine(int line);
     QByteArray getHexString();
     QByteArray getAddressString();

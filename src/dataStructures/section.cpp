@@ -25,8 +25,15 @@ QString Section::getSectionName(){
     return sectionName;
 }
 
-int Section::getNumLines(){
+int Section::getMatrixLen(){
     return matrixLen;
+}
+
+QString Section::getAddressAt(int index){
+    if (index >= 0 && index < matrixLen)
+        return sectionMatrix.at(index)[0];
+    else
+        return "";
 }
 
 // Return a line(row) from the matrix

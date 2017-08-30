@@ -99,6 +99,8 @@ private slots:
 
     void on_actionFind_References_triggered();
 
+    void on_actionGet_File_Offset_of_Current_Line_triggered();
+
 private:
     Ui::MainWindow *ui;
     int currentFunctionIndex;
