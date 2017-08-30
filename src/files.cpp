@@ -12,9 +12,9 @@ Files::Files()
     currentDirectory = getHomeDir();
 }
 
-// Extract strings from file
-QVector< QVector<QByteArray> > Files::strings(QString filename){
-    QVector< QVector<QByteArray> > stringsData;
+// Extract strings from file along with their file offset and vma
+QVector< QVector<QString> > Files::strings(QString filename, QVector<QString> baseOffsets){
+    QVector< QVector<QString> > stringsData;
     QFile file(filename);
     if(!file.open(QIODevice::ReadOnly))
         return stringsData;
@@ -27,7 +27,7 @@ QVector< QVector<QByteArray> > Files::strings(QString filename){
         // If read byte is a printable character start builing string
         if (isPrintableChar(byte)){
             qint64 pos = file.pos();
-            QByteArray str = bytes;
+            QString str = bytes;
 
             // Build string until running into a nonprintable character
             while (!file.atEnd()){
@@ -42,8 +42,8 @@ QVector< QVector<QByteArray> > Files::strings(QString filename){
 
             // Add built string to results if it meets length requirement
             if(str.length() >= 4){
-                QVector<QByteArray> stringData(2);
-                stringData[0] = QByteArray::number(pos);
+                QVector<QString> stringData(2);
+                stringData[0] = getAddressFromOffset(QString::number(pos - 1, 16), baseOffsets);
                 stringData[1] = str;
 
                 stringsData.append(stringData);
@@ -55,10 +55,31 @@ QVector< QVector<QByteArray> > Files::strings(QString filename){
 }
 
 bool Files::isPrintableChar(char c){
-    if (c >= 32 && c <= 126)
+    if ((c >= 32 && c <= 126) || c == 9 || c== 10)
         return true;
     else
         return false;
+}
+
+// Return virtual memory address of file offset given base offsets
+QString Files::getAddressFromOffset(QString offset, QVector<QString> baseOffsets){
+    QString address = "";
+    bool targetOffsetOk;
+    bool baseAddrOk;
+    bool baseOffsetOk;
+    qlonglong targetOffset = offset.toLongLong(&targetOffsetOk, 16);
+    qlonglong baseAddr = baseOffsets[0].toLongLong(&baseAddrOk, 16);
+    qlonglong baseOffset = baseOffsets[1].toLongLong(&baseOffsetOk, 16);
+
+    if(targetOffsetOk && baseAddrOk && baseOffsetOk){
+        qlonglong offsetFromBase = targetOffset - baseOffset;
+        if(offsetFromBase >= 0){
+            qlonglong targetAddress = baseAddr + offsetFromBase;
+            address = QString::number(targetAddress, 16);
+        }
+    }
+
+    return address;
 }
 
 //  Return Users Home Directory

@@ -4,26 +4,28 @@ Strings::Strings(){
     matrixLen = 0;
 }
 
-Strings::Strings(QVector<QVector<QByteArray> > stringsData){
+Strings::Strings(QVector<QVector<QString> > stringsData){
     stringsMatrix = stringsData;
     matrixLen = stringsMatrix.length();
 }
 
-void Strings::setStringsData(QVector<QVector<QByteArray> > stringsData){
+void Strings::setStringsData(QVector<QVector<QString> > stringsData){
     stringsMatrix = stringsData;
     matrixLen = stringsMatrix.length();
 }
 
-QByteArray Strings::getStrings(){
-    QByteArray strings;
+QString Strings::getStrings(){
+    QString strings;
     for (int i = 0; i < matrixLen; i++){
-        strings.append(stringsMatrix[i][1] + "\n");
+        QString str = stringsMatrix[i][1];
+        str.replace('\n', "\\n");
+        strings.append(str + "\n");
     }
     return strings;
 }
 
-QByteArray Strings::getStringsOffsets(){
-    QByteArray offsets;
+QString Strings::getStringsAddresses(){
+    QString offsets;
     for (int i = 0; i < matrixLen; i++){
         offsets.append(stringsMatrix[i][0] + "\n");
     }

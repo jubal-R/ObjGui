@@ -739,7 +739,7 @@ color: rgb(85, 85, 85);</string>
                 <number>1</number>
                </property>
                <item row="1" column="0">
-                <widget class="QPlainTextEdit" name="stringsOffsetBrowser">
+                <widget class="QPlainTextEdit" name="stringsAddressBrowser">
                  <property name="maximumSize">
                   <size>
                    <width>100</width>
@@ -765,9 +765,9 @@ color: rgb(38, 139, 210);</string>
                 </widget>
                </item>
                <item row="0" column="0">
-                <widget class="QLabel" name="stringsOffsetLabel">
+                <widget class="QLabel" name="stringsAddressLabel">
                  <property name="text">
-                  <string>File Offset</string>
+                  <string>Address</string>
                  </property>
                 </widget>
                </item>

@@ -7,13 +7,13 @@ class Strings
 {
 public:
     Strings();
-    Strings(QVector< QVector<QByteArray> > stringsData);
-    void setStringsData(QVector< QVector<QByteArray> > stringsData);
+    Strings(QVector< QVector<QString> > stringsData);
+    void setStringsData(QVector< QVector<QString> > stringsData);
     int getMatrixLen();
-    QByteArray getStringsOffsets();
-    QByteArray getStrings();
+    QString getStringsAddresses();
+    QString getStrings();
 private:
-    QVector< QVector<QByteArray> > stringsMatrix;
+    QVector< QVector<QString> > stringsMatrix;
     int matrixLen;
 };
 

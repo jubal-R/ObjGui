@@ -38,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->hexAddressBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->hexBrowser->verticalScrollBar(), SLOT(setValue(int)));
     QObject::connect(ui->hexBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->hexAddressBrowser->verticalScrollBar(), SLOT(setValue(int)));
 
-    QObject::connect(ui->stringsOffsetBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->stringsBrowser->verticalScrollBar(), SLOT(setValue(int)));
-    QObject::connect(ui->stringsBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->stringsOffsetBrowser->verticalScrollBar(), SLOT(setValue(int)));
+    QObject::connect(ui->stringsAddressBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->stringsBrowser->verticalScrollBar(), SLOT(setValue(int)));
+    QObject::connect(ui->stringsBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->stringsAddressBrowser->verticalScrollBar(), SLOT(setValue(int)));
 
     /*
      *  Setup builtin fonts
@@ -78,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->hexLabel->setFont(sansBold);
     ui->symbolsTableLabel->setFont(sansBold);
     ui->relocationsLabel->setFont(sansBold);
-    ui->stringsOffsetLabel->setFont(sansBold);
+    ui->stringsAddressLabel->setFont(sansBold);
     ui->stringsLabel->setFont(sansBold);
 
     // Monospace
@@ -96,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->addressValueLabel->setFont(mono);
     ui->fileOffsetValueLabel->setFont(mono);
     ui->sectionValueLabel->setFont(mono);
-    ui->stringsOffsetBrowser->setFont(mono);
+    ui->stringsAddressBrowser->setFont(mono);
     ui->stringsBrowser->setFont(mono);
 
     // Monospace Bold
@@ -228,7 +228,7 @@ void MainWindow::open(QString file){
         ui->symbolsBrowser->clear();
         ui->relocationsBrowser->clear();
         ui->headersBrowser->clear();
-        ui->stringsOffsetBrowser->clear();
+        ui->stringsAddressBrowser->clear();
         ui->stringsBrowser->clear();
 
         // Clear history
@@ -314,8 +314,8 @@ void MainWindow::open(QString file){
             objDumper.setTarget("");
 
             // Load strings data
-            strings.setStringsData(files.strings(file));
-            ui->stringsOffsetBrowser->setPlainText(strings.getStringsOffsets());
+            strings.setStringsData(files.strings(file, baseOffsets));
+            ui->stringsAddressBrowser->setPlainText(strings.getStringsAddresses());
             ui->stringsBrowser->setPlainText(strings.getStrings());
 
             ui->tabWidget->setCurrentIndex(0);
