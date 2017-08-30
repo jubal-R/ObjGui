@@ -214,8 +214,8 @@ QVector< QVector<QString> > FunctionList::findCallsToFunction(QString targetFunc
     return results;
 }
 
-// Find all calls to specific address
-QVector< QVector<QString> > FunctionList::findCallsToAddress(QString targetAddress){
+// Find all references to a target string
+QVector< QVector<QString> > FunctionList::findReferences(QString target){
     QVector< QVector<QString> > results;
 
     // Search each function
@@ -229,7 +229,7 @@ QVector< QVector<QString> > FunctionList::findCallsToAddress(QString targetAddre
             for (int i = 0; i < matrixLen; i++){
                 QVector<QByteArray> line = function.getLine(i);
                 // Check for call to target function
-                if (QString::fromLocal8Bit(line[3]).contains(targetAddress)){
+                if (QString::fromLocal8Bit(line[3]).contains(target)){
                     QVector<QString> result(2);
                     result[0] = function.getName();
                     result[1] = line[0];

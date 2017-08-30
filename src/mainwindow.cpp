@@ -406,6 +406,9 @@ void MainWindow::displayFunctionData(){
         ui->actionGo_To_Address->setEnabled(true);
         ui->actionGo_to_Address_at_Cursor->setEnabled(true);
         ui->actionGet_Offset->setEnabled(true);
+        ui->actionFind_References->setEnabled(true);
+        ui->actionFind_Calls_to_Current_Function->setEnabled(true);
+        ui->actionFind_Calls_to_Current_Location->setEnabled(true);
     }
 }
 
@@ -468,9 +471,9 @@ void MainWindow::goToAddress(QString targetAddress){
 void MainWindow::on_actionGo_To_Address_triggered()
 {
     bool ok = true;
-
     QString targetAddress = QInputDialog::getText(this, tr("Go to Address"),tr("Go to Address:"), QLineEdit::Normal,"", &ok).trimmed();
-    goToAddress(targetAddress);
+    if (ok)
+        goToAddress(targetAddress);
 
 }
 
@@ -617,13 +620,9 @@ void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
     }
 }
 
-// Find all calls to current location
-void MainWindow::on_actionFind_Calls_to_Current_Location_triggered()
-{
-    QTextCursor cursor = ui->codeBrowser->textCursor();
-    int lineNum = cursor.blockNumber();
-    QString targetLocation = functionList.getFunction(currentFunctionIndex).getAddressAt(lineNum);
-    QVector< QVector<QString> > results = functionList.findCallsToAddress(targetLocation);
+// Find all references to a target location
+void MainWindow::findReferencesToLocation(QString target){
+    QVector< QVector<QString> > results = functionList.findReferences(target);
 
     if (!results.isEmpty()){
         QString resultsStr = "";
@@ -635,12 +634,50 @@ void MainWindow::on_actionFind_Calls_to_Current_Location_triggered()
         // Display results
         ResultsDialog resultsDialog;
         resultsDialog.setWindowModality(Qt::WindowModal);
-        resultsDialog.setResultsLabelText("Calls to location " + targetLocation);
+        resultsDialog.setResultsLabelText("References to " + target);
         resultsDialog.setResultsText(resultsStr);
         resultsDialog.exec();
 
     } else {
-        QMessageBox::information(this, tr("Calls to Location"), "No calls found to location " + targetLocation,QMessageBox::Close);
+        QMessageBox::information(this, tr("References"), "No references found to " + target,QMessageBox::Close);
+    }
+}
+
+// Find References
+void MainWindow::on_actionFind_References_triggered()
+{
+    bool ok = true;
+    QString targetAddress = QInputDialog::getText(this, tr("Find References"),tr("Find references to:"), QLineEdit::Normal,"", &ok).trimmed();
+    if (ok)
+        findReferencesToLocation(targetAddress);
+}
+
+// Find all calls to current location
+void MainWindow::on_actionFind_Calls_to_Current_Location_triggered(){
+    if (!functionList.isEmpty()){
+        QTextCursor cursor = ui->codeBrowser->textCursor();
+        int lineNum = cursor.blockNumber();
+        QString targetLocation = functionList.getFunction(currentFunctionIndex).getAddressAt(lineNum);
+
+        QVector< QVector<QString> > results = functionList.findReferences(targetLocation);
+
+        if (!results.isEmpty()){
+            QString resultsStr = "";
+            for (int i = 0; i < results.length(); i++){
+                QVector<QString> result = results[i];
+                resultsStr.append(result[1] + "  " + result[0] + "\n");
+            }
+
+            // Display results
+            ResultsDialog resultsDialog;
+            resultsDialog.setWindowModality(Qt::WindowModal);
+            resultsDialog.setResultsLabelText("Calls to " + targetLocation);
+            resultsDialog.setResultsText(resultsStr);
+            resultsDialog.exec();
+
+        } else {
+            QMessageBox::information(this, tr("Calls to address"), "No calls found to address " + targetLocation,QMessageBox::Close);
+        }
     }
 }
 

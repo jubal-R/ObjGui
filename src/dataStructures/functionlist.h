@@ -18,7 +18,7 @@ public:
     QStringList getFunctionNames();
     QVector<int> getAddressLocation(QString targetAddress);
     QVector< QVector<QString> > findCallsToFunction(QString targetFunction);
-    QVector< QVector<QString> > findCallsToAddress(QString targetAddress);
+    QVector< QVector<QString> > findReferences(QString target);
 private:
     FunctionNode *head;
     FunctionNode *tail;

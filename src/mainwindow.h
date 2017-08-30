@@ -35,6 +35,8 @@ private slots:
 
     void addToHistory(int functionIndex, int lineNum);
 
+    void findReferencesToLocation(QString location);
+
     void on_actionProject_triggered();
 
     void on_actionExit_triggered();
@@ -94,6 +96,8 @@ private slots:
     void on_findLineEdit_returnPressed();
 
     void on_findPrevButton_clicked();
+
+    void on_actionFind_References_triggered();
 
 private:
     Ui::MainWindow *ui;

@@ -795,6 +795,9 @@ color: rgb(85, 85, 85);</string>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::TextSelectableByMouse</set>
+                 </property>
                 </widget>
                </item>
                <item row="0" column="1">
@@ -1396,6 +1399,7 @@ border-bottom: 2px solid #d4d4d4;</string>
      <string>Search</string>
     </property>
     <addaction name="actionFind_2"/>
+    <addaction name="actionFind_References"/>
     <addaction name="actionFind_Calls_to_Current_Function"/>
     <addaction name="actionFind_Calls_to_Current_Location"/>
    </widget>
@@ -1509,6 +1513,9 @@ border-bottom: 2px solid #d4d4d4;</string>
    </property>
   </action>
   <action name="actionFind_Calls_to_Current_Function">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Find Calls to Current Function</string>
    </property>
@@ -1517,6 +1524,9 @@ border-bottom: 2px solid #d4d4d4;</string>
    </property>
   </action>
   <action name="actionFind_Calls_to_Current_Location">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Find Calls to Current Location</string>
    </property>
@@ -1530,6 +1540,17 @@ border-bottom: 2px solid #d4d4d4;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionFind_References">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Find References</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+R</string>
    </property>
   </action>
  </widget>
