@@ -4,12 +4,14 @@
 #include <sstream>
 #include "QVector"
 #include "QFile"
+#include "QDir"
 
 #include "QDebug"
 
 Files::Files()
 {
-    currentDirectory = getHomeDir();
+    // Users home directory by default
+    currentDirectory = QDir::homePath();
 }
 
 // Extract strings from file along with their file offset and vma
@@ -86,22 +88,6 @@ QString Files::getAddressFromOffset(QString offset, QVector<QString> baseOffsets
     }
 
     return address;
-}
-
-//  Return Users Home Directory
-QString Files::getHomeDir(){
-    std::ostringstream oss;
-    FILE *in;
-    char buff[100];
-    if(!(in = popen("echo ~/" ,"r") )){
-        return "Fail :(";
-    }
-    while(fgets(buff, sizeof(buff), in) !=NULL){
-        oss << buff;
-    }
-    pclose(in);
-
-    return QString::fromStdString(oss.str());
 }
 
 // Open directory in file manager

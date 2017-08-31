@@ -10,7 +10,6 @@ public:
     QVector< QVector<QString> > strings(QString file, QVector<QString> baseOffsets);
     bool isPrintableChar(char c);
     QString getAddressFromOffset(QString offset, QVector<QString> baseOffsets);
-    QString getHomeDir();
     QString getDirectory(QString file);
     QString getCurrentDirectory();
     void setCurrentDirectory(QString file);
