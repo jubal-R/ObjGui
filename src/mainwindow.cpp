@@ -796,6 +796,8 @@ void MainWindow::on_findButton_clicked()
 
             currentSearchTerm = searchTerm;
             found = targetWidget->find(searchTerm);
+            // Call vertical scrollbar value changed to keep widgets scrolling synced
+            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
 
             // If not found move cursor back to original position and display not found message
             if(!found){
@@ -806,12 +808,17 @@ void MainWindow::on_findButton_clicked()
 
         } else {
             found = targetWidget->find(searchTerm);
+            // Call vertical scrollbar value changed to keep widgets scrolling synced
+            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
+
             // If not found wrap to begining and search again
             if (!found){
                 cursor.movePosition(QTextCursor::Start);
                 targetWidget->setTextCursor(cursor);
 
                 found = targetWidget->find(searchTerm);
+                // Call vertical scrollbar value changed to keep widgets scrolling synced
+                targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
                 if (!found){
                     cursor.setPosition(currentPosition);
                     targetWidget->setTextCursor(cursor);
@@ -871,6 +878,8 @@ void MainWindow::on_findPrevButton_clicked()
 
             currentSearchTerm = searchTerm;
             found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
+            // Call vertical scrollbar value changed to keep widgets scrolling synced
+            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
 
             // If not found move cursor back to original position and display not found message
             if(!found){
@@ -881,12 +890,17 @@ void MainWindow::on_findPrevButton_clicked()
 
         } else {
             found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
+            // Call vertical scrollbar value changed to keep widgets scrolling synced
+            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
+
             // If not found wrap to end and search again
             if (!found){
                 cursor.movePosition(QTextCursor::End);
                 targetWidget->setTextCursor(cursor);
 
                 found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
+                // Call vertical scrollbar value changed to keep widgets scrolling synced
+                targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
                 if (!found){
                     cursor.setPosition(currentPosition);
                     targetWidget->setTextCursor(cursor);
