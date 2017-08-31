@@ -114,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->splitter->restoreState(settings.value("splitterSizes").toByteArray());
 
     ui->searchBar->hide();
+    currentSearchTerm = "";
 
     /*
      *  Set options from saved settings
@@ -758,28 +759,69 @@ void MainWindow::on_findButton_clicked()
 {
     QString searchTerm = ui->findLineEdit->text();
     int currentTabIndex = ui->tabWidget->currentIndex();
+    QPlainTextEdit *targetWidget = NULL;
 
+    // Set pointer to target widget given current tab index
     switch (currentTabIndex) {
     case 0:
-        ui->codeBrowser->find(searchTerm);
+        targetWidget = ui->codeBrowser;
         break;
     case 1:
-        ui->hexBrowser->find(searchTerm);
+        targetWidget = ui->hexBrowser;
         break;
     case 2:
-        ui->symbolsBrowser->find(searchTerm);
+        targetWidget = ui->symbolsBrowser;
         break;
     case 3:
-        ui->relocationsBrowser->find(searchTerm);
+        targetWidget = ui->relocationsBrowser;
         break;
     case 4:
-        ui->stringsBrowser->find(searchTerm);
+        targetWidget = ui->stringsBrowser;
         break;
     case 5:
-        ui->headersBrowser->find(searchTerm);
+        targetWidget = ui->headersBrowser;
     default:
         break;
     }
+
+    if (targetWidget != NULL){
+        QTextCursor cursor = targetWidget->textCursor();
+        int currentPosition = cursor.position();
+        bool found = false;
+
+        // Start new search from begining of document
+        if (searchTerm != currentSearchTerm){
+            cursor.movePosition(QTextCursor::Start);
+            targetWidget->setTextCursor(cursor);
+
+            currentSearchTerm = searchTerm;
+            found = targetWidget->find(searchTerm);
+
+            // If not found move cursor back to original position and display not found message
+            if(!found){
+                cursor.setPosition(currentPosition);
+                targetWidget->setTextCursor(cursor);
+                QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
+            }
+
+        } else {
+            found = targetWidget->find(searchTerm);
+            // If not found wrap to begining and search again
+            if (!found){
+                cursor.movePosition(QTextCursor::Start);
+                targetWidget->setTextCursor(cursor);
+
+                found = targetWidget->find(searchTerm);
+                if (!found){
+                    cursor.setPosition(currentPosition);
+                    targetWidget->setTextCursor(cursor);
+                    QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
+                }
+            }
+        }
+
+    }
+
 }
 
 void MainWindow::on_findLineEdit_returnPressed()
@@ -787,32 +829,72 @@ void MainWindow::on_findLineEdit_returnPressed()
     on_findButton_clicked();
 }
 
-// Find Prev
+// Find Prev (search backwards)
 void MainWindow::on_findPrevButton_clicked()
 {
     QString searchTerm = ui->findLineEdit->text();
     int currentTabIndex = ui->tabWidget->currentIndex();
+    QPlainTextEdit *targetWidget = NULL;
 
+    // Set pointer to target widget given current tab index
     switch (currentTabIndex) {
     case 0:
-        ui->codeBrowser->find(searchTerm, QTextDocument::FindBackward);
+        targetWidget = ui->codeBrowser;
         break;
     case 1:
-        ui->hexBrowser->find(searchTerm, QTextDocument::FindBackward);
+        targetWidget = ui->hexBrowser;
         break;
     case 2:
-        ui->symbolsBrowser->find(searchTerm, QTextDocument::FindBackward);
+        targetWidget = ui->symbolsBrowser;
         break;
     case 3:
-        ui->relocationsBrowser->find(searchTerm, QTextDocument::FindBackward);
+        targetWidget = ui->relocationsBrowser;
         break;
     case 4:
-        ui->stringsBrowser->find(searchTerm, QTextDocument::FindBackward);
+        targetWidget = ui->stringsBrowser;
         break;
     case 5:
-        ui->headersBrowser->find(searchTerm, QTextDocument::FindBackward);
+        targetWidget = ui->headersBrowser;
     default:
         break;
+    }
+
+    if (targetWidget != NULL){
+        QTextCursor cursor = targetWidget->textCursor();
+        int currentPosition = cursor.position();
+        bool found = false;
+
+        // Start new search from end of document
+        if (searchTerm != currentSearchTerm){
+            cursor.movePosition(QTextCursor::End);
+            targetWidget->setTextCursor(cursor);
+
+            currentSearchTerm = searchTerm;
+            found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
+
+            // If not found move cursor back to original position and display not found message
+            if(!found){
+                cursor.setPosition(currentPosition);
+                targetWidget->setTextCursor(cursor);
+                QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
+            }
+
+        } else {
+            found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
+            // If not found wrap to end and search again
+            if (!found){
+                cursor.movePosition(QTextCursor::End);
+                targetWidget->setTextCursor(cursor);
+
+                found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
+                if (!found){
+                    cursor.setPosition(currentPosition);
+                    targetWidget->setTextCursor(cursor);
+                    QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
+                }
+            }
+        }
+
     }
 }
 

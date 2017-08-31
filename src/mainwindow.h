@@ -107,6 +107,7 @@ private:
     QList< QVector<int> > history;
     QList< QVector<int> >::const_iterator historyIterator;
     QVector<QString> baseOffsets;
+    QString currentSearchTerm;
 };
 
 #endif // MAINWINDOW_H
