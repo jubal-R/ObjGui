@@ -19,8 +19,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -305,7 +304,7 @@ border-top: 1px solid #d4d4d4;</string>
              <widget class="QWidget" name="disTab">
               <property name="styleSheet">
                <string notr="true">border: none;
-background-color: rgb(250, 250, 250);</string>
+</string>
               </property>
               <attribute name="title">
                <string>Disassembly</string>
@@ -400,7 +399,7 @@ background-color: rgb(250, 250, 250);</string>
                     </font>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">color: rgb(85, 85, 85)</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -476,8 +475,7 @@ background-color: rgb(250, 250, 250);</string>
                   <bool>false</bool>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
+                  <string notr="true"/>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Plain</enum>
@@ -506,8 +504,7 @@ color: rgb(85, 85, 85);</string>
              </widget>
              <widget class="QWidget" name="hexTab">
               <property name="styleSheet">
-               <string notr="true">border: none;
-background-color: rgb(250, 250, 250);</string>
+               <string notr="true">border: none;</string>
               </property>
               <attribute name="title">
                <string>Hex</string>
@@ -557,8 +554,7 @@ background-color: rgb(250, 250, 250);</string>
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
+                  <string notr="true"/>
                  </property>
                  <property name="verticalScrollBarPolicy">
                   <enum>Qt::ScrollBarAsNeeded</enum>
@@ -586,8 +582,7 @@ color: rgb(85, 85, 85);</string>
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(38, 139, 210);</string>
+                  <string notr="true"/>
                  </property>
                  <property name="verticalScrollBarPolicy">
                   <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -607,8 +602,7 @@ color: rgb(38, 139, 210);</string>
              </widget>
              <widget class="QWidget" name="symbolsTab">
               <property name="styleSheet">
-               <string notr="true">border: none;
-background-color: rgb(250, 250, 250);</string>
+               <string notr="true">border: none;</string>
               </property>
               <attribute name="title">
                <string>Symbols Table</string>
@@ -638,8 +632,7 @@ background-color: rgb(250, 250, 250);</string>
                   </font>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
+                  <string notr="true"/>
                  </property>
                  <property name="undoRedoEnabled">
                   <bool>false</bool>
@@ -663,8 +656,7 @@ color: rgb(85, 85, 85);</string>
              </widget>
              <widget class="QWidget" name="relocationsTab">
               <property name="styleSheet">
-               <string notr="true">border: none;
-background-color: rgb(250, 250, 250);</string>
+               <string notr="true">border: none;</string>
               </property>
               <attribute name="title">
                <string>Relocation Entries</string>
@@ -694,8 +686,7 @@ background-color: rgb(250, 250, 250);</string>
                   </font>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85)</string>
+                  <string notr="true"/>
                  </property>
                  <property name="undoRedoEnabled">
                   <bool>false</bool>
@@ -719,8 +710,7 @@ color: rgb(85, 85, 85)</string>
              </widget>
              <widget class="QWidget" name="stringsTab">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
+               <string notr="true"/>
               </property>
               <attribute name="title">
                <string>Strings</string>
@@ -750,8 +740,7 @@ color: rgb(85, 85, 85);</string>
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(38, 139, 210);</string>
+                  <string notr="true"/>
                  </property>
                  <property name="verticalScrollBarPolicy">
                   <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -783,8 +772,7 @@ color: rgb(38, 139, 210);</string>
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
+                  <string notr="true"/>
                  </property>
                  <property name="verticalScrollBarPolicy">
                   <enum>Qt::ScrollBarAsNeeded</enum>
@@ -814,8 +802,7 @@ color: rgb(85, 85, 85);</string>
              </widget>
              <widget class="QWidget" name="headersTab">
               <property name="styleSheet">
-               <string notr="true">border: none;
-background-color: rgb(250, 250, 250);</string>
+               <string notr="true">border: none;</string>
               </property>
               <attribute name="title">
                <string>Headers</string>
@@ -845,8 +832,7 @@ background-color: rgb(250, 250, 250);</string>
                   </font>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85)</string>
+                  <string notr="true"/>
                  </property>
                  <property name="undoRedoEnabled">
                   <bool>false</bool>
@@ -861,10 +847,9 @@ color: rgb(85, 85, 85)</string>
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="options_tab">
+             <widget class="QWidget" name="optionsTab">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(250, 250, 250);
-color: rgb(85, 85, 85);</string>
+               <string notr="true"/>
               </property>
               <attribute name="title">
                <string>Options</string>
@@ -885,6 +870,12 @@ color: rgb(85, 85, 85);</string>
                </item>
                <item row="1" column="0">
                 <widget class="QCheckBox" name="customBinaryCheckBox">
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Use custom binary</string>
                  </property>
@@ -988,6 +979,12 @@ color: rgb(85, 85, 85);</string>
                </item>
                <item row="4" column="2">
                 <widget class="QCheckBox" name="demanlgeCheckBox">
+                 <property name="maximumSize">
+                  <size>
+                   <width>150</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="toolTip">
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Decode mangled/processed symbol names&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
@@ -1017,6 +1014,12 @@ color: rgb(85, 85, 85);</string>
                </item>
                <item row="4" column="1">
                 <widget class="QCheckBox" name="disassemblyFlagcheckBox">
+                 <property name="maximumSize">
+                  <size>
+                   <width>150</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="toolTip">
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display assembler contents of all sections&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
@@ -1365,7 +1368,17 @@ border-bottom: 2px solid #d4d4d4;</string>
      <addaction name="actionIntel"/>
      <addaction name="actionAtt"/>
     </widget>
+    <widget class="QMenu" name="menuTheme">
+     <property name="title">
+      <string>Theme</string>
+     </property>
+     <addaction name="actionDefault"/>
+     <addaction name="actionDark"/>
+     <addaction name="actionSolarized"/>
+     <addaction name="actionSolarized_Dark"/>
+    </widget>
     <addaction name="menuSyntax"/>
+    <addaction name="menuTheme"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -1566,6 +1579,26 @@ border-bottom: 2px solid #d4d4d4;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+L</string>
+   </property>
+  </action>
+  <action name="actionDefault">
+   <property name="text">
+    <string>Default</string>
+   </property>
+  </action>
+  <action name="actionSolarized_Dark">
+   <property name="text">
+    <string>Solarized Dark</string>
+   </property>
+  </action>
+  <action name="actionSolarized">
+   <property name="text">
+    <string>Solarized</string>
+   </property>
+  </action>
+  <action name="actionDark">
+   <property name="text">
+    <string>Dark</string>
    </property>
   </action>
  </widget>

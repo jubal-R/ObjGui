@@ -1,19 +1,26 @@
 #include <QtGui>
 #include "disassemblyhighlighter.h"
 
-DisassemblyHighlighter::DisassemblyHighlighter(QTextDocument *parent)
+DisassemblyHighlighter::DisassemblyHighlighter(QTextDocument *parent, QString theme)
     : QSyntaxHighlighter(parent)
 {
+    setupHighlighter(theme);
+}
+
+void DisassemblyHighlighter::setupHighlighter(QString theme){
     HighlightingRule rule;
 
-    registerColor = QColor(29, 160, 185);
-    instructionColor = QColor(249, 38, 114);
-    functionsColor = QColor(79, 153, 0);
-    valueColor = QColor(230, 218, 117);
-    numColor = QColor(38, 139, 210);
-    commentColor = QColor(178, 179, 191);
-    varColor = QColor(102, 217, 239);
-
+    if (theme == "solarized"){
+        registerColor = QColor(42, 161, 152);
+        instructionColor = QColor(181, 137, 0);
+        functionsColor = QColor(133, 153, 0);
+        numColor = QColor(38, 139, 210);
+    } else {
+        registerColor = QColor(29, 160, 185);
+        instructionColor = QColor(249, 38, 114);
+        functionsColor = QColor(79, 153, 0);
+        numColor = QColor(38, 139, 210);
+    }
 
     // Addresses
     addressFormat.setForeground(numColor);
@@ -46,10 +53,12 @@ DisassemblyHighlighter::DisassemblyHighlighter(QTextDocument *parent)
         rule.format = registerFormat;
         highlightingRules.append(rule);
     }
-
-
 }
 
+void DisassemblyHighlighter::setTheme(QString theme){
+    setupHighlighter(theme);
+    rehighlight();
+}
 
 void DisassemblyHighlighter::highlightBlock(const QString &text)
 {

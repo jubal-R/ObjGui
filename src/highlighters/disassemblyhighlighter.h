@@ -10,12 +10,15 @@ class DisassemblyHighlighter : public QSyntaxHighlighter
     Q_OBJECT
 
 public:
-    DisassemblyHighlighter(QTextDocument *parent = 0);
+    DisassemblyHighlighter(QTextDocument *parent = 0, QString theme = "Default");
+    void setTheme(QString theme);
 
 protected:
     void highlightBlock(const QString &text);
 
 private:
+    void setupHighlighter(QString theme);
+
     struct HighlightingRule
     {
         QRegExp pattern;

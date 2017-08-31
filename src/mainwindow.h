@@ -37,6 +37,8 @@ private slots:
 
     void findReferencesToLocation(QString location);
 
+    void setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString addressColor);
+
     void on_actionProject_triggered();
 
     void on_actionExit_triggered();
@@ -101,6 +103,14 @@ private slots:
 
     void on_actionGet_File_Offset_of_Current_Line_triggered();
 
+    void on_actionDefault_triggered();
+
+    void on_actionSolarized_Dark_triggered();
+
+    void on_actionSolarized_triggered();
+
+    void on_actionDark_triggered();
+
 private:
     Ui::MainWindow *ui;
     int currentFunctionIndex;
@@ -108,6 +118,7 @@ private:
     QList< QVector<int> >::const_iterator historyIterator;
     QVector<QString> baseOffsets;
     QString currentSearchTerm;
+    QColor lineColor;
 };
 
 #endif // MAINWINDOW_H

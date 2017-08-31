@@ -165,20 +165,26 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customBinaryLineEdit->setText(settings.value("customBinary", "").toString());
 
     // Style
-    QString tabWidgetStyle = "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1; border-top: 2px solid #d4d4d4;}"
-          "QTabBar::tab {background-color: #E0E0E0; min-width: 102px;}"
-          "QTabWidget::tab-bar {left: 5px;}"
-          "QTabWidget::pane {border: none;}"
-          "QComboBox {background-color: #fafafa; color: #555555;}";
-    ui->tabWidget->setStyleSheet(tabWidgetStyle);
+    disHighlighter = new DisassemblyHighlighter(ui->codeBrowser->document(), "Default");
+    headerHighlighter = new HeaderHighlighter(ui->headersBrowser->document());
+
+    QString theme = settings.value("theme", "default").toString();
+
+    if (theme == "dark"){
+            on_actionDark_triggered();
+    } else if (theme == "solarized"){
+        on_actionSolarized_triggered();
+    }else if (theme == "solarizedDark"){
+        on_actionSolarized_Dark_triggered();
+    } else {
+        on_actionDefault_triggered();
+    }
+
     QString menuStyle = "QMenu::item:selected {background-color: #3ba1a1; color: #fafafa;}"
             "QMenu::item::disabled {color: #aaaaaa}"
             "QMenuBar::item {background-color: #fafafa; color: #555555;}"
             "QMenuBar {border-bottom: 1px solid #cccccc;}";
     ui->menuBar->setStyleSheet(menuStyle);
-
-    disHighlighter = new DisassemblyHighlighter(ui->codeBrowser->document());
-    headerHighlighter = new HeaderHighlighter(ui->headersBrowser->document());
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
@@ -421,8 +427,6 @@ void MainWindow::displayFunctionData(){
 
 //  Highlight current line of function
 void MainWindow::highlightCurrentLine(){
-   QColor lineColor = QColor(215,215,215);
-
    QList<QTextEdit::ExtraSelection> extraSelections;
 
    QTextEdit::ExtraSelection selections;
@@ -1046,6 +1050,96 @@ void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
         settings.setValue("useCustomBinary", false);
         objDumper.setUseCustomBinary(false);
     }
+}
+
+/*
+ * Themes
+*/
+
+// Style tab widget
+void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString addressColor){
+    QString style = "#disTab, #hexTab, #symbolsTab, #relocationsTab, #stringsTab, #headersTab, #optionsTab"
+                " {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
+            "#hexAddressBrowser, #stringsAddressBrowser {color: " + addressColor + ";}"
+            "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1; border-top: 2px solid #d4d4d4;}"
+            "QTabBar::tab {background-color: #E0E0E0; min-width: 102px;}"
+            "QTabWidget::tab-bar {left: 5px;}"
+            "QTabWidget::pane {border: none;}"
+            "QComboBox {background-color: #fafafa; color: #555555;}"
+            "QCheckBox {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
+            "QPlainTextEdit { background-color: "+ backgroundColor +"; color:"+ foregroundColor +"; border: 0px; selection-background-color: #404f4f;} "
+            "QLabel {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
+            "QScrollBar:vertical{background: "+ backgroundColor +";} QScrollBar:horizontal{background: "+ backgroundColor +";}";
+   ui->tabWidget->setStyleSheet(style);
+
+}
+
+// Set theme default
+void MainWindow::on_actionDefault_triggered()
+{
+    settings.setValue("theme", "default");
+
+    QString fgc = "#555555";
+    QString bgc = "#fafafa";
+    QString addrc = "#268BD2";
+
+    setTabWidgetStyle(fgc, bgc, addrc);
+
+    disHighlighter->setTheme("Default");
+
+    lineColor = QColor(215,215,215);
+    highlightCurrentLine();
+}
+
+// Set dark theme
+void MainWindow::on_actionDark_triggered()
+{
+    settings.setValue("theme", "dark");
+
+    QString fgc = "#fafafa";
+    QString bgc = "#333333";
+    QString addrc = "#268BD2";
+
+    setTabWidgetStyle(fgc, bgc, addrc);
+
+    disHighlighter->setTheme("Default");
+
+    lineColor = QColor(65,65,65);
+    highlightCurrentLine();
+}
+
+// Set theme solarized
+void MainWindow::on_actionSolarized_triggered()
+{
+    settings.setValue("theme", "solarized");
+
+    QString fgc = "#839496";
+    QString bgc = "#fdf6e3";
+    QString addrc = "#268BD2";
+
+    setTabWidgetStyle(fgc, bgc, addrc);
+
+    disHighlighter->setTheme("solarized");
+
+    lineColor = QColor(238, 232, 213);
+    highlightCurrentLine();
+}
+
+// Set theme solarized dark
+void MainWindow::on_actionSolarized_Dark_triggered()
+{
+    settings.setValue("theme", "solarizedDark");
+
+    QString fgc = "#839496";
+    QString bgc = "#002b36";
+    QString addrc = "#268BD2";
+
+    setTabWidgetStyle(fgc, bgc, addrc);
+
+    disHighlighter->setTheme("solarized");
+
+    lineColor = QColor(7, 54, 66);
+    highlightCurrentLine();
 }
 
 /*
