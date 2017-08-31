@@ -24,11 +24,17 @@ Function::Function(QString functionName, QString addr, QString sect, QString off
     matrixLen = functionMatrix.length();
 }
 
-// Return a line(row) from the matrix
+// Return the line(row) from the matrix at given index/line number
 QVector<QByteArray> Function::getLine(int line){
-    return functionMatrix.at(line);
+    if (line >= 0 && line < matrixLen)
+        return functionMatrix.at(line);
+    else {
+        QVector<QByteArray> empty;
+        return empty;
+    }
 }
 
+// Return contents of function matrix formatted for display
 QByteArray Function::getContents(){
     QByteArray contents;
     for (int i = 0; i < matrixLen; i++){
@@ -42,6 +48,7 @@ QByteArray Function::getContents(){
     return contents;
 }
 
+// Retrun address at given index
 QString Function::getAddressAt(int index){
     if (index >= 0 && index < matrixLen)
         return functionMatrix.at(index)[0];

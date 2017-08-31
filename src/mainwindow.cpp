@@ -205,8 +205,8 @@ MainWindow::~MainWindow()
  *  Disassembly
 */
 
-//  Open Binary
-void MainWindow::open(QString file){
+//  Load binary and display disassembly
+void MainWindow::loadBinary(QString file){
 
     if (file != ""){
         this->setWindowTitle("ObjGUI - " + file);
@@ -284,6 +284,18 @@ void MainWindow::open(QString file){
             } else {
                 // If all good, display disassembly data
                 displayFunctionData();
+
+                // Add initial location to history
+                addToHistory(currentFunctionIndex, 0);
+
+                // Enable navigation and tools
+                ui->actionGo_To_Address->setEnabled(true);
+                ui->actionGo_to_Address_at_Cursor->setEnabled(true);
+                ui->actionGet_Offset->setEnabled(true);
+                ui->actionGet_File_Offset_of_Current_Line->setEnabled(true);
+                ui->actionFind_References->setEnabled(true);
+                ui->actionFind_Calls_to_Current_Function->setEnabled(true);
+                ui->actionFind_Calls_to_Current_Location->setEnabled(true);
             }
 
             // Get section list and set hex values
@@ -340,10 +352,10 @@ void MainWindow::on_actionOpen_triggered()
     loadingDialogUi.label->setText("Disassembling binary...");
     qApp->processEvents();
 
-    // Update current directory and call disassembly function
+    // Update current directory and load file
     if (file != ""){
         files.setCurrentDirectory(file);
-        open(file);
+        loadBinary(file);
     }
     // Delete loading dialog
     delete dialog;
@@ -353,9 +365,11 @@ void MainWindow::on_actionOpen_triggered()
  *  Function Data
 */
 
+// Set lables and code browser to display function info and contents
 void MainWindow::displayFunctionText(QString functionName){
     if (!functionList.isEmpty()){
         Function function = functionList.getFunction(functionName);
+
         setUpdatesEnabled(false);
         ui->addressValueLabel->setText(function.getAddress());
         ui->fileOffsetValueLabel->setText(function.getFileOffset());
@@ -372,8 +386,9 @@ void MainWindow::displayFunctionText(QString functionName){
 }
 
 void MainWindow::displayFunctionText(int functionIndex){
-    if (!functionList.isEmpty()){
+    if (!functionList.isEmpty() && functionIndex < functionList.getLength()){
         Function function = functionList.getFunction(functionIndex);
+
         setUpdatesEnabled(false);
         ui->addressValueLabel->setText(function.getAddress());
         ui->fileOffsetValueLabel->setText(function.getFileOffset());
@@ -386,9 +401,10 @@ void MainWindow::displayFunctionText(int functionIndex){
     }
 }
 
+// Setup functionlist and display function data
 void MainWindow::displayFunctionData(){
     if (!functionList.isEmpty()){
-        // Populate function/section list in sidebar
+        // Populate function list in sidebar
         ui->functionList->addItems(functionList.getFunctionNames());
 
         // Display main function by default if it exists
@@ -399,17 +415,6 @@ void MainWindow::displayFunctionData(){
             displayFunctionText(firstIndexName);
         }
 
-        // Add initial location to history
-        addToHistory(currentFunctionIndex, 0);
-
-        // Enable navigation and tools
-        ui->actionGo_To_Address->setEnabled(true);
-        ui->actionGo_to_Address_at_Cursor->setEnabled(true);
-        ui->actionGet_Offset->setEnabled(true);
-        ui->actionGet_File_Offset_of_Current_Line->setEnabled(true);
-        ui->actionFind_References->setEnabled(true);
-        ui->actionFind_Calls_to_Current_Function->setEnabled(true);
-        ui->actionFind_Calls_to_Current_Location->setEnabled(true);
     }
 }
 
@@ -484,6 +489,7 @@ void MainWindow::goToAddress(QString targetAddress){
     }
 }
 
+// Go to Address triggered
 void MainWindow::on_actionGo_To_Address_triggered()
 {
     bool ok = true;
@@ -493,6 +499,7 @@ void MainWindow::on_actionGo_To_Address_triggered()
 
 }
 
+// Go to Address at Cursor triggered
 void MainWindow::on_actionGo_to_Address_at_Cursor_triggered()
 {
     QTextCursor cursor = ui->codeBrowser->textCursor();
@@ -505,7 +512,7 @@ void MainWindow::on_actionGo_to_Address_at_Cursor_triggered()
     goToAddress(targetAddress);
 }
 
-// Function list
+// Display function clicked in sidebar
 void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 {
     // Display function
@@ -532,6 +539,7 @@ void MainWindow::on_actionGet_Offset_triggered()
     }
 }
 
+// Get Offset of Current Line triggered
 void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
 {
     if (!functionList.isEmpty() && !baseOffsets.isEmpty()){
@@ -589,6 +597,7 @@ void MainWindow::addToHistory(int functionIndex, int lineNum){
     historyIterator = history.constEnd() - 1;
 }
 
+// Back button
 void MainWindow::on_backButton_clicked()
 {
     if (!history.isEmpty() && historyIterator != history.constBegin()){
@@ -610,6 +619,7 @@ void MainWindow::on_backButton_clicked()
     }
 }
 
+// Forward button
 void MainWindow::on_forwardButton_clicked()
 {
     if (!history.isEmpty() && historyIterator != history.constEnd() - 1){
@@ -640,6 +650,7 @@ void MainWindow::on_actionForward_triggered()
 {
     on_forwardButton_clicked();
 }
+
 
 /*
  *  Searching

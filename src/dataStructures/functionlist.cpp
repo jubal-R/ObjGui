@@ -8,6 +8,7 @@ FunctionList::FunctionList()
     length = 0;
 }
 
+// Create new function node and insert it into list given function data
 void FunctionList::insert(QString name, QString address, QString section, QString fileOffset, QVector< QVector<QByteArray> > contents){
     FunctionNode *newNode = new FunctionNode(name, address, section, fileOffset, contents);
 
@@ -52,6 +53,7 @@ int FunctionList::getLength(){
     return length;
 }
 
+// Check if list contains function by name
 bool FunctionList::containsFunction(QString name){
     if (!isEmpty()){
         if (head->getFunction().getName() == name)
@@ -67,6 +69,7 @@ bool FunctionList::containsFunction(QString name){
     return false;
 }
 
+// Return funtion object of funtion given its name
 Function FunctionList::getFunction(QString name){
     if (!isEmpty()){
         if (head->getFunction().getName() == name)
@@ -85,6 +88,7 @@ Function FunctionList::getFunction(QString name){
     return f;
 }
 
+// Return function object of function given its index
 Function FunctionList::getFunction(int index){
     if (!isEmpty() && index < length){
         FunctionNode *p = head;
@@ -99,6 +103,7 @@ Function FunctionList::getFunction(int index){
     return f;
 }
 
+// Return index of function within list given its name
 int FunctionList::getFunctionIndex(QString functionName){
     if (!isEmpty()){
         int counter = 0;
@@ -117,6 +122,7 @@ int FunctionList::getFunctionIndex(QString functionName){
     return -1;
 }
 
+// Return a list of all function names
 QStringList FunctionList::getFunctionNames(){
     QStringList functionNames;
     if (!isEmpty()){
@@ -131,7 +137,7 @@ QStringList FunctionList::getFunctionNames(){
     return functionNames;
 }
 
-// Get the location of a target address
+// Find location of target address and return what function its in and its location within the function [functionIndex, functionMatrixIndex]
 QVector<int> FunctionList::getAddressLocation(QString targetAddress){
     QVector<int> location(2);
 

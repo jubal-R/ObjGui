@@ -7,6 +7,7 @@ SectionList::SectionList()
     length = 0;
 }
 
+// Create a new node and insert it into the list given section data
 void SectionList::insert(QString section, QVector< QVector<QByteArray> > contents){
     SectionNode *newNode = new SectionNode(section, contents);
 
@@ -20,6 +21,7 @@ void SectionList::insert(QString section, QVector< QVector<QByteArray> > content
     length++;
 }
 
+// Deletes all nodes in the list
 void SectionList::nukeList(){
     if (!isEmpty()){
         SectionNode *current = head;
@@ -46,6 +48,7 @@ bool SectionList::isEmpty(){
         return false;
 }
 
+// Checks if list contains section by name
 bool SectionList::containsSection(QString name){
     if (!isEmpty()){
         if (head->getSection().getSectionName() == name)
@@ -65,6 +68,7 @@ int SectionList::getLength(){
     return length;
 }
 
+// Return section object of section given its name
 Section SectionList::getSection(QString name){
     if (!isEmpty()){
         if (head->getSection().getSectionName() == name)
@@ -83,6 +87,7 @@ Section SectionList::getSection(QString name){
     return s;
 }
 
+// Return section object of section given its index within the list
 Section SectionList::getSection(int index){
     if (!isEmpty() && index < length){
         SectionNode *p = head;
@@ -97,6 +102,7 @@ Section SectionList::getSection(int index){
     return s;
 }
 
+// Return a list of all section names
 QStringList SectionList::getSectionNames(){
     QStringList sectionNames;
     if (!isEmpty()){

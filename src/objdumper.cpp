@@ -56,7 +56,7 @@ QString ObjDumper::getDump(QString args, QString file){
     return QString::fromStdString(oss.str());
 }
 
-// Parses disassembly and populates functionList
+// Parses disassembly and populates function list
 FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffsets){
    FunctionList functionList;
    QString dump = getDisassembly(file);
@@ -173,6 +173,7 @@ FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffse
 
 }
 
+// Parses result of all contents(objdump -s) and populates section list
 SectionList ObjDumper::getSectionList(QString file){
     SectionList sectionList;
     QString contents = getContents(file);
@@ -244,7 +245,7 @@ SectionList ObjDumper::getSectionList(QString file){
     return sectionList;
 }
 
-
+// Get disassembly: objdump -d
 QString ObjDumper::getDisassembly(QString file){
     QString disassembly = getDump("--insn-width=" + QString::number(insnwidth) + " " +optionalFlags + " -M " + outputSyntax + " " + disassemblyFlag, file);
     // Check first few lines for errors
@@ -255,21 +256,25 @@ QString ObjDumper::getDisassembly(QString file){
         return errors;
 }
 
+// Get symbols table: objdump -T
 QString ObjDumper::getSymbolsTable(QString file){
     QString symbolsTable = getDump(optionalFlags + " -T", file);
     return removeHeading(symbolsTable, 4);
 }
 
+// Get relocation entries: objdump -R
 QString ObjDumper::getRelocationEntries(QString file){
     QString relocationEntries = getDump(optionalFlags + " -R", file);
     return removeHeading(relocationEntries, 4);
 }
 
+// Get all contents(hexdump of sections): objdump -s
 QString ObjDumper::getContents(QString file){
     QString contents = getDump("-s", file);
     return removeHeading(contents, 3);
 }
 
+// Get headers: objdump [-a -f -p -h]
 QString ObjDumper::getHeaders(QString file){
     if (!headerFlags.isEmpty()){
         QString headers = getDump(headerFlags, file);
@@ -279,6 +284,7 @@ QString ObjDumper::getHeaders(QString file){
     }
 }
 
+// Get file format by parsing header
 QString ObjDumper::getFileFormat(QString file){
     QString header = getDump("-f", file);
     QString fileFormat = "";
@@ -361,7 +367,7 @@ QString ObjDumper::parseDumpForErrors(QString dump){
     return "";
 }
 
-// Removes heading(first three lines of objdump output)
+// Removes heading(first [numLines] lines of objdump output)
 QString ObjDumper::removeHeading(QString dump, int numLines){
     int i = 0;
     int newlineCount = 0;

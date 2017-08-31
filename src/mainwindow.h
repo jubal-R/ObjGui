@@ -23,7 +23,7 @@ private slots:
 
     void on_actionOpen_triggered();
 
-    void open(QString file);
+    void loadBinary(QString file);
 
     void displayFunctionText(QString functionName);
 

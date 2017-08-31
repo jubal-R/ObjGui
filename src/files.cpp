@@ -101,7 +101,7 @@ QString Files::getHomeDir(){
     }
     pclose(in);
 
-    return QString::fromStdString(oss.str().substr(0, oss.str().length()-1));
+    return QString::fromStdString(oss.str());
 }
 
 // Open directory in file manager
@@ -131,7 +131,7 @@ void Files::openFileManager(QString dir){
 
 }
 
-// Get directory given file path
+// Get directory given file path(example: /bin/bash returns /bin/)
 QString Files::getDirectory(QString filepath){
     int lastIndex = filepath.lastIndexOf("/");
     filepath.chop(filepath.length() - lastIndex);

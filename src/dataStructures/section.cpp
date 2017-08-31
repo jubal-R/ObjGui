@@ -21,14 +21,7 @@ Section::Section(QString section, QVector< QVector<QByteArray> > contents){
     matrixLen = sectionMatrix.length();
 }
 
-QString Section::getSectionName(){
-    return sectionName;
-}
-
-int Section::getMatrixLen(){
-    return matrixLen;
-}
-
+// Return address at given index
 QString Section::getAddressAt(int index){
     if (index >= 0 && index < matrixLen)
         return sectionMatrix.at(index)[0];
@@ -36,9 +29,14 @@ QString Section::getAddressAt(int index){
         return "";
 }
 
-// Return a line(row) from the matrix
+// Return the line(row) from the matrix at the given index/line number
 QVector<QByteArray> Section::getLine(int line){
-    return sectionMatrix.at(line);
+    if (line > 0 && line < matrixLen)
+        return sectionMatrix.at(line);
+    else {
+        QVector<QByteArray> empty;
+        return empty;
+    }
 }
 
 // Get a string of all hex values seperated by line breaks
@@ -59,4 +57,12 @@ QByteArray Section::getAddressString(){
     }
 
     return addrStr;
+}
+
+QString Section::getSectionName(){
+    return sectionName;
+}
+
+int Section::getMatrixLen(){
+    return matrixLen;
 }

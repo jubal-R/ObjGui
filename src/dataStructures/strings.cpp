@@ -9,11 +9,13 @@ Strings::Strings(QVector<QVector<QString> > stringsData){
     matrixLen = stringsMatrix.length();
 }
 
+// Sets the strings matrix
 void Strings::setStringsData(QVector<QVector<QString> > stringsData){
     stringsMatrix = stringsData;
     matrixLen = stringsMatrix.length();
 }
 
+// Returns the index of a target address
 int Strings::getIndexByAddress(QString targetAddress){
     if (!stringsMatrix.isEmpty()){
         // Binary search
@@ -46,6 +48,7 @@ int Strings::getIndexByAddress(QString targetAddress){
     return -1;
 }
 
+// Returns address at given index
 QString Strings::getAddressAt(int index){
     if(index >= 0 && index < matrixLen)
         return stringsMatrix[index][0];
@@ -53,16 +56,19 @@ QString Strings::getAddressAt(int index){
         return "";
 }
 
+// Return strings formatted for display
 QString Strings::getStrings(){
     QString strings;
     for (int i = 0; i < matrixLen; i++){
         QString str = stringsMatrix[i][1];
+        // Escape new line characters
         str.replace('\n', "\\n");
         strings.append(str + "\n");
     }
     return strings;
 }
 
+// Return addresses of strings formatted for display
 QString Strings::getStringsAddresses(){
     QString offsets;
     for (int i = 0; i < matrixLen; i++){
