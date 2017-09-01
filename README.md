@@ -8,9 +8,10 @@ ObjGui is a binary analysis tool and GUI frontend for objdump made for readabili
 - Sidebar navigation to jump between functions
 - Go to address feature to follow jumps and calls
 - Get file offset of any line of disassembly
+- Find all calls to any address or function
+- Search disassembly data
 - Support for custom objdump binaries
 - Support for many objdump flags(syntax, demangle, etc.)
-- Output separated into tabs
 
 ## Dependencies
 qt5-default qt5-qmake objdump
@@ -27,11 +28,6 @@ ELF, PE, Macho, etc.
 ObjGui will disassemble any file format supported by the objdump executable you point it at. If you need to disassemble a binary for any file formats not supported by your default objdump install, then you can compile your own objdump executable configured for your needs.  
 objdump is part of GNU binutils and can be found here <https://ftp.gnu.org/gnu/binutils/>
 
-## To Be Added
-- Searching
-- Export disassembly
-- Additional user preferences
-
 ## Acknowledgements
 ### Fonts
 Noto Sans <https://www.google.com/get/noto/>  
@@ -40,5 +36,8 @@ Anonymous Pro <http://www.marksimonson.com/fonts/view/anonymous-pro>
 <https://material.io/icons>
 
 ## License
-ObjGui is licensed under the GNU General Public License version 3.0.  
-<https://www.gnu.org/licenses/gpl-3.0.en.html>
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
