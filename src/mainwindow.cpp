@@ -180,10 +180,13 @@ MainWindow::MainWindow(QWidget *parent) :
         on_actionDefault_triggered();
     }
 
+    QString centralWidgetStyle = "background-color: #e0e0e0; color: #555555;";
+    ui->centralWidget->setStyleSheet(centralWidgetStyle);
     QString menuStyle = "QMenu::item:selected {background-color: #3ba1a1; color: #fafafa;}"
             "QMenu::item::disabled {color: #aaaaaa}"
-            "QMenuBar::item {background-color: #fafafa; color: #555555;}"
-            "QMenuBar {border-bottom: 1px solid #cccccc;}";
+            "QMenu::item {background-color: #e0e0e0; color: #555555;}"
+            "QMenuBar::item {background-color: #e0e0e0; color: #555555;}"
+            "QMenuBar {background-color: #e0e0e0;}";
     ui->menuBar->setStyleSheet(menuStyle);
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
