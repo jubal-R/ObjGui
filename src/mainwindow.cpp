@@ -1059,13 +1059,19 @@ void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
  * Themes
 */
 
+// Style central widget
+void MainWindow::setCentralWidgetStyle(QString foregroundColor, QString backgroundColor){
+    QString centralWidgetStyle = "background-color: " + backgroundColor + "; color: " + foregroundColor + ";";
+    ui->centralWidget->setStyleSheet(centralWidgetStyle);
+}
+
 // Style tab widget
-void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString addressColor){
+void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor){
     QString style = "#disTab, #hexTab, #symbolsTab, #relocationsTab, #stringsTab, #headersTab, #optionsTab"
                 " {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
             "#hexAddressBrowser, #stringsAddressBrowser {color: " + addressColor + ";}"
-            "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1; border-top: 2px solid #d4d4d4;}"
-            "QTabBar::tab {background-color: #E0E0E0; min-width: 102px;}"
+            "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}" /* border-top: 2px solid #d4d4d4; */
+            "QTabBar::tab {background-color: " + backgroundColor2 +"; min-width: 102px;}"
             "QTabWidget::tab-bar {left: 5px;}"
             "QTabWidget::pane {border: none;}"
             "QComboBox {background-color: #fafafa; color: #555555;}"
@@ -1077,6 +1083,11 @@ void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundCo
 
 }
 
+void MainWindow::setSidebarStyle(QString backgroundColor){
+    QString sidebarStyle = "#functionList {background-color: " + backgroundColor + "; font-size: 10pt;}";
+    ui->sidebar_2->setStyleSheet(sidebarStyle);
+}
+
 // Set theme default
 void MainWindow::on_actionDefault_triggered()
 {
@@ -1084,9 +1095,13 @@ void MainWindow::on_actionDefault_triggered()
 
     QString fgc = "#555555";
     QString bgc = "#fafafa";
+    QString fgc2 = "#555555";
+    QString bgc2 = "#e0e0e0";
     QString addrc = "#268BD2";
 
-    setTabWidgetStyle(fgc, bgc, addrc);
+    setCentralWidgetStyle(fgc2, bgc2);
+    setTabWidgetStyle(fgc, bgc, bgc2, addrc);
+    setSidebarStyle(bgc);
 
     disHighlighter->setTheme("Default");
 
@@ -1101,9 +1116,13 @@ void MainWindow::on_actionDark_triggered()
 
     QString fgc = "#fafafa";
     QString bgc = "#333333";
+    QString fgc2 = "#e0e0e0";
+    QString bgc2 = "#292929";
     QString addrc = "#268BD2";
 
-    setTabWidgetStyle(fgc, bgc, addrc);
+    setCentralWidgetStyle(fgc2, bgc2);
+    setTabWidgetStyle(fgc, bgc, bgc2, addrc);
+    setSidebarStyle(bgc);
 
     disHighlighter->setTheme("Default");
 
@@ -1118,9 +1137,13 @@ void MainWindow::on_actionSolarized_triggered()
 
     QString fgc = "#839496";
     QString bgc = "#fdf6e3";
+    QString fgc2 = "586e75";
+    QString bgc2 = "#eee8d5";
     QString addrc = "#268BD2";
 
-    setTabWidgetStyle(fgc, bgc, addrc);
+    setCentralWidgetStyle(fgc2, bgc2);
+    setTabWidgetStyle(fgc, bgc, bgc2, addrc);
+    setSidebarStyle(bgc);
 
     disHighlighter->setTheme("solarized");
 
@@ -1135,9 +1158,13 @@ void MainWindow::on_actionSolarized_Dark_triggered()
 
     QString fgc = "#839496";
     QString bgc = "#002b36";
+    QString fgc2 = "#93a1a1";
+    QString bgc2 = "#073642";
     QString addrc = "#268BD2";
 
-    setTabWidgetStyle(fgc, bgc, addrc);
+    setCentralWidgetStyle(fgc2, bgc2);
+    setTabWidgetStyle(fgc, bgc, bgc2, addrc);
+    setSidebarStyle(bgc);
 
     disHighlighter->setTheme("solarized");
 

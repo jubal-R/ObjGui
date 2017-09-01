@@ -37,7 +37,11 @@ private slots:
 
     void findReferencesToLocation(QString location);
 
-    void setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString addressColor);
+    void setCentralWidgetStyle(QString foregroundColor, QString backgroundColor);
+
+    void setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor);
+
+    void setSidebarStyle(QString backgroundColor);
 
     void on_actionProject_triggered();
 

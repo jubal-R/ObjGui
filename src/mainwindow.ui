@@ -128,7 +128,7 @@ font-size: 11pt;</string>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: #E0E0E0;</string>
+       <string notr="true"/>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <property name="leftMargin">
@@ -165,7 +165,7 @@ font-size: 11pt;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">border-right: 2px solid #d4d4d4;</string>
+           <string notr="true"/>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <property name="spacing">
@@ -247,9 +247,7 @@ font-size: 11pt;</string>
               </font>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(245, 245, 245);
-font-size: 10pt;
-border-top: 1px solid #d4d4d4;</string>
+              <string notr="true"/>
              </property>
             </widget>
            </item>
@@ -1260,8 +1258,7 @@ color: rgb(85, 85, 85);</string>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: #E0E0E0;
-border-bottom: 2px solid #d4d4d4;</string>
+       <string notr="true"/>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <property name="leftMargin">
@@ -1346,7 +1343,7 @@ border-bottom: 2px solid #d4d4d4;</string>
      <x>0</x>
      <y>0</y>
      <width>1198</width>
-     <height>26</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="font">
