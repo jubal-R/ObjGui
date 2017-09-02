@@ -37,6 +37,8 @@ private slots:
 
     void findReferencesToLocation(QString location);
 
+    void displayResults(QVector< QVector<QString> > results, QString resultsLabel);
+
     void setCentralWidgetStyle(QString foregroundColor, QString backgroundColor);
 
     void setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor);

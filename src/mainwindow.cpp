@@ -180,8 +180,6 @@ MainWindow::MainWindow(QWidget *parent) :
         on_actionDefault_triggered();
     }
 
-    QString centralWidgetStyle = "background-color: #e0e0e0; color: #555555;";
-    ui->centralWidget->setStyleSheet(centralWidgetStyle);
     QString menuStyle = "QMenu::item:selected {background-color: #3ba1a1; color: #fafafa;}"
             "QMenu::item::disabled {color: #aaaaaa}"
             "QMenu::item {background-color: #e0e0e0; color: #555555;}"
@@ -669,6 +667,24 @@ void MainWindow::on_actionForward_triggered()
  *  Searching
 */
 
+void MainWindow::displayResults(QVector< QVector<QString> > results, QString resultsLabel){
+    if (!results.isEmpty()){
+        QString resultsStr = "";
+        for (int i = 0; i < results.length(); i++){
+            QVector<QString> result = results[i];
+            if (result.length() == 2)
+                resultsStr.append(result[1] + "    " + result[0] + "\n");
+        }
+
+        // Display results
+        ResultsDialog resultsDialog;
+        resultsDialog.setWindowModality(Qt::WindowModal);
+        resultsDialog.setResultsLabelText(resultsLabel);
+        resultsDialog.setResultsText(resultsStr);
+        resultsDialog.exec();
+    }
+}
+
 // Find calls to the current function
 void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
 {
@@ -676,18 +692,8 @@ void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
     QVector< QVector<QString> > results = functionList.findCallsToFunction(functionName);
 
     if (!results.isEmpty()){
-        QString resultsStr = "";
-        for (int i = 0; i < results.length(); i++){
-            QVector<QString> result = results[i];
-            resultsStr.append(result[1] + "    " + result[0] + "\n");
-        }
-
         // Display results
-        ResultsDialog resultsDialog;
-        resultsDialog.setWindowModality(Qt::WindowModal);
-        resultsDialog.setResultsLabelText("Calls to function " + functionName);
-        resultsDialog.setResultsText(resultsStr);
-        resultsDialog.exec();
+        displayResults(results, "Calls to function " + functionName);
 
     } else {
         QMessageBox::information(this, tr("Calls to Function"), "No calls found to function " + functionName,QMessageBox::Close);
@@ -700,18 +706,8 @@ void MainWindow::findReferencesToLocation(QString target){
         QVector< QVector<QString> > results = functionList.findReferences(target);
 
         if (!results.isEmpty()){
-            QString resultsStr = "";
-            for (int i = 0; i < results.length(); i++){
-                QVector<QString> result = results[i];
-                resultsStr.append(result[1] + "  " + result[0] + "\n");
-            }
-
             // Display results
-            ResultsDialog resultsDialog;
-            resultsDialog.setWindowModality(Qt::WindowModal);
-            resultsDialog.setResultsLabelText("References to " + target);
-            resultsDialog.setResultsText(resultsStr);
-            resultsDialog.exec();
+            displayResults(results, "References to " + target);
 
         } else {
             QMessageBox::information(this, tr("References"), "No references found to " + target,QMessageBox::Close);
@@ -742,18 +738,8 @@ void MainWindow::on_actionFind_Calls_to_Current_Location_triggered(){
         QVector< QVector<QString> > results = functionList.findReferences(targetLocation);
 
         if (!results.isEmpty()){
-            QString resultsStr = "";
-            for (int i = 0; i < results.length(); i++){
-                QVector<QString> result = results[i];
-                resultsStr.append(result[1] + "  " + result[0] + "\n");
-            }
-
             // Display results
-            ResultsDialog resultsDialog;
-            resultsDialog.setWindowModality(Qt::WindowModal);
-            resultsDialog.setResultsLabelText("Calls to " + targetLocation);
-            resultsDialog.setResultsText(resultsStr);
-            resultsDialog.exec();
+            displayResults(results, "Calls to address " + targetLocation);
 
         } else {
             QMessageBox::information(this, tr("Calls to address"), "No calls found to address " + targetLocation,QMessageBox::Close);
@@ -1074,6 +1060,8 @@ void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
 void MainWindow::setCentralWidgetStyle(QString foregroundColor, QString backgroundColor){
     QString centralWidgetStyle = "background-color: " + backgroundColor + "; color: " + foregroundColor + ";";
     ui->centralWidget->setStyleSheet(centralWidgetStyle);
+    QString navBarStyle = "#navBar {border-bottom: 1px solid #d4d4d4;}";
+    ui->navBar->setStyleSheet(navBarStyle);
 }
 
 // Style tab widget
@@ -1081,7 +1069,7 @@ void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundCo
     QString style = "#disTab, #hexTab, #symbolsTab, #relocationsTab, #stringsTab, #headersTab, #optionsTab"
                 " {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
             "#hexAddressBrowser, #stringsAddressBrowser {color: " + addressColor + ";}"
-            "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1;}" /* border-top: 2px solid #d4d4d4; */
+            "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1; border-top: 1px solid #d4d4d4;}"
             "QTabBar::tab {background-color: " + backgroundColor2 +"; min-width: 102px;}"
             "QTabWidget::tab-bar {left: 5px;}"
             "QTabWidget::pane {border: none;}"
