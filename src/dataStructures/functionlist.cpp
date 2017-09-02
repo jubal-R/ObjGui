@@ -152,7 +152,7 @@ QVector<int> FunctionList::getAddressLocation(QString targetAddress){
             int lowerLimit = 0;
             int currentIndex = upperLimit / 2;
 
-            while (lowerLimit != upperLimit && currentIndex != 0){
+            while (lowerLimit < upperLimit && currentIndex != 0){
                 QString currentAddress = function.getAddressAt(currentIndex);
 
                 if (currentAddress == targetAddress){
@@ -162,7 +162,7 @@ QVector<int> FunctionList::getAddressLocation(QString targetAddress){
                 } else if (targetAddress < currentAddress){
                     upperLimit = currentIndex - 1;
                     currentIndex = (upperLimit + lowerLimit) / 2;
-                } else{
+                } else {
                     lowerLimit = currentIndex + 1;
                     currentIndex = (upperLimit + lowerLimit) / 2;
                 }

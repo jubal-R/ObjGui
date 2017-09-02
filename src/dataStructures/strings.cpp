@@ -1,5 +1,7 @@
 #include "strings.h"
 
+#include "QDebug"
+
 Strings::Strings(){
     matrixLen = 0;
 }
@@ -23,7 +25,7 @@ int Strings::getIndexByAddress(QString targetAddress){
         int lowerLimit = 0;
         int currentIndex = upperLimit / 2;
 
-        while (lowerLimit != upperLimit && currentIndex != 0){
+        while (lowerLimit < upperLimit && currentIndex != 0){
             QString currentAddress = stringsMatrix[currentIndex][0];
 
             if (currentAddress == targetAddress){
