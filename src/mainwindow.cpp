@@ -456,7 +456,7 @@ void MainWindow::goToAddress(QString targetAddress){
         QVector<int> location = functionList.getAddressLocation(targetAddress);
 
         // Check if address was found
-        if(location[0] >= 0){
+        if (location[0] >= 0){
             // Add old location to history
             QTextCursor prevCursor = ui->codeBrowser->textCursor();
             int lineNum = prevCursor.blockNumber();
@@ -490,10 +490,11 @@ void MainWindow::goToAddress(QString targetAddress){
                 ui->stringsBrowser->setFocus();
 
             } else {
-                QMessageBox::information(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);
+                QMessageBox::warning(this, tr("Go to Address"), "Address not found.",QMessageBox::Ok);
             }
 
         }
+
     }
 }
 
@@ -501,7 +502,7 @@ void MainWindow::goToAddress(QString targetAddress){
 void MainWindow::on_actionGo_To_Address_triggered()
 {
     bool ok = true;
-    QString targetAddress = QInputDialog::getText(this, tr("Go to Address"),tr("Go to Address:"), QLineEdit::Normal,"", &ok).trimmed();
+    QString targetAddress = QInputDialog::getText(this, tr("Go to Address"),tr("Address"), QLineEdit::Normal,"", &ok).trimmed();
     if (ok)
         goToAddress(targetAddress);
 
@@ -534,16 +535,20 @@ void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 void MainWindow::on_actionGet_Offset_triggered()
 {
     bool ok;
-    QString targetAddress = QInputDialog::getText(this, tr("Get File Offset"),tr("Get file offset of address:"), QLineEdit::Normal,"", &ok).trimmed();
-    if (ok){
+    QString targetAddress = QInputDialog::getText(this, tr("Get File Offset"),tr("Address"), QLineEdit::Normal,"", &ok).trimmed();
+    if (ok && !targetAddress.isEmpty()){
         // Get file offset of address
         QVector<QString> offset = objDumper.getFileOffset(targetAddress, baseOffsets);
-        if(!offset.isEmpty()){
-            QString offsetMsg = "File Offset of " + targetAddress+ "\nHex: " + offset[0] + "\nDecimal: " + offset[1];
+
+        if(!offset[0].isEmpty()){
+            QString offsetMsg = "File Offset of Address " + targetAddress+ "\nHex: " + offset[0] + "\nInt: " + offset[1];
             QMessageBox::information(this, tr("File Offset"), offsetMsg,QMessageBox::Close);
         } else {
-            QMessageBox::information(this, tr("File Offset"), "Invalid address.",QMessageBox::Close);
+            QMessageBox::warning(this, tr("File Offset"), "Invalid address.",QMessageBox::Close);
         }
+
+    } else {
+        QMessageBox::warning(this, tr("File Offset"), "No address entered.",QMessageBox::Close);
     }
 }
 
@@ -564,7 +569,7 @@ void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
             if (!currentLineAddressStr.isEmpty()){
                 // Get file offset of address
                 QVector<QString> offset = objDumper.getFileOffset(currentLineAddressStr, baseOffsets);
-                offsetMsg = "File Offset of " + currentLineAddressStr + "\nHex: " + offset[0] + "\nDecimal: " + offset[1];
+                offsetMsg = "File Offset of Address " + currentLineAddressStr + "\nHex: " + offset[0] + "\nInt: " + offset[1];
             }
 
         } else if (currentTab == 4){
@@ -576,7 +581,7 @@ void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
             if (!currentLineAddressStr.isEmpty()){
                 // Get file offset of address
                 QVector<QString> offset = objDumper.getFileOffset(currentLineAddressStr, baseOffsets);
-                offsetMsg = "File Offset of " + currentLineAddressStr + "\nHex: " + offset[0] + "\nDecimal: " + offset[1];
+                offsetMsg = "File Offset of Address" + currentLineAddressStr + "\nHex: " + offset[0] + "\nInt: " + offset[1];
             }
         }
 
@@ -691,32 +696,38 @@ void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
 
 // Find all references to a target location
 void MainWindow::findReferencesToLocation(QString target){
-    QVector< QVector<QString> > results = functionList.findReferences(target);
+    if (!target.isEmpty()){
+        QVector< QVector<QString> > results = functionList.findReferences(target);
 
-    if (!results.isEmpty()){
-        QString resultsStr = "";
-        for (int i = 0; i < results.length(); i++){
-            QVector<QString> result = results[i];
-            resultsStr.append(result[1] + "  " + result[0] + "\n");
+        if (!results.isEmpty()){
+            QString resultsStr = "";
+            for (int i = 0; i < results.length(); i++){
+                QVector<QString> result = results[i];
+                resultsStr.append(result[1] + "  " + result[0] + "\n");
+            }
+
+            // Display results
+            ResultsDialog resultsDialog;
+            resultsDialog.setWindowModality(Qt::WindowModal);
+            resultsDialog.setResultsLabelText("References to " + target);
+            resultsDialog.setResultsText(resultsStr);
+            resultsDialog.exec();
+
+        } else {
+            QMessageBox::information(this, tr("References"), "No references found to " + target,QMessageBox::Close);
         }
 
-        // Display results
-        ResultsDialog resultsDialog;
-        resultsDialog.setWindowModality(Qt::WindowModal);
-        resultsDialog.setResultsLabelText("References to " + target);
-        resultsDialog.setResultsText(resultsStr);
-        resultsDialog.exec();
-
     } else {
-        QMessageBox::information(this, tr("References"), "No references found to " + target,QMessageBox::Close);
+        QMessageBox::warning(this, tr("Search failed"), "Cannot search for empty string.",QMessageBox::Close);
     }
+
 }
 
 // Find References
 void MainWindow::on_actionFind_References_triggered()
 {
     bool ok = true;
-    QString targetAddress = QInputDialog::getText(this, tr("Find References"),tr("Find references to:"), QLineEdit::Normal,"", &ok).trimmed();
+    QString targetAddress = QInputDialog::getText(this, tr("Find References"),tr("Find References to"), QLineEdit::Normal,"", &ok).trimmed();
     if (ok)
         findReferencesToLocation(targetAddress);
 }

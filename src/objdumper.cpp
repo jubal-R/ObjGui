@@ -328,6 +328,8 @@ QVector<QString> ObjDumper::getBaseOffset(QString file){
 // Get file offset of virtual memory address as vecotor [hex value, decimal value]
 QVector<QString> ObjDumper::getFileOffset(QString targetAddress, QVector<QString> baseOffsets){
     QVector<QString> fileOffset(2);
+    fileOffset[0] = "";
+    fileOffset[1] = "";
     bool targetAddrOk;
     bool baseAddrOk;
     bool baseOffsetOk;
@@ -336,9 +338,11 @@ QVector<QString> ObjDumper::getFileOffset(QString targetAddress, QVector<QString
     qlonglong baseOffset = baseOffsets[1].toLongLong(&baseOffsetOk, 16);
 
     if (targetAddrOk && baseAddrOk && baseOffsetOk){
-       qlonglong targetOffset = (targetAddr - baseAddr) + baseOffset;
-       fileOffset[0] = "0x" + QString::number(targetOffset, 16);
-       fileOffset[1] = QString::number(targetOffset);
+        if (targetAddr >= baseAddr){
+            qlonglong targetOffset = (targetAddr - baseAddr) + baseOffset;
+            fileOffset[0] = "0x" + QString::number(targetOffset, 16);
+            fileOffset[1] = QString::number(targetOffset);
+        }
     }
 
     return fileOffset;
