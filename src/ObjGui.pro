@@ -44,7 +44,6 @@ HEADERS  += mainwindow.h \
     dataStructures/strings.h
 
 FORMS    += mainwindow.ui \
-    loadingdialog.ui \
     resultsdialog.ui
 
 RESOURCES += \

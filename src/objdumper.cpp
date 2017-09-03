@@ -57,7 +57,7 @@ QString ObjDumper::getDump(QString args, QString file){
 }
 
 // Parses disassembly and populates function list
-FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffsets){
+extern FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffsets){
    FunctionList functionList;
    QString dump = getDisassembly(file);
 

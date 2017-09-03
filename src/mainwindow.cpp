@@ -5,6 +5,9 @@
 #include "QScrollBar"
 #include "QSettings"
 #include "QInputDialog"
+#include "QProgressDialog"
+#include "QFuture"
+#include "QtConcurrent/QtConcurrent"
 
 #include "QDebug"
 
@@ -14,10 +17,8 @@
 #include "highlighters/headerhighlighter.h"
 #include "objdumper.h"
 #include "dataStructures/strings.h"
-#include "ui_loadingdialog.h"
 #include "resultsdialog.h"
 
-using namespace std;
 
 Files files;
 FunctionList functionList;
@@ -276,12 +277,28 @@ void MainWindow::loadBinary(QString file){
              *  Disassemble Binary and Display Values
             */
 
+            QProgressDialog progress("Loading Disassembly", "", 0, 4, this);
+            progress.setCancelButton(0);
+            progress.setWindowModality(Qt::WindowModal);
+            progress.setMinimumDuration(500);
+            progress.setValue(0);
+
             // Get base offsets
             baseOffsets = objDumper.getBaseOffset(file);
 
-            // Disassemble and get function list
+            // Disassemble, and get function and section lists
             functionList.nukeList();
-            functionList = objDumper.getFunctionList(file, baseOffsets);
+            QFuture<FunctionList> futureFunctionList = QtConcurrent::run(&objDumper, &ObjDumper::getFunctionList, file, baseOffsets);
+            sectionList.nukeList();
+            QFuture<SectionList> futureSectionList = QtConcurrent::run(&objDumper, &ObjDumper::getSectionList, file);
+
+            while (!futureFunctionList.isFinished() || !futureSectionList.isFinished()){
+                qApp->processEvents();
+            }
+            functionList = futureFunctionList.result();
+            sectionList = futureSectionList.result();
+
+            progress.setValue(1);
 
             // If functionlist is empty
             if (functionList.isEmpty()){
@@ -306,9 +323,9 @@ void MainWindow::loadBinary(QString file){
                 ui->actionFind_Calls_to_Current_Location->setEnabled(true);
             }
 
-            // Get section list and set hex values
-            sectionList.nukeList();
-            sectionList = objDumper.getSectionList(file);
+            progress.setValue(2);
+
+            // Set hex view values
             int len = sectionList.getLength();
             QByteArray addressStr;
             QByteArray hexStr;
@@ -322,6 +339,8 @@ void MainWindow::loadBinary(QString file){
             setUpdatesEnabled(false);
             ui->hexAddressBrowser->setPlainText(addressStr);
             ui->hexBrowser->setPlainText(hexStr);
+
+            progress.setValue(3);
 
             // Set file format value in statusbar
             ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
@@ -340,6 +359,8 @@ void MainWindow::loadBinary(QString file){
 
             ui->tabWidget->setCurrentIndex(0);
             ui->codeBrowser->setFocus();
+
+            progress.setValue(4);
         }
     }
 }
@@ -347,26 +368,15 @@ void MainWindow::loadBinary(QString file){
 // Disassemble
 void MainWindow::on_actionOpen_triggered()
 {
-    // Setup loading message dialog
-    QDialog* dialog = new QDialog(this, Qt::FramelessWindowHint);
-    Ui_Dialog loadingDialogUi;
-    loadingDialogUi.setupUi(dialog);
-    dialog->show();
-
     // Prompt user for file
     QString file = QFileDialog::getOpenFileName(this, tr("Open File"), files.getCurrentDirectory(), tr("All (*)"));
-
-    // Set and display loading message
-    loadingDialogUi.label->setText("Disassembling binary...");
-    qApp->processEvents();
 
     // Update current directory and load file
     if (file != ""){
         files.setCurrentDirectory(file);
         loadBinary(file);
     }
-    // Delete loading dialog
-    delete dialog;
+
 }
 
 /*
