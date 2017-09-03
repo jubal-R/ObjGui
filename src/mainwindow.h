@@ -25,11 +25,19 @@ private slots:
 
     void loadBinary(QString file);
 
+    bool canDisassemble(QString file);
+
     void displayFunctionText(QString functionName);
 
     void displayFunctionText(int functionIndex);
 
     void displayFunctionData();
+
+    void displayHexData();
+
+    void clearUi();
+
+    void enableMenuItems();
 
     void goToAddress(QString targetAddress);
 

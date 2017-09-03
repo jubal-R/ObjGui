@@ -211,7 +211,7 @@ MainWindow::~MainWindow()
 }
 
 /*
- *  Disassembly
+ *  Load Disassembly
 */
 
 //  Load binary and display disassembly
@@ -220,63 +220,9 @@ void MainWindow::loadBinary(QString file){
     if (file != ""){
         this->setWindowTitle("ObjGUI - " + file);
 
-        /*
-         *  Clear Old Values
-        */
-        while (ui->functionList->count() > 0){
-            ui->functionList->takeItem(0);
-        }
-        ui->addressValueLabel->clear();
-        ui->fileOffsetValueLabel->clear();
-        ui->functionLabel->clear();
-        ui->sectionValueLabel->clear();
-        ui->codeBrowser->clear();
-        ui->hexAddressBrowser->clear();
-        ui->hexBrowser->clear();
-        ui->fileFormatlabel->clear();
-        ui->symbolsBrowser->clear();
-        ui->relocationsBrowser->clear();
-        ui->headersBrowser->clear();
-        ui->stringsAddressBrowser->clear();
-        ui->stringsBrowser->clear();
+        clearUi();
 
-        // Clear history
-        history.clear();
-
-        // Check for errors or invalid file
-        QString errorMsg = objDumper.checkForErrors(file);
-        bool canDisassemble = true;
-
-        // If format is ambigous message, let user user select format from list of matching formats
-        if (!errorMsg.isEmpty()){
-            if (errorMsg.contains("Matching formats")){
-                QStringList formats = errorMsg.split(":");
-                if (formats.length() == 2){
-                    formats = formats.at(1).split(" ", QString::SkipEmptyParts);
-
-                    if (!formats.isEmpty()){
-                        // Get target format and set flag
-                        QString format = QInputDialog::getItem(this, "Select matching format", "Format is ambigous, select matching format:", formats, 0, false);
-                        objDumper.setTarget("-b " + format);
-                    } else {
-                        // Display error message
-                        ui->codeBrowser->setPlainText(errorMsg);
-                        canDisassemble = false;
-                    }
-                }
-
-            } else {
-                // Display error message
-                ui->codeBrowser->setPlainText(errorMsg);
-                canDisassemble = false;
-            }
-        }
-
-        if (canDisassemble) {
-            /*
-             *  Disassemble Binary and Display Values
-            */
-
+        if (canDisassemble(file)) {
             QProgressDialog progress("Loading Disassembly", "", 0, 4, this);
             progress.setCancelButton(0);
             progress.setWindowModality(Qt::WindowModal);
@@ -293,7 +239,7 @@ void MainWindow::loadBinary(QString file){
             QFuture<SectionList> futureSectionList = QtConcurrent::run(&objDumper, &ObjDumper::getSectionList, file);
 
             while (!futureFunctionList.isFinished() || !futureSectionList.isFinished()){
-                qApp->processEvents();
+                qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
             }
             functionList = futureFunctionList.result();
             sectionList = futureSectionList.result();
@@ -313,52 +259,30 @@ void MainWindow::loadBinary(QString file){
                 // Add initial location to history
                 addToHistory(currentFunctionIndex, 0);
 
-                // Enable navigation and tools
-                ui->actionGo_To_Address->setEnabled(true);
-                ui->actionGo_to_Address_at_Cursor->setEnabled(true);
-                ui->actionGet_Offset->setEnabled(true);
-                ui->actionGet_File_Offset_of_Current_Line->setEnabled(true);
-                ui->actionFind_References->setEnabled(true);
-                ui->actionFind_Calls_to_Current_Function->setEnabled(true);
-                ui->actionFind_Calls_to_Current_Location->setEnabled(true);
+                enableMenuItems();
             }
 
             progress.setValue(2);
 
-            // Set hex view values
-            int len = sectionList.getLength();
-            QByteArray addressStr;
-            QByteArray hexStr;
-
-            for (int i = 1; i < len; i++){
-                Section section = sectionList.getSection(i);
-
-                addressStr.append("\n" + section.getAddressString() + "\n");
-                hexStr.append(section.getSectionName() + "\n" + section.getHexString() + "\n");
-            }
-            setUpdatesEnabled(false);
-            ui->hexAddressBrowser->setPlainText(addressStr);
-            ui->hexBrowser->setPlainText(hexStr);
+            displayHexData();
 
             progress.setValue(3);
 
-            // Set file format value in statusbar
+            setUpdatesEnabled(false);
+
             ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
             ui->symbolsBrowser->setPlainText(objDumper.getSymbolsTable(file));
             ui->relocationsBrowser->setPlainText(objDumper.getRelocationEntries(file));
             ui->headersBrowser->setPlainText(objDumper.getHeaders(file));
             setUpdatesEnabled(true);
 
-            // Reset specified target
+            // Clear specified target
             objDumper.setTarget("");
 
             // Load strings data
             strings.setStringsData(files.strings(file, baseOffsets));
             ui->stringsAddressBrowser->setPlainText(strings.getStringsAddresses());
             ui->stringsBrowser->setPlainText(strings.getStrings());
-
-            ui->tabWidget->setCurrentIndex(0);
-            ui->codeBrowser->setFocus();
 
             progress.setValue(4);
         }
@@ -375,12 +299,46 @@ void MainWindow::on_actionOpen_triggered()
     if (file != ""){
         files.setCurrentDirectory(file);
         loadBinary(file);
+        ui->tabWidget->setCurrentIndex(0);
+        ui->codeBrowser->setFocus();
     }
 
 }
 
+bool MainWindow::canDisassemble(QString file){
+    // Check for errors or invalid file
+    QString errorMsg = objDumper.checkForErrors(file);
+    bool canDisassemble = true;
+
+    // If format is ambigous message, let user user select format from list of matching formats
+    if (!errorMsg.isEmpty()){
+        if (errorMsg.contains("Matching formats")){
+            QStringList formats = errorMsg.split(":");
+            if (formats.length() == 2){
+                formats = formats.at(1).split(" ", QString::SkipEmptyParts);
+
+                if (!formats.isEmpty()){
+                    // Get target format and set flag
+                    QString format = QInputDialog::getItem(this, "Select matching format", "Format is ambigous, select matching format:", formats, 0, false);
+                    objDumper.setTarget("-b " + format);
+                } else {
+                    // Display error message
+                    ui->codeBrowser->setPlainText(errorMsg);
+                    canDisassemble = false;
+                }
+            }
+
+        } else {
+            // Display error message
+            ui->codeBrowser->setPlainText(errorMsg);
+            canDisassemble = false;
+        }
+    }
+    return canDisassemble;
+}
+
 /*
- *  Function Data
+ *  Display Disassembly Data
 */
 
 // Set lables and code browser to display function info and contents
@@ -449,6 +407,57 @@ void MainWindow::highlightCurrentLine(){
 
    ui->codeBrowser->setExtraSelections(extraSelections);
 
+}
+
+void MainWindow::displayHexData(){
+    // Set hex view values
+    int len = sectionList.getLength();
+    QByteArray addressStr;
+    QByteArray hexStr;
+
+    for (int i = 1; i < len; i++){
+        Section section = sectionList.getSection(i);
+
+        addressStr.append("\n" + section.getAddressString() + "\n");
+        hexStr.append(section.getSectionName() + "\n" + section.getHexString() + "\n");
+    }
+    setUpdatesEnabled(false);
+    ui->hexAddressBrowser->setPlainText(addressStr);
+    ui->hexBrowser->setPlainText(hexStr);
+    setUpdatesEnabled(true);
+}
+
+void MainWindow::clearUi(){
+    while (ui->functionList->count() > 0){
+        ui->functionList->takeItem(0);
+    }
+    ui->addressValueLabel->clear();
+    ui->fileOffsetValueLabel->clear();
+    ui->functionLabel->clear();
+    ui->sectionValueLabel->clear();
+    ui->codeBrowser->clear();
+    ui->hexAddressBrowser->clear();
+    ui->hexBrowser->clear();
+    ui->fileFormatlabel->clear();
+    ui->symbolsBrowser->clear();
+    ui->relocationsBrowser->clear();
+    ui->headersBrowser->clear();
+    ui->stringsAddressBrowser->clear();
+    ui->stringsBrowser->clear();
+
+    // Clear history
+    history.clear();
+}
+
+void MainWindow::enableMenuItems(){
+    // Enable navigation and tools
+    ui->actionGo_To_Address->setEnabled(true);
+    ui->actionGo_to_Address_at_Cursor->setEnabled(true);
+    ui->actionGet_Offset->setEnabled(true);
+    ui->actionGet_File_Offset_of_Current_Line->setEnabled(true);
+    ui->actionFind_References->setEnabled(true);
+    ui->actionFind_Calls_to_Current_Function->setEnabled(true);
+    ui->actionFind_Calls_to_Current_Location->setEnabled(true);
 }
 
 /*
