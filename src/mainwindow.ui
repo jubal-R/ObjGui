@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1198</width>
+    <width>1420</width>
     <height>624</height>
    </rect>
   </property>
@@ -130,7 +130,10 @@ font-size: 11pt;</string>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_9">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -145,9 +148,6 @@ font-size: 11pt;</string>
        </property>
        <item>
         <widget class="QSplitter" name="splitter">
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -167,7 +167,7 @@ font-size: 11pt;</string>
           <property name="styleSheet">
            <string notr="true"/>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="spacing">
             <number>0</number>
            </property>
@@ -254,7 +254,13 @@ font-size: 11pt;</string>
           </layout>
          </widget>
          <widget class="QWidget" name="viewWidget" native="true">
-          <layout class="QVBoxLayout" name="verticalLayout_7">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
            <property name="spacing">
             <number>0</number>
            </property>
@@ -271,7 +277,7 @@ font-size: 11pt;</string>
             <number>0</number>
            </property>
            <item>
-            <widget class="QTabWidget" name="tabWidget">
+            <widget class="QTabWidget" name="disTabWidget">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -315,7 +321,7 @@ font-size: 11pt;</string>
                 <number>1</number>
                </property>
                <property name="topMargin">
-                <number>15</number>
+                <number>10</number>
                </property>
                <property name="rightMargin">
                 <number>1</number>
@@ -329,7 +335,7 @@ font-size: 11pt;</string>
                <item row="2" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
                  <property name="spacing">
-                  <number>10</number>
+                  <number>5</number>
                  </property>
                  <property name="leftMargin">
                   <number>20</number>
@@ -425,6 +431,12 @@ font-size: 11pt;</string>
                  </item>
                  <item>
                   <widget class="QLabel" name="fileOffsetValueLabel">
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -515,7 +527,7 @@ font-size: 11pt;</string>
                 <number>10</number>
                </property>
                <property name="topMargin">
-                <number>15</number>
+                <number>10</number>
                </property>
                <property name="rightMargin">
                 <number>1</number>
@@ -587,253 +599,6 @@ font-size: 11pt;</string>
                  </property>
                  <property name="verticalScrollBarPolicy">
                   <enum>Qt::ScrollBarAlwaysOff</enum>
-                 </property>
-                 <property name="undoRedoEnabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="lineWrapMode">
-                  <enum>QPlainTextEdit::NoWrap</enum>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="symbolsTab">
-              <property name="styleSheet">
-               <string notr="true">border: none;</string>
-              </property>
-              <attribute name="title">
-               <string>Symbols Table</string>
-              </attribute>
-              <layout class="QGridLayout" name="gridLayout_5">
-               <property name="leftMargin">
-                <number>10</number>
-               </property>
-               <property name="topMargin">
-                <number>15</number>
-               </property>
-               <property name="rightMargin">
-                <number>1</number>
-               </property>
-               <property name="bottomMargin">
-                <number>1</number>
-               </property>
-               <property name="spacing">
-                <number>1</number>
-               </property>
-               <item row="2" column="0">
-                <widget class="QPlainTextEdit" name="symbolsBrowser">
-                 <property name="font">
-                  <font>
-                   <family>Monospace</family>
-                   <pointsize>12</pointsize>
-                  </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true"/>
-                 </property>
-                 <property name="undoRedoEnabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="lineWrapMode">
-                  <enum>QPlainTextEdit::NoWrap</enum>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="symbolsTableLabel">
-                 <property name="text">
-                  <string>DYNAMIC SYMBOL TABLE</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="relocationsTab">
-              <property name="styleSheet">
-               <string notr="true">border: none;</string>
-              </property>
-              <attribute name="title">
-               <string>Relocation Entries</string>
-              </attribute>
-              <layout class="QGridLayout" name="gridLayout_4">
-               <property name="leftMargin">
-                <number>10</number>
-               </property>
-               <property name="topMargin">
-                <number>15</number>
-               </property>
-               <property name="rightMargin">
-                <number>1</number>
-               </property>
-               <property name="bottomMargin">
-                <number>1</number>
-               </property>
-               <property name="spacing">
-                <number>1</number>
-               </property>
-               <item row="1" column="0">
-                <widget class="QPlainTextEdit" name="relocationsBrowser">
-                 <property name="font">
-                  <font>
-                   <family>Monospace</family>
-                   <pointsize>12</pointsize>
-                  </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true"/>
-                 </property>
-                 <property name="undoRedoEnabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="lineWrapMode">
-                  <enum>QPlainTextEdit::NoWrap</enum>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="relocationsLabel">
-                 <property name="text">
-                  <string>DYNAMIC RELOCATION RECORDS</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="stringsTab">
-              <property name="styleSheet">
-               <string notr="true"/>
-              </property>
-              <attribute name="title">
-               <string>Strings</string>
-              </attribute>
-              <layout class="QGridLayout" name="gridLayout_3">
-               <property name="leftMargin">
-                <number>10</number>
-               </property>
-               <property name="topMargin">
-                <number>15</number>
-               </property>
-               <property name="rightMargin">
-                <number>1</number>
-               </property>
-               <property name="bottomMargin">
-                <number>1</number>
-               </property>
-               <property name="spacing">
-                <number>1</number>
-               </property>
-               <item row="1" column="0">
-                <widget class="QPlainTextEdit" name="stringsAddressBrowser">
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true"/>
-                 </property>
-                 <property name="verticalScrollBarPolicy">
-                  <enum>Qt::ScrollBarAlwaysOff</enum>
-                 </property>
-                 <property name="undoRedoEnabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="lineWrapMode">
-                  <enum>QPlainTextEdit::NoWrap</enum>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="stringsAddressLabel">
-                 <property name="text">
-                  <string>Address</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QPlainTextEdit" name="stringsBrowser">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true"/>
-                 </property>
-                 <property name="verticalScrollBarPolicy">
-                  <enum>Qt::ScrollBarAsNeeded</enum>
-                 </property>
-                 <property name="undoRedoEnabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="lineWrapMode">
-                  <enum>QPlainTextEdit::NoWrap</enum>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="stringsLabel">
-                 <property name="text">
-                  <string>Strings</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="headersTab">
-              <property name="styleSheet">
-               <string notr="true">border: none;</string>
-              </property>
-              <attribute name="title">
-               <string>Headers</string>
-              </attribute>
-              <layout class="QGridLayout" name="gridLayout_7">
-               <property name="leftMargin">
-                <number>10</number>
-               </property>
-               <property name="topMargin">
-                <number>15</number>
-               </property>
-               <property name="rightMargin">
-                <number>1</number>
-               </property>
-               <property name="bottomMargin">
-                <number>1</number>
-               </property>
-               <property name="spacing">
-                <number>1</number>
-               </property>
-               <item row="0" column="0">
-                <widget class="QPlainTextEdit" name="headersBrowser">
-                 <property name="font">
-                  <font>
-                   <family>Monospace</family>
-                   <pointsize>12</pointsize>
-                  </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true"/>
                  </property>
                  <property name="undoRedoEnabled">
                   <bool>false</bool>
@@ -1244,6 +1009,261 @@ color: rgb(85, 85, 85);</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="Infowidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>320</width>
+            <height>0</height>
+           </size>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QTabWidget" name="infoTabWidget">
+             <property name="styleSheet">
+              <string notr="true">font-size: 10pt;</string>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="stringsTab">
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <attribute name="title">
+               <string>Strings</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_9">
+               <property name="leftMargin">
+                <number>10</number>
+               </property>
+               <property name="topMargin">
+                <number>15</number>
+               </property>
+               <property name="rightMargin">
+                <number>1</number>
+               </property>
+               <property name="bottomMargin">
+                <number>1</number>
+               </property>
+               <property name="spacing">
+                <number>1</number>
+               </property>
+               <item row="1" column="0">
+                <widget class="QPlainTextEdit" name="stringsAddressBrowser">
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="verticalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAlwaysOff</enum>
+                 </property>
+                 <property name="undoRedoEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="lineWrapMode">
+                  <enum>QPlainTextEdit::NoWrap</enum>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QPlainTextEdit" name="stringsBrowser">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">font-size: 10pt;</string>
+                 </property>
+                 <property name="verticalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAsNeeded</enum>
+                 </property>
+                 <property name="undoRedoEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="lineWrapMode">
+                  <enum>QPlainTextEdit::NoWrap</enum>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::TextSelectableByMouse</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="stringsAddressLabel">
+                 <property name="text">
+                  <string>Address</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="stringsLabel">
+                 <property name="text">
+                  <string>Strings</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="symbolsTab">
+              <attribute name="title">
+               <string>Symbols</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_3">
+               <property name="leftMargin">
+                <number>10</number>
+               </property>
+               <property name="topMargin">
+                <number>15</number>
+               </property>
+               <property name="rightMargin">
+                <number>1</number>
+               </property>
+               <property name="bottomMargin">
+                <number>1</number>
+               </property>
+               <property name="spacing">
+                <number>1</number>
+               </property>
+               <item row="1" column="0">
+                <widget class="QPlainTextEdit" name="symbolsBrowser">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="undoRedoEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="lineWrapMode">
+                  <enum>QPlainTextEdit::NoWrap</enum>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="symbolsTableLabel">
+                 <property name="text">
+                  <string>SYMBOLS TABLE</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="relocationsTab">
+              <attribute name="title">
+               <string>Relocations</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_5">
+               <item row="1" column="0">
+                <widget class="QPlainTextEdit" name="relocationsBrowser">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="undoRedoEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="lineWrapMode">
+                  <enum>QPlainTextEdit::NoWrap</enum>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="relocationsLabel">
+                 <property name="text">
+                  <string>DYNAMIC RELOCATION RECORDS</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="headersTab">
+              <attribute name="title">
+               <string>Headers</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_4">
+               <property name="leftMargin">
+                <number>10</number>
+               </property>
+               <property name="topMargin">
+                <number>15</number>
+               </property>
+               <property name="rightMargin">
+                <number>1</number>
+               </property>
+               <property name="bottomMargin">
+                <number>1</number>
+               </property>
+               <property name="spacing">
+                <number>1</number>
+               </property>
+               <item row="0" column="0">
+                <widget class="QPlainTextEdit" name="headersBrowser">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="undoRedoEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="lineWrapMode">
+                  <enum>QPlainTextEdit::NoWrap</enum>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -1342,7 +1362,7 @@ color: rgb(85, 85, 85);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1198</width>
+     <width>1420</width>
      <height>28</height>
     </rect>
    </property>

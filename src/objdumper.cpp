@@ -248,10 +248,10 @@ QString ObjDumper::getDisassembly(QString file){
         return errors;
 }
 
-// Get symbols table: objdump -T
+// Get symbols table: objdump -t
 QString ObjDumper::getSymbolsTable(QString file){
     QStringList argsList;
-    argsList << target << demangleFlag << "-T" << file;
+    argsList << target << demangleFlag << "-t" << file;
     QString symbolsTable = getDump(argsList);
     return removeHeading(symbolsTable, 4);
 }

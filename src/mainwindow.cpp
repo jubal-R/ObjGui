@@ -53,13 +53,17 @@ MainWindow::MainWindow(QWidget *parent) :
     sans.setPointSize(11);
 
     this->setFont(sans);
-    ui->tabWidget->setFont(sans);
+    ui->disTabWidget->setFont(sans);
     ui->syntaxLabel->setFont(sans);
     ui->disassemblyFlagLabel->setFont(sans);
     ui->headersLabel->setFont(sans);
     ui->functionListLabel->setFont(sans);
     ui->functionList->setFont(sans);
     ui->customBinaryButton->setFont(sans);
+    ui->stringsAddressBrowser->setFont(sans);
+    ui->stringsBrowser->setFont(sans);
+    ui->symbolsBrowser->setFont(sans);
+    ui->relocationsBrowser->setFont(sans);
 
     // Sans serif bold
     int sansBoldId = QFontDatabase::addApplicationFont(":/fonts/NotoSans-Bold.ttf");
@@ -89,16 +93,12 @@ MainWindow::MainWindow(QWidget *parent) :
     mono.setPointSize(12);
 
     ui->codeBrowser->setFont(mono);
-    ui->symbolsBrowser->setFont(mono);
-    ui->relocationsBrowser->setFont(mono);
     ui->hexAddressBrowser->setFont(mono);
     ui->hexBrowser->setFont(mono);
     ui->headersBrowser->setFont(mono);
     ui->addressValueLabel->setFont(mono);
     ui->fileOffsetValueLabel->setFont(mono);
     ui->sectionValueLabel->setFont(mono);
-    ui->stringsAddressBrowser->setFont(mono);
-    ui->stringsBrowser->setFont(mono);
 
     // Monospace Bold
     int monoBoldId = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro B.ttf");
@@ -298,7 +298,7 @@ void MainWindow::on_actionOpen_triggered()
     if (file != ""){
         files.setCurrentDirectory(file);
         loadBinary(file);
-        ui->tabWidget->setCurrentIndex(0);
+        ui->disTabWidget->setCurrentIndex(0);
         ui->codeBrowser->setFocus();
     }
 
@@ -487,7 +487,7 @@ void MainWindow::goToAddress(QString targetAddress){
             // Go to Line
             QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(location[1]));
             ui->codeBrowser->setTextCursor(cursor);
-            ui->tabWidget->setCurrentIndex(0);
+            ui->disTabWidget->setCurrentIndex(0);
             ui->codeBrowser->setFocus();
             setUpdatesEnabled(true);
 
@@ -499,7 +499,7 @@ void MainWindow::goToAddress(QString targetAddress){
             int stringsIndex = strings.getIndexByAddress(targetAddress);
 
             if (stringsIndex >= 0){
-                ui->tabWidget->setCurrentIndex(4);
+                ui->infoTabWidget->setCurrentIndex(0);
                 QTextCursor cursor(ui->stringsBrowser->document()->findBlockByLineNumber(stringsIndex));
                 cursor.select(QTextCursor::LineUnderCursor);
                 ui->stringsBrowser->setTextCursor(cursor);
@@ -542,7 +542,7 @@ void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 {
     // Display function
     displayFunctionText(item->text());
-    ui->tabWidget->setCurrentIndex(0);
+    ui->disTabWidget->setCurrentIndex(0);
     // Add new location to history
     addToHistory(currentFunctionIndex, 0);
 }
@@ -572,10 +572,10 @@ void MainWindow::on_actionGet_Offset_triggered()
 void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
 {
     if (!functionList.isEmpty() && !baseOffsets.isEmpty()){
-        int currentTab = ui->tabWidget->currentIndex();
+        int currentTab = ui->disTabWidget->currentIndex();
         QString offsetMsg = "";
 
-        if (currentTab == 0){
+        if (currentTab == 0 && ui->codeBrowser->hasFocus()){
             Function function = functionList.getFunction(currentFunctionIndex);
             QTextCursor cursor = ui->codeBrowser->textCursor();
             int lineNum = cursor.blockNumber();
@@ -588,7 +588,7 @@ void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
                 offsetMsg = "File Offset of Address " + currentLineAddressStr + "\nHex: " + offset[0] + "\nInt: " + offset[1];
             }
 
-        } else if (currentTab == 4){
+        } else if (ui->infoTabWidget->currentIndex() == 0 && ui->stringsBrowser->hasFocus()){
             QTextCursor cursor = ui->stringsBrowser->textCursor();
             int lineNum = cursor.blockNumber();
             // Get address
@@ -597,7 +597,7 @@ void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
             if (!currentLineAddressStr.isEmpty()){
                 // Get file offset of address
                 QVector<QString> offset = objDumper.getFileOffset(currentLineAddressStr, baseOffsets);
-                offsetMsg = "File Offset of Address" + currentLineAddressStr + "\nHex: " + offset[0] + "\nInt: " + offset[1];
+                offsetMsg = "File Offset of Address " + currentLineAddressStr + "\nHex: " + offset[0] + "\nInt: " + offset[1];
             }
         }
 
@@ -642,7 +642,7 @@ void MainWindow::on_backButton_clicked()
         // Go to prev line
         QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(prevLocation[1]));
         ui->codeBrowser->setTextCursor(cursor);
-        ui->tabWidget->setCurrentIndex(0);
+        ui->disTabWidget->setCurrentIndex(0);
         ui->codeBrowser->setFocus();
         setUpdatesEnabled(true);
     }
@@ -664,7 +664,7 @@ void MainWindow::on_forwardButton_clicked()
         // Go to prev line
         QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(nextLocation[1]));
         ui->codeBrowser->setTextCursor(cursor);
-        ui->tabWidget->setCurrentIndex(0);
+        ui->disTabWidget->setCurrentIndex(0);
         ui->codeBrowser->setFocus();
         setUpdatesEnabled(true);
     }
@@ -780,7 +780,7 @@ void MainWindow::on_actionFind_2_triggered()
 void MainWindow::on_findButton_clicked()
 {
     QString searchTerm = ui->findLineEdit->text();
-    int currentTabIndex = ui->tabWidget->currentIndex();
+    int currentTabIndex = ui->disTabWidget->currentIndex();
     QPlainTextEdit *targetWidget = NULL;
 
     // Set pointer to target widget given current tab index
@@ -791,17 +791,6 @@ void MainWindow::on_findButton_clicked()
     case 1:
         targetWidget = ui->hexBrowser;
         break;
-    case 2:
-        targetWidget = ui->symbolsBrowser;
-        break;
-    case 3:
-        targetWidget = ui->relocationsBrowser;
-        break;
-    case 4:
-        targetWidget = ui->stringsBrowser;
-        break;
-    case 5:
-        targetWidget = ui->headersBrowser;
     default:
         break;
     }
@@ -862,7 +851,7 @@ void MainWindow::on_findLineEdit_returnPressed()
 void MainWindow::on_findPrevButton_clicked()
 {
     QString searchTerm = ui->findLineEdit->text();
-    int currentTabIndex = ui->tabWidget->currentIndex();
+    int currentTabIndex = ui->disTabWidget->currentIndex();
     QPlainTextEdit *targetWidget = NULL;
 
     // Set pointer to target widget given current tab index
@@ -873,17 +862,6 @@ void MainWindow::on_findPrevButton_clicked()
     case 1:
         targetWidget = ui->hexBrowser;
         break;
-    case 2:
-        targetWidget = ui->symbolsBrowser;
-        break;
-    case 3:
-        targetWidget = ui->relocationsBrowser;
-        break;
-    case 4:
-        targetWidget = ui->stringsBrowser;
-        break;
-    case 5:
-        targetWidget = ui->headersBrowser;
     default:
         break;
     }
@@ -1076,24 +1054,34 @@ void MainWindow::setCentralWidgetStyle(QString foregroundColor, QString backgrou
 
 // Style tab widget
 void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor){
-    QString style = "#disTab, #hexTab, #symbolsTab, #relocationsTab, #stringsTab, #headersTab, #optionsTab"
-                " {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
-            "#hexAddressBrowser, #stringsAddressBrowser {color: " + addressColor + ";}"
+    QString style = "#disTab, #hexTab, #optionsTab"
+            " {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
+            "#hexAddressBrowser {color: " + addressColor + ";}"
             "QTabBar::tab:selected{color: #fafafa; background-color: #3ba1a1; border-top: 1px solid #d4d4d4;}"
             "QTabBar::tab {background-color: " + backgroundColor2 +"; min-width: 102px;}"
             "QTabWidget::tab-bar {left: 5px;}"
-            "QTabWidget::pane {border: none;}"
+            "QTabWidget::pane {border: 1px solid #c0c0c0;}"
             "QComboBox {background-color: #fafafa; color: #555555;}"
             "QCheckBox {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
             "QPlainTextEdit { background-color: "+ backgroundColor +"; color:"+ foregroundColor +"; border: 0px; selection-background-color: #404f4f;} "
             "QLabel {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
             "QScrollBar:vertical{background: "+ backgroundColor +";} QScrollBar:horizontal{background: "+ backgroundColor +";}";
-   ui->tabWidget->setStyleSheet(style);
+   ui->disTabWidget->setStyleSheet(style);
 
 }
 
+void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor){
+    QString style = "#symbolsTab, #relocationsTab, #stringsTab, #headersTab"
+             " {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
+             "QTabWidget::pane {border: 1px solid #c0c0c0;}"
+             "QPlainTextEdit { background-color: "+ backgroundColor +"; color:"+ foregroundColor +"; border: 0px; selection-background-color: #404f4f; font-size: 10pt;} "
+             "QLabel {background-color: " + backgroundColor + "; color: " + foregroundColor + "; font-size: 10pt;}"
+             "QScrollBar:vertical{background: "+ backgroundColor +";} QScrollBar:horizontal{background: "+ backgroundColor +";}";;
+    ui->infoTabWidget->setStyleSheet(style);
+}
+
 void MainWindow::setSidebarStyle(QString backgroundColor){
-    QString sidebarStyle = "#functionList {background-color: " + backgroundColor + "; font-size: 10pt;}";
+    QString sidebarStyle = "#functionList {background-color: " + backgroundColor + "; font-size: 10pt; border: 1px solid #c0c0c0;}";
     ui->sidebar_2->setStyleSheet(sidebarStyle);
 }
 
@@ -1110,6 +1098,7 @@ void MainWindow::on_actionDefault_triggered()
 
     setCentralWidgetStyle(fgc2, bgc2);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
+    setInfoTabWidgetStyle(fgc, bgc);
     setSidebarStyle(bgc);
 
     disHighlighter->setTheme("Default");
@@ -1131,6 +1120,7 @@ void MainWindow::on_actionDark_triggered()
 
     setCentralWidgetStyle(fgc2, bgc2);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
+    setInfoTabWidgetStyle(fgc, bgc);
     setSidebarStyle(bgc);
 
     disHighlighter->setTheme("Default");
@@ -1152,6 +1142,7 @@ void MainWindow::on_actionSolarized_triggered()
 
     setCentralWidgetStyle(fgc2, bgc2);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
+    setInfoTabWidgetStyle(fgc, bgc);
     setSidebarStyle(bgc);
 
     disHighlighter->setTheme("solarized");
@@ -1173,6 +1164,7 @@ void MainWindow::on_actionSolarized_Dark_triggered()
 
     setCentralWidgetStyle(fgc2, bgc2);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
+    setInfoTabWidgetStyle(fgc, bgc);
     setSidebarStyle(bgc);
 
     disHighlighter->setTheme("solarized");

@@ -49,6 +49,8 @@ private slots:
 
     void setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor);
 
+    void setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor);
+
     void setSidebarStyle(QString backgroundColor);
 
     void on_actionProject_triggered();
