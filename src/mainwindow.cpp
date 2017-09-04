@@ -136,25 +136,21 @@ MainWindow::MainWindow(QWidget *parent) :
     // Optional flags
     if (settings.value("demangle", false) == true){
         ui->demanlgeCheckBox->setChecked(true);
-        objDumper.setOptionalFlags("-C");
+        objDumper.setDemangleFlag("-C");
     }
 
     // Header flags
-    QString headerFlags = settings.value("headerFlags", "").toString();
-    if (headerFlags != ""){
-        if (headerFlags == "-a -f -p -h "){
-            ui->allHeadersCheckBox->setChecked(true);
-        } else {
-            if (headerFlags.contains('a'))
-                ui->archiveHeadersCheckBox->setChecked(true);
-            if (headerFlags.contains('f'))
-                ui->fileHeadersCheckBox->setChecked(true);
-            if (headerFlags.contains('p'))
-                ui->privateHeadersCheckBox->setChecked(true);
-            if (headerFlags.contains('h'))
-                ui->sectionHeadersCheckbox->setChecked(true);
-        }
-        objDumper.setHeaderFlags(headerFlags);
+    if (settings.value("archiveHeaderFlagChecked", true) == true){
+        ui->archiveHeadersCheckBox->setChecked(true);
+    }
+    if (settings.value("fileHeaderFlagChecked", true) == true){
+        ui->fileHeadersCheckBox->setChecked(true);
+    }
+    if (settings.value("privateHeaderFlagChecked", true) == true){
+        ui->privateHeadersCheckBox->setChecked(true);
+    }
+    if (settings.value("sectionHeaderFlagChecked", true) == true){
+        ui->sectionHeadersCheckbox->setChecked(true);
     }
 
     // Custom binary
@@ -205,7 +201,10 @@ MainWindow::~MainWindow()
     settings.setValue("windowWidth", windowRect.width());
     settings.setValue("windowHeight", windowRect.height());
     settings.setValue("splitterSizes", ui->splitter->saveState());
-    settings.setValue("headerFlags", getHeaderFlags());
+    settings.setValue("archiveHeaderFlagChecked", ui->archiveHeadersCheckBox->isChecked());
+    settings.setValue("fileHeaderFlagChecked", ui->fileHeadersCheckBox->isChecked());
+    settings.setValue("privateHeaderFlagChecked", ui->privateHeadersCheckBox->isChecked());
+    settings.setValue("sectionHeaderFlagChecked", ui->sectionHeadersCheckbox->isChecked());
 
     delete ui;
 }
@@ -995,55 +994,47 @@ void MainWindow::on_allHeadersCheckBox_toggled(bool checked)
         ui->privateHeadersCheckBox->setEnabled(true);
         ui->sectionHeadersCheckbox->setEnabled(true);
     }
-    objDumper.setHeaderFlags(getHeaderFlags());
 }
 
-QString MainWindow::getHeaderFlags(){
-    QString flags = "";
-
-    if (ui->archiveHeadersCheckBox->isChecked())
-        flags.append("-a ");
-    if (ui->fileHeadersCheckBox->isChecked())
-        flags.append("-f ");
-    if (ui->privateHeadersCheckBox->isChecked())
-        flags.append("-p ");
-    if (ui->sectionHeadersCheckbox->isChecked())
-        flags.append("-h ");
-
-    return flags;
-}
-
-void MainWindow::on_archiveHeadersCheckBox_clicked()
+void MainWindow::on_archiveHeadersCheckBox_toggled(bool checked)
 {
-    if (!ui->allHeadersCheckBox->isChecked())
-        objDumper.setHeaderFlags(getHeaderFlags());
+    if (checked)
+        objDumper.setArchiveHeaderFlag("-a");
+    else
+        objDumper.setArchiveHeaderFlag("");
 }
 
-void MainWindow::on_fileHeadersCheckBox_clicked()
+void MainWindow::on_fileHeadersCheckBox_toggled(bool checked)
 {
-    if (!ui->allHeadersCheckBox->isChecked())
-        objDumper.setHeaderFlags(getHeaderFlags());
+    if (checked)
+        objDumper.setFileHeaderFlag("-f");
+    else
+        objDumper.setFileHeaderFlag("");
 }
 
-void MainWindow::on_privateHeadersCheckBox_clicked()
+void MainWindow::on_privateHeadersCheckBox_toggled(bool checked)
 {
-    if (!ui->allHeadersCheckBox->isChecked())
-        objDumper.setHeaderFlags(getHeaderFlags());
+    if (checked)
+        objDumper.setPrivateHeaderFlag("-p");
+    else
+        objDumper.setPrivateHeaderFlag("");
 }
 
-void MainWindow::on_sectionHeadersCheckbox_clicked()
+void MainWindow::on_sectionHeadersCheckbox_toggled(bool checked)
 {
-    if (!ui->allHeadersCheckBox->isChecked())
-        objDumper.setHeaderFlags(getHeaderFlags());
+    if (checked)
+        objDumper.setSectionsHeaderFlag("-h");
+    else
+        objDumper.setSectionsHeaderFlag("");
 }
 
 void MainWindow::on_demanlgeCheckBox_toggled(bool checked)
 {
     if (checked){
-        objDumper.setOptionalFlags("-C");
+        objDumper.setDemangleFlag("-C");
         settings.setValue("demangle", true);
     } else {
-        objDumper.setOptionalFlags("");
+        objDumper.setDemangleFlag("");
         settings.setValue("demangle", false);
     }
 }
@@ -1234,12 +1225,5 @@ void MainWindow::on_actionFullscreen_triggered()
         }else{
             MainWindow::showFullScreen();
         }
-}
-
-
-void MainWindow::on_actionShow_Containing_Folder_triggered()
-{
-    // Open current directory in file manager
-    files.openFileManager(files.getCurrentDirectory());
 }
 

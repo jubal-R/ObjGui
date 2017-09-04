@@ -17,8 +17,6 @@ public:
     ~MainWindow();
 
 private slots:
-    QString getHeaderFlags();
-
     void highlightCurrentLine();
 
     void on_actionOpen_triggered();
@@ -58,8 +56,6 @@ private slots:
     void on_actionExit_triggered();
 
     void on_actionFullscreen_triggered();
-
-    void on_actionShow_Containing_Folder_triggered();
     
     void on_actionIntel_triggered();
 
@@ -77,13 +73,13 @@ private slots:
 
     void on_customBinaryCheckBox_toggled(bool checked);
 
-    void on_archiveHeadersCheckBox_clicked();
+    void on_archiveHeadersCheckBox_toggled(bool checked);
 
-    void on_fileHeadersCheckBox_clicked();
+    void on_fileHeadersCheckBox_toggled(bool checked);
 
-    void on_privateHeadersCheckBox_clicked();
+    void on_privateHeadersCheckBox_toggled(bool checked);
 
-    void on_sectionHeadersCheckbox_clicked();
+    void on_sectionHeadersCheckbox_toggled(bool checked);
 
     void on_actionGo_To_Address_triggered();
 
@@ -124,6 +120,7 @@ private slots:
     void on_actionSolarized_triggered();
 
     void on_actionDark_triggered();
+
 
 private:
     Ui::MainWindow *ui;

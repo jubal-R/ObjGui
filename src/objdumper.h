@@ -26,12 +26,15 @@ public:
     void setobjdumpBinary(QString binary);
     void setOutputSyntax(QString syntax);
     void setDisassemblyFlag(QString flag);
-    void setHeaderFlags(QString flags);
-    void setOptionalFlags(QString);
+    void setDemangleFlag(QString);
     void setTarget(QString trgt);
+    void setArchiveHeaderFlag(QString flag);
+    void setFileHeaderFlag(QString flag);
+    void setPrivateHeaderFlag(QString flag);
+    void setSectionsHeaderFlag(QString flag);
 
 private:
-    QString getDump(QString args, QString file);
+    QString getDump(QStringList argsList);
     QString removeHeading(QString dump, int numLines);
     QString getHeading(QString dump, int numLines);
     QString parseDumpForErrors(QString dump);
@@ -40,8 +43,11 @@ private:
     QString objdumpBinary;
     QString outputSyntax;
     QString disassemblyFlag;
-    QString headerFlags;
-    QString optionalFlags;
+    QString archiveHeaderFlag;
+    QString fileHeaderFlag;
+    QString privateHeaderFlag;
+    QString sectionsHeaderFlag;
+    QString demangleFlag;
     QString target;
     int insnwidth;
     QRegularExpression addressRegex;

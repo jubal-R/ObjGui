@@ -1400,7 +1400,6 @@ color: rgb(85, 85, 85);</string>
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
-    <addaction name="actionShow_Containing_Folder"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -1473,11 +1472,6 @@ color: rgb(85, 85, 85);</string>
   <action name="actionFind">
    <property name="text">
     <string>Find</string>
-   </property>
-  </action>
-  <action name="actionShow_Containing_Folder">
-   <property name="text">
-    <string>Show Containing Folder</string>
    </property>
   </action>
   <action name="actionGo_To_Address">

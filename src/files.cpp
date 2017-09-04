@@ -90,33 +90,6 @@ QString Files::getAddressFromOffset(QString offset, QVector<QString> baseOffsets
     return address;
 }
 
-// Open directory in file manager
-void Files::openFileManager(QString dir){
-    // xdg-open + dir
-    std::ostringstream oss;
-    FILE *in;
-    char buff[100];
-    std::string cmd = "xdg-open " + dir.toStdString() + " 2>&1";
-
-    try{
-        if(!(in = popen(cmd.c_str(),"r") )){
-            // Failed to open file manager
-        }
-        while(fgets(buff, sizeof(buff), in) !=NULL){
-            oss << buff;
-        }
-        pclose(in);
-
-    }catch(const std::exception& e){
-        // Something went wrong
-    }catch (const std::string& ex) {
-
-    } catch (...) {
-
-    }
-
-}
-
 // Get directory given file path(example: /bin/bash returns /bin/)
 QString Files::getDirectory(QString filepath){
     int lastIndex = filepath.lastIndexOf("/");

@@ -1,9 +1,7 @@
 #include "objdumper.h"
 #include "QVector"
 #include "QStringRef"
-#include <stdlib.h>
-#include <fstream>
-#include <sstream>
+#include "QProcess"
 
 #include "QDebug"
 
@@ -14,8 +12,11 @@ ObjDumper::ObjDumper()
     objdumpBinary = "objdump";
     outputSyntax = "intel";
     disassemblyFlag = "-d";
-    headerFlags = "-a -f -p -h";
-    optionalFlags = "";
+    archiveHeaderFlag = "-a";
+    fileHeaderFlag = "-f";
+    privateHeaderFlag = "-p";
+    sectionsHeaderFlag = "-h";
+    demangleFlag = "";
     target = "";
     insnwidth = 10;
 
@@ -23,41 +24,30 @@ ObjDumper::ObjDumper()
 }
 
 // Runs objdump given arguments and file then returns outout
-QString ObjDumper::getDump(QString args, QString file){
-    std::ostringstream oss;
-    FILE *in;
-    char buff[100];
-    std::string objdumpStr;
+QString ObjDumper::getDump(QStringList argsList){
+    QString objdumpStr;
 
     if (useCustomBinary && objdumpBinary != "")
-        objdumpStr = objdumpBinary.toStdString();
+        objdumpStr = objdumpBinary;
     else
         objdumpStr = "objdump";
 
-    std::string cmd = "\"" + objdumpStr + "\" "  + target.toStdString() + " " + args.toStdString() + " \"" + file.toStdString() + "\" 2>&1";
+    QProcess *process = new QProcess(0);
+    process->start(objdumpStr, argsList);
 
-    try{
-        if(!(in = popen(cmd.c_str(),"r") )){
-                return "Failed to get object dump.";
-            }
-            while(fgets(buff, sizeof(buff), in) !=NULL){
-                oss << buff;
-            }
-            pclose(in);
+    if (!process->waitForStarted())
+        return "";
 
-    }catch(const std::exception& e){
-        return "Something went wrong.";
-    }catch (const std::string& ex) {
+    if (!process->waitForFinished())
+        return "";
 
-    } catch (...) {
+    QByteArray output = process->readAll();
 
-    }
-
-    return QString::fromStdString(oss.str());
+    return output;
 }
 
 // Parses disassembly and populates function list
-extern FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffsets){
+FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffsets){
    FunctionList functionList;
    QString dump = getDisassembly(file);
 
@@ -247,7 +237,9 @@ SectionList ObjDumper::getSectionList(QString file){
 
 // Get disassembly: objdump -d
 QString ObjDumper::getDisassembly(QString file){
-    QString disassembly = getDump("--insn-width=" + QString::number(insnwidth) + " " +optionalFlags + " -M " + outputSyntax + " " + disassemblyFlag, file);
+    QStringList argsList;
+    argsList << target << "--insn-width=" + QString::number(insnwidth) << demangleFlag << "-M" << outputSyntax << disassemblyFlag << file;
+    QString disassembly = getDump(argsList);
     // Check first few lines for errors
     QString errors = parseDumpForErrors(getHeading(disassembly, 10));   // Output formatting can differ so check more lines to be safe
     if (errors == "")
@@ -258,26 +250,34 @@ QString ObjDumper::getDisassembly(QString file){
 
 // Get symbols table: objdump -T
 QString ObjDumper::getSymbolsTable(QString file){
-    QString symbolsTable = getDump(optionalFlags + " -T", file);
+    QStringList argsList;
+    argsList << target << demangleFlag << "-T" << file;
+    QString symbolsTable = getDump(argsList);
     return removeHeading(symbolsTable, 4);
 }
 
 // Get relocation entries: objdump -R
 QString ObjDumper::getRelocationEntries(QString file){
-    QString relocationEntries = getDump(optionalFlags + " -R", file);
+    QStringList argsList;
+    argsList << target << demangleFlag << "-R" << file;
+    QString relocationEntries = getDump(argsList);
     return removeHeading(relocationEntries, 4);
 }
 
 // Get all contents(hexdump of sections): objdump -s
 QString ObjDumper::getContents(QString file){
-    QString contents = getDump("-s", file);
+    QStringList argsList;
+    argsList << target << "-s" << file;
+    QString contents = getDump(argsList);
     return removeHeading(contents, 3);
 }
 
 // Get headers: objdump [-a -f -p -h]
 QString ObjDumper::getHeaders(QString file){
-    if (!headerFlags.isEmpty()){
-        QString headers = getDump(headerFlags, file);
+    if (!(archiveHeaderFlag.isEmpty() && fileHeaderFlag.isEmpty() && privateHeaderFlag.isEmpty() && sectionsHeaderFlag.isEmpty())){
+        QStringList argsList;
+        argsList << target << archiveHeaderFlag << fileHeaderFlag << privateHeaderFlag << sectionsHeaderFlag << file;
+        QString headers = getDump(argsList);
         return removeHeading(headers, 3);
     } else {
         return "";
@@ -286,7 +286,9 @@ QString ObjDumper::getHeaders(QString file){
 
 // Get file format by parsing header
 QString ObjDumper::getFileFormat(QString file){
-    QString header = getDump("-f", file);
+    QStringList argsList;
+    argsList << target << "-f" << file;
+    QString header = getDump(argsList);
     QString fileFormat = "";
 
     if (!header.contains("File format not recognized")){
@@ -313,7 +315,9 @@ QString ObjDumper::getFileFormat(QString file){
 // Returns base offset [base vma, base file offset]
 QVector<QString> ObjDumper::getBaseOffset(QString file){
     QVector<QString> baseOffset(2);
-    QString sectionHeader = getDump("-h", file);
+    QStringList argsList;
+    argsList << target << "-h" << file;
+    QString sectionHeader = getDump(argsList);
 
     if (!sectionHeader.isEmpty() && !sectionHeader.contains("File format not recognized")){
         QStringRef firstSection = sectionHeader.splitRef('\n').at(5);
@@ -350,7 +354,9 @@ QVector<QString> ObjDumper::getFileOffset(QString targetAddress, QVector<QString
 
 // Try to dump a header with objdump and return any errors
 QString ObjDumper::checkForErrors(QString file){
-    QString dumpStr = getDump("-f", file);
+    QStringList argsList;
+    argsList << target << "-f" << file;
+    QString dumpStr = getDump(argsList);
     return parseDumpForErrors(dumpStr);
 }
 
@@ -413,12 +419,24 @@ void ObjDumper::setDisassemblyFlag(QString flag){
     disassemblyFlag = flag;
 }
 
-void ObjDumper::setHeaderFlags(QString flags){
-    headerFlags = flags;
+void ObjDumper::setArchiveHeaderFlag(QString flag){
+    archiveHeaderFlag = flag;
 }
 
-void ObjDumper::setOptionalFlags(QString flags){
-    optionalFlags = flags;
+void ObjDumper::setFileHeaderFlag(QString flag){
+    fileHeaderFlag = flag;
+}
+
+void ObjDumper::setPrivateHeaderFlag(QString flag){
+    privateHeaderFlag = flag;
+}
+
+void ObjDumper::setSectionsHeaderFlag(QString flag){
+    sectionsHeaderFlag = flag;
+}
+
+void ObjDumper::setDemangleFlag(QString flags){
+    demangleFlag = flags;
 }
 
 // Set target flag: "-b [target]"

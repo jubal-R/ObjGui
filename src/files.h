@@ -13,7 +13,6 @@ public:
     QString getDirectory(QString file);
     QString getCurrentDirectory();
     void setCurrentDirectory(QString file);
-    void openFileManager(QString dir);
 private:
     QString currentDirectory;
 };
