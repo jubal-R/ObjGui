@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->stringsBrowser->setFont(sans);
     ui->symbolsBrowser->setFont(sans);
     ui->relocationsBrowser->setFont(sans);
+    ui->headersBrowser->setFont(sans);
 
     // Sans serif bold
     int sansBoldId = QFontDatabase::addApplicationFont(":/fonts/NotoSans-Bold.ttf");
@@ -95,7 +96,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->codeBrowser->setFont(mono);
     ui->hexAddressBrowser->setFont(mono);
     ui->hexBrowser->setFont(mono);
-    ui->headersBrowser->setFont(mono);
     ui->addressValueLabel->setFont(mono);
     ui->fileOffsetValueLabel->setFont(mono);
     ui->sectionValueLabel->setFont(mono);
@@ -776,7 +776,74 @@ void MainWindow::on_actionFind_2_triggered()
     }
 }
 
-// Find
+// Find and highlight search term in the target widget
+void MainWindow::find(QString searchTerm, QPlainTextEdit *targetWidget, bool searchBackwords){
+    if (targetWidget != NULL){
+        QTextCursor cursor = targetWidget->textCursor();
+        int currentPosition = cursor.position();
+        bool found = false;
+
+        // Start new search from begining of document
+        if (searchTerm != currentSearchTerm){
+            if (!searchBackwords)
+                cursor.movePosition(QTextCursor::Start);
+            else
+                cursor.movePosition(QTextCursor::End);
+
+            targetWidget->setTextCursor(cursor);
+
+            currentSearchTerm = searchTerm;
+            if (!searchBackwords)
+                found = targetWidget->find(searchTerm);
+            else
+                found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
+
+            // Call vertical scrollbar value changed to keep widgets scrolling synced
+            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
+
+            // If not found move cursor back to original position and display not found message
+            if(!found){
+                cursor.setPosition(currentPosition);
+                targetWidget->setTextCursor(cursor);
+                QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
+            }
+
+        } else {
+            if (!searchBackwords)
+                found = targetWidget->find(searchTerm);
+            else
+                found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
+
+            // Call vertical scrollbar value changed to keep widgets scrolling synced
+            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
+
+            // If not found wrap to begining and search again
+            if (!found){
+                if (!searchBackwords)
+                    cursor.movePosition(QTextCursor::Start);
+                else
+                    cursor.movePosition(QTextCursor::End);
+
+                targetWidget->setTextCursor(cursor);
+
+                if (!searchBackwords)
+                    found = targetWidget->find(searchTerm);
+                else
+                    found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
+
+                // Call vertical scrollbar value changed to keep widgets scrolling synced
+                targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
+                if (!found){
+                    cursor.setPosition(currentPosition);
+                    targetWidget->setTextCursor(cursor);
+                    QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
+                }
+            }
+        }
+
+    }
+}
+
 void MainWindow::on_findButton_clicked()
 {
     QString searchTerm = ui->findLineEdit->text();
@@ -795,50 +862,7 @@ void MainWindow::on_findButton_clicked()
         break;
     }
 
-    if (targetWidget != NULL){
-        QTextCursor cursor = targetWidget->textCursor();
-        int currentPosition = cursor.position();
-        bool found = false;
-
-        // Start new search from begining of document
-        if (searchTerm != currentSearchTerm){
-            cursor.movePosition(QTextCursor::Start);
-            targetWidget->setTextCursor(cursor);
-
-            currentSearchTerm = searchTerm;
-            found = targetWidget->find(searchTerm);
-            // Call vertical scrollbar value changed to keep widgets scrolling synced
-            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
-
-            // If not found move cursor back to original position and display not found message
-            if(!found){
-                cursor.setPosition(currentPosition);
-                targetWidget->setTextCursor(cursor);
-                QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
-            }
-
-        } else {
-            found = targetWidget->find(searchTerm);
-            // Call vertical scrollbar value changed to keep widgets scrolling synced
-            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
-
-            // If not found wrap to begining and search again
-            if (!found){
-                cursor.movePosition(QTextCursor::Start);
-                targetWidget->setTextCursor(cursor);
-
-                found = targetWidget->find(searchTerm);
-                // Call vertical scrollbar value changed to keep widgets scrolling synced
-                targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
-                if (!found){
-                    cursor.setPosition(currentPosition);
-                    targetWidget->setTextCursor(cursor);
-                    QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
-                }
-            }
-        }
-
-    }
+    find(searchTerm, targetWidget, false);
 
 }
 
@@ -866,50 +890,14 @@ void MainWindow::on_findPrevButton_clicked()
         break;
     }
 
-    if (targetWidget != NULL){
-        QTextCursor cursor = targetWidget->textCursor();
-        int currentPosition = cursor.position();
-        bool found = false;
+    find(searchTerm, targetWidget, true);
+}
 
-        // Start new search from end of document
-        if (searchTerm != currentSearchTerm){
-            cursor.movePosition(QTextCursor::End);
-            targetWidget->setTextCursor(cursor);
-
-            currentSearchTerm = searchTerm;
-            found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
-            // Call vertical scrollbar value changed to keep widgets scrolling synced
-            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
-
-            // If not found move cursor back to original position and display not found message
-            if(!found){
-                cursor.setPosition(currentPosition);
-                targetWidget->setTextCursor(cursor);
-                QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
-            }
-
-        } else {
-            found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
-            // Call vertical scrollbar value changed to keep widgets scrolling synced
-            targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
-
-            // If not found wrap to end and search again
-            if (!found){
-                cursor.movePosition(QTextCursor::End);
-                targetWidget->setTextCursor(cursor);
-
-                found = targetWidget->find(searchTerm, QTextDocument::FindBackward);
-                // Call vertical scrollbar value changed to keep widgets scrolling synced
-                targetWidget->verticalScrollBar()->valueChanged(targetWidget->verticalScrollBar()->value());
-                if (!found){
-                    cursor.setPosition(currentPosition);
-                    targetWidget->setTextCursor(cursor);
-                    QMessageBox::information(this, tr("Not Found"), "\"" + searchTerm + "\" not found.", QMessageBox::Close);
-                }
-            }
-        }
-
-    }
+void MainWindow::on_stringsSearchBar_returnPressed()
+{
+    QString searchTerm = ui->stringsSearchBar->text();
+    QPlainTextEdit *stringsBrowser = ui->stringsBrowser;
+    find(searchTerm, stringsBrowser, false);
 }
 
 /*
@@ -1065,6 +1053,7 @@ void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundCo
             "QCheckBox {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
             "QPlainTextEdit { background-color: "+ backgroundColor +"; color:"+ foregroundColor +"; border: 0px; selection-background-color: #404f4f;} "
             "QLabel {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
+            "QLineEdit {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
             "QScrollBar:vertical{background: "+ backgroundColor +";} QScrollBar:horizontal{background: "+ backgroundColor +";}";
    ui->disTabWidget->setStyleSheet(style);
 
@@ -1076,6 +1065,7 @@ void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString backgrou
              "QTabWidget::pane {border: 1px solid #c0c0c0;}"
              "QPlainTextEdit { background-color: "+ backgroundColor +"; color:"+ foregroundColor +"; border: 0px; selection-background-color: #404f4f; font-size: 10pt;} "
              "QLabel {background-color: " + backgroundColor + "; color: " + foregroundColor + "; font-size: 10pt;}"
+             "QLineEdit {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
              "QScrollBar:vertical{background: "+ backgroundColor +";} QScrollBar:horizontal{background: "+ backgroundColor +";}";;
     ui->infoTabWidget->setStyleSheet(style);
 }

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "QListWidgetItem"
+#include "QPlainTextEdit"
 
 namespace Ui {
 class MainWindow;
@@ -40,6 +41,8 @@ private slots:
     void goToAddress(QString targetAddress);
 
     void addToHistory(int functionIndex, int lineNum);
+
+    void find(QString searchTerm, QPlainTextEdit *targetWidget, bool searchBackwords);
 
     void findReferencesToLocation(QString location);
 
@@ -123,6 +126,8 @@ private slots:
 
     void on_actionDark_triggered();
 
+
+    void on_stringsSearchBar_returnPressed();
 
 private:
     Ui::MainWindow *ui;
