@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1420</width>
+    <width>1440</width>
     <height>624</height>
    </rect>
   </property>
@@ -160,7 +160,7 @@ font-size: 11pt;</string>
           </property>
           <property name="minimumSize">
            <size>
-            <width>175</width>
+            <width>170</width>
             <height>0</height>
            </size>
           </property>
@@ -254,6 +254,18 @@ font-size: 11pt;</string>
           </layout>
          </widget>
          <widget class="QWidget" name="viewWidget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>539</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -1012,7 +1024,7 @@ color: rgb(85, 85, 85);</string>
          <widget class="QWidget" name="Infowidget" native="true">
           <property name="minimumSize">
            <size>
-            <width>320</width>
+            <width>315</width>
             <height>0</height>
            </size>
           </property>
@@ -1362,7 +1374,7 @@ color: rgb(85, 85, 85);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1420</width>
+     <width>1440</width>
      <height>28</height>
     </rect>
    </property>
