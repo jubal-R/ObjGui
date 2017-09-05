@@ -60,7 +60,7 @@ QString Strings::getAddressAt(int index){
 
 // Return strings formatted for display
 QString Strings::getStrings(){
-    QString strings;
+    QString strings = "";
     for (int i = 0; i < matrixLen; i++){
         QString str = stringsMatrix[i][1];
         // Escape new line characters
@@ -72,13 +72,10 @@ QString Strings::getStrings(){
 
 // Return addresses of strings formatted for display
 QString Strings::getStringsAddresses(){
-    QString offsets;
+    QString addresses = "";
     for (int i = 0; i < matrixLen; i++){
-        offsets.append(stringsMatrix[i][0] + "\n");
+        addresses.append(stringsMatrix[i][0] + "\n");
     }
-    return offsets;
+    return addresses;
 }
 
-int Strings::getMatrixLen(){
-    return matrixLen;
-}

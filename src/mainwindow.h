@@ -4,6 +4,12 @@
 #include <QMainWindow>
 #include "QListWidgetItem"
 #include "QPlainTextEdit"
+#include "QSettings"
+
+#include "disassemblycore.h"
+#include "files.h"
+#include "highlighters/disassemblyhighlighter.h"
+#include "highlighters/headerhighlighter.h"
 
 namespace Ui {
 class MainWindow;
@@ -126,11 +132,17 @@ private slots:
 
     void on_actionDark_triggered();
 
-
     void on_stringsSearchBar_returnPressed();
 
 private:
     Ui::MainWindow *ui;
+    DisassemblyCore disassemblyCore;
+    Files files;
+    QSettings settings;
+
+    DisassemblyHighlighter *disHighlighter;
+    HeaderHighlighter *headerHighlighter;
+
     int currentFunctionIndex;
     QList< QVector<int> > history;
     QList< QVector<int> >::const_iterator historyIterator;

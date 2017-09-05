@@ -3,7 +3,6 @@
 #include "qfiledialog.h"
 #include "qmessagebox.h"
 #include "QScrollBar"
-#include "QSettings"
 #include "QInputDialog"
 #include "QProgressDialog"
 #include "QFuture"
@@ -11,24 +10,7 @@
 
 #include "QDebug"
 
-#include "files.h"
-#include "highlighters/disassemblyhighlighter.h"
-#include "highlighters/sectionhighlighter.h"
-#include "highlighters/headerhighlighter.h"
-#include "objdumper.h"
-#include "dataStructures/strings.h"
 #include "resultsdialog.h"
-
-
-Files files;
-FunctionList functionList;
-SectionList sectionList;
-Strings strings;
-QSettings settings;
-ObjDumper objDumper;
-DisassemblyHighlighter *disHighlighter = NULL;
-SectionHighlighter *sectionHighlighter = NULL;
-HeaderHighlighter *headerHighlighter = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -125,18 +107,18 @@ MainWindow::MainWindow(QWidget *parent) :
     if (settings.value("syntax", "intel") == "intel"){
         ui->actionIntel->setChecked(true);
         ui->syntaxComboBox->setCurrentIndex(0);
-        objDumper.setOutputSyntax("intel");
+        disassemblyCore.setOutputSyntax("intel");
 
     }else if (settings.value("syntax", "intel") == "att"){
         ui->actionAtt->setChecked(true);
         ui->syntaxComboBox->setCurrentIndex(1);
-        objDumper.setOutputSyntax("att");
+        disassemblyCore.setOutputSyntax("att");
     }
 
     // Optional flags
     if (settings.value("demangle", false) == true){
         ui->demanlgeCheckBox->setChecked(true);
-        objDumper.setDemangleFlag("-C");
+        disassemblyCore.setDemangleFlag("-C");
     }
 
     // Header flags
@@ -156,9 +138,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Custom binary
     if (settings.value("useCustomBinary", false).toBool()){
         ui->customBinaryCheckBox->setChecked(true);
-        objDumper.setUseCustomBinary(true);
+        disassemblyCore.setUseCustomBinary(true);
     }
-    objDumper.setobjdumpBinary(settings.value("customBinary", "").toString());
+    disassemblyCore.setobjdumpBinary(settings.value("customBinary", "").toString());
     ui->customBinaryLineEdit->setText(settings.value("customBinary", "").toString());
 
     // Style
@@ -228,29 +210,19 @@ void MainWindow::loadBinary(QString file){
             progress.setMinimumDuration(500);
             progress.setValue(0);
 
-            // Get base offsets
-            baseOffsets = objDumper.getBaseOffset(file);
+            // Disassemble in seperate thread
+            QFuture<void> disassemblyThread = QtConcurrent::run(&disassemblyCore, &DisassemblyCore::disassemble, file);
 
-            // Disassemble, and get function and section lists
-            functionList.nukeList();
-            QFuture<FunctionList> futureFunctionList = QtConcurrent::run(&objDumper, &ObjDumper::getFunctionList, file, baseOffsets);
-            sectionList.nukeList();
-            QFuture<SectionList> futureSectionList = QtConcurrent::run(&objDumper, &ObjDumper::getSectionList, file);
-
-            while (!futureFunctionList.isFinished() || !futureSectionList.isFinished()){
+            while (!disassemblyThread.isFinished()){
                 qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
             }
-            functionList = futureFunctionList.result();
-            sectionList = futureSectionList.result();
 
             progress.setValue(1);
 
-            // If functionlist is empty
-            if (functionList.isEmpty()){
+            if (!disassemblyCore.disassemblyIsLoaded()){
                 ui->codeBrowser->setPlainText("File format not recognized.");
                 ui->addressLabel->setText("");
                 ui->functionLabel->setText("");
-
             } else {
                 // If all good, display disassembly data
                 displayFunctionData();
@@ -269,19 +241,18 @@ void MainWindow::loadBinary(QString file){
 
             setUpdatesEnabled(false);
 
-            ui->fileFormatlabel->setText(objDumper.getFileFormat(file));
-            ui->symbolsBrowser->setPlainText(objDumper.getSymbolsTable(file));
-            ui->relocationsBrowser->setPlainText(objDumper.getRelocationEntries(file));
-            ui->headersBrowser->setPlainText(objDumper.getHeaders(file));
+            ui->fileFormatlabel->setText(disassemblyCore.getFileFormat(file));
+            ui->symbolsBrowser->setPlainText(disassemblyCore.getSymbolsTable(file));
+            ui->relocationsBrowser->setPlainText(disassemblyCore.getRelocationEntries(file));
+            ui->headersBrowser->setPlainText(disassemblyCore.getHeaders(file));
             setUpdatesEnabled(true);
 
             // Clear specified target
-            objDumper.setTarget("");
+            disassemblyCore.setTarget("");
 
             // Load strings data
-            strings.setStringsData(files.strings(file, baseOffsets));
-            ui->stringsAddressBrowser->setPlainText(strings.getStringsAddresses());
-            ui->stringsBrowser->setPlainText(strings.getStrings());
+            ui->stringsAddressBrowser->setPlainText(disassemblyCore.getStringsAddresses());
+            ui->stringsBrowser->setPlainText(disassemblyCore.getStrings());
 
             progress.setValue(4);
         }
@@ -297,6 +268,7 @@ void MainWindow::on_actionOpen_triggered()
     // Update current directory and load file
     if (file != ""){
         files.setCurrentDirectory(file);
+
         loadBinary(file);
         ui->disTabWidget->setCurrentIndex(0);
         ui->codeBrowser->setFocus();
@@ -306,7 +278,7 @@ void MainWindow::on_actionOpen_triggered()
 
 bool MainWindow::canDisassemble(QString file){
     // Check for errors or invalid file
-    QString errorMsg = objDumper.checkForErrors(file);
+    QString errorMsg = disassemblyCore.getObjdumpErrorMsg(file);
     bool canDisassemble = true;
 
     // If format is ambigous message, let user user select format from list of matching formats
@@ -319,7 +291,7 @@ bool MainWindow::canDisassemble(QString file){
                 if (!formats.isEmpty()){
                     // Get target format and set flag
                     QString format = QInputDialog::getItem(this, "Select matching format", "Format is ambigous, select matching format:", formats, 0, false);
-                    objDumper.setTarget("-b " + format);
+                    disassemblyCore.setTarget("--target=" + format);
                 } else {
                     // Display error message
                     ui->codeBrowser->setPlainText(errorMsg);
@@ -342,8 +314,8 @@ bool MainWindow::canDisassemble(QString file){
 
 // Set lables and code browser to display function info and contents
 void MainWindow::displayFunctionText(QString functionName){
-    if (!functionList.isEmpty()){
-        Function function = functionList.getFunction(functionName);
+    if (disassemblyCore.disassemblyIsLoaded()){
+        Function function = disassemblyCore.getFunction(functionName);
 
         setUpdatesEnabled(false);
         ui->addressValueLabel->setText(function.getAddress());
@@ -353,7 +325,7 @@ void MainWindow::displayFunctionText(QString functionName){
         ui->codeBrowser->setPlainText(function.getContents());
         setUpdatesEnabled(true);
 
-        int index = functionList.getFunctionIndex(functionName);
+        int index = disassemblyCore.getFunctionIndex(functionName);
         if (index >= 0){
             currentFunctionIndex = index;
         }
@@ -361,32 +333,35 @@ void MainWindow::displayFunctionText(QString functionName){
 }
 
 void MainWindow::displayFunctionText(int functionIndex){
-    if (!functionList.isEmpty() && functionIndex < functionList.getLength()){
-        Function function = functionList.getFunction(functionIndex);
+    if (disassemblyCore.disassemblyIsLoaded()){
+        Function function = disassemblyCore.getFunction(functionIndex);
 
-        setUpdatesEnabled(false);
-        ui->addressValueLabel->setText(function.getAddress());
-        ui->fileOffsetValueLabel->setText(function.getFileOffset());
-        ui->functionLabel->setText(function.getName());
-        ui->sectionValueLabel->setText(function.getSection());
-        ui->codeBrowser->setPlainText(function.getContents());
-        setUpdatesEnabled(true);
+        // If index is out of range an empty function will be returned
+        if (function.getAddress() != ""){
+            setUpdatesEnabled(false);
+            ui->addressValueLabel->setText(function.getAddress());
+            ui->fileOffsetValueLabel->setText(function.getFileOffset());
+            ui->functionLabel->setText(function.getName());
+            ui->sectionValueLabel->setText(function.getSection());
+            ui->codeBrowser->setPlainText(function.getContents());
+            setUpdatesEnabled(true);
 
-        currentFunctionIndex = functionIndex;
+            currentFunctionIndex = functionIndex;
+        }
     }
 }
 
 // Setup functionlist and display function data
 void MainWindow::displayFunctionData(){
-    if (!functionList.isEmpty()){
+    if (disassemblyCore.disassemblyIsLoaded()){
         // Populate function list in sidebar
-        ui->functionList->addItems(functionList.getFunctionNames());
+        ui->functionList->addItems(disassemblyCore.getFunctionNames());
 
         // Display main function by default if it exists
-        if (functionList.containsFunction("main"))
+        if (disassemblyCore.functionExists("main"))
             displayFunctionText("main");
         else {
-            QString firstIndexName = functionList.getFunction(0).getName();
+            QString firstIndexName = disassemblyCore.getFunction(0).getName();
             displayFunctionText(firstIndexName);
         }
 
@@ -410,19 +385,9 @@ void MainWindow::highlightCurrentLine(){
 
 void MainWindow::displayHexData(){
     // Set hex view values
-    int len = sectionList.getLength();
-    QByteArray addressStr;
-    QByteArray hexStr;
-
-    for (int i = 1; i < len; i++){
-        Section section = sectionList.getSection(i);
-
-        addressStr.append("\n" + section.getAddressString() + "\n");
-        hexStr.append(section.getSectionName() + "\n" + section.getHexString() + "\n");
-    }
     setUpdatesEnabled(false);
-    ui->hexAddressBrowser->setPlainText(addressStr);
-    ui->hexBrowser->setPlainText(hexStr);
+    ui->hexAddressBrowser->setPlainText(disassemblyCore.getSectionAddressDump());
+    ui->hexBrowser->setPlainText(disassemblyCore.getSectionHexDump());
     setUpdatesEnabled(true);
 }
 
@@ -469,7 +434,7 @@ void MainWindow::goToAddress(QString targetAddress){
         // Search functions list
 
         // Find address index
-        QVector<int> location = functionList.getAddressLocation(targetAddress);
+        QVector<int> location = disassemblyCore.getAddressLocation(targetAddress);
 
         // Check if address was found
         if (location[0] >= 0){
@@ -496,7 +461,7 @@ void MainWindow::goToAddress(QString targetAddress){
 
         } else {
             // Search strings
-            int stringsIndex = strings.getIndexByAddress(targetAddress);
+            int stringsIndex = disassemblyCore.getStringIndexByAddress(targetAddress);
 
             if (stringsIndex >= 0){
                 ui->infoTabWidget->setCurrentIndex(0);
@@ -554,7 +519,7 @@ void MainWindow::on_actionGet_Offset_triggered()
     QString targetAddress = QInputDialog::getText(this, tr("Get File Offset"),tr("Address"), QLineEdit::Normal,"", &ok).trimmed();
     if (ok && !targetAddress.isEmpty()){
         // Get file offset of address
-        QVector<QString> offset = objDumper.getFileOffset(targetAddress, baseOffsets);
+        QVector<QString> offset = disassemblyCore.getFileOffset(targetAddress);
 
         if(!offset[0].isEmpty()){
             QString offsetMsg = "File Offset of Address " + targetAddress+ "\nHex: " + offset[0] + "\nInt: " + offset[1];
@@ -571,12 +536,12 @@ void MainWindow::on_actionGet_Offset_triggered()
 // Get Offset of Current Line triggered
 void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
 {
-    if (!functionList.isEmpty() && !baseOffsets.isEmpty()){
+    if (disassemblyCore.disassemblyIsLoaded()){
         int currentTab = ui->disTabWidget->currentIndex();
         QString offsetMsg = "";
 
         if (currentTab == 0 && ui->codeBrowser->hasFocus()){
-            Function function = functionList.getFunction(currentFunctionIndex);
+            Function function = disassemblyCore.getFunction(currentFunctionIndex);
             QTextCursor cursor = ui->codeBrowser->textCursor();
             int lineNum = cursor.blockNumber();
             // Get address
@@ -584,7 +549,7 @@ void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
 
             if (!currentLineAddressStr.isEmpty()){
                 // Get file offset of address
-                QVector<QString> offset = objDumper.getFileOffset(currentLineAddressStr, baseOffsets);
+                QVector<QString> offset = disassemblyCore.getFileOffset(currentLineAddressStr);
                 offsetMsg = "File Offset of Address " + currentLineAddressStr + "\nHex: " + offset[0] + "\nInt: " + offset[1];
             }
 
@@ -592,11 +557,11 @@ void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
             QTextCursor cursor = ui->stringsBrowser->textCursor();
             int lineNum = cursor.blockNumber();
             // Get address
-            QString currentLineAddressStr = strings.getAddressAt(lineNum);
+            QString currentLineAddressStr = disassemblyCore.getStringAddressAt(lineNum);
 
             if (!currentLineAddressStr.isEmpty()){
                 // Get file offset of address
-                QVector<QString> offset = objDumper.getFileOffset(currentLineAddressStr, baseOffsets);
+                QVector<QString> offset = disassemblyCore.getFileOffset(currentLineAddressStr);
                 offsetMsg = "File Offset of Address " + currentLineAddressStr + "\nHex: " + offset[0] + "\nInt: " + offset[1];
             }
         }
@@ -706,8 +671,8 @@ void MainWindow::displayResults(QVector< QVector<QString> > results, QString res
 // Find calls to the current function
 void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
 {
-    QString functionName = functionList.getFunction(currentFunctionIndex).getName();
-    QVector< QVector<QString> > results = functionList.findCallsToFunction(functionName);
+    QString functionName = disassemblyCore.getFunction(currentFunctionIndex).getName();
+    QVector< QVector<QString> > results = disassemblyCore.findCallsToFunction(functionName);
 
     if (!results.isEmpty()){
         // Display results
@@ -721,7 +686,7 @@ void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
 // Find all references to a target location
 void MainWindow::findReferencesToLocation(QString target){
     if (!target.isEmpty()){
-        QVector< QVector<QString> > results = functionList.findReferences(target);
+        QVector< QVector<QString> > results = disassemblyCore.findReferences(target);
 
         if (!results.isEmpty()){
             // Display results
@@ -748,12 +713,12 @@ void MainWindow::on_actionFind_References_triggered()
 
 // Find all calls to current location
 void MainWindow::on_actionFind_Calls_to_Current_Location_triggered(){
-    if (!functionList.isEmpty()){
+    if (disassemblyCore.disassemblyIsLoaded()){
         QTextCursor cursor = ui->codeBrowser->textCursor();
         int lineNum = cursor.blockNumber();
-        QString targetLocation = functionList.getFunction(currentFunctionIndex).getAddressAt(lineNum);
+        QString targetLocation = disassemblyCore.getFunction(currentFunctionIndex).getAddressAt(lineNum);
 
-        QVector< QVector<QString> > results = functionList.findReferences(targetLocation);
+        QVector< QVector<QString> > results = disassemblyCore.findReferences(targetLocation);
 
         if (!results.isEmpty()){
             // Display results
@@ -907,7 +872,7 @@ void MainWindow::on_stringsSearchBar_returnPressed()
 void MainWindow::on_actionIntel_triggered()
 {
     settings.setValue("syntax", "intel");
-    objDumper.setOutputSyntax("intel");
+    disassemblyCore.setOutputSyntax("intel");
     ui->actionIntel->setChecked(true);
     ui->actionAtt->setChecked(false);
     ui->syntaxComboBox->setCurrentIndex(0);
@@ -916,7 +881,7 @@ void MainWindow::on_actionIntel_triggered()
 void MainWindow::on_actionAtt_triggered()
 {
     settings.setValue("syntax", "att");
-    objDumper.setOutputSyntax("att");
+    disassemblyCore.setOutputSyntax("att");
     ui->actionAtt->setChecked(true);
     ui->actionIntel->setChecked(false);
     ui->syntaxComboBox->setCurrentIndex(1);
@@ -935,9 +900,9 @@ void MainWindow::on_syntaxComboBox_currentIndexChanged(int index)
 void MainWindow::on_disassemblyFlagcheckBox_toggled(bool checked)
 {
     if (checked)
-        objDumper.setDisassemblyFlag("-D");
+        disassemblyCore.setDisassemblyFlag("-D");
     else
-        objDumper.setDisassemblyFlag("-d");
+        disassemblyCore.setDisassemblyFlag("-d");
 }
 
 void MainWindow::on_allHeadersCheckBox_toggled(bool checked)
@@ -965,42 +930,42 @@ void MainWindow::on_allHeadersCheckBox_toggled(bool checked)
 void MainWindow::on_archiveHeadersCheckBox_toggled(bool checked)
 {
     if (checked)
-        objDumper.setArchiveHeaderFlag("-a");
+        disassemblyCore.setArchiveHeaderFlag("-a");
     else
-        objDumper.setArchiveHeaderFlag("");
+        disassemblyCore.setArchiveHeaderFlag("");
 }
 
 void MainWindow::on_fileHeadersCheckBox_toggled(bool checked)
 {
     if (checked)
-        objDumper.setFileHeaderFlag("-f");
+        disassemblyCore.setFileHeaderFlag("-f");
     else
-        objDumper.setFileHeaderFlag("");
+        disassemblyCore.setFileHeaderFlag("");
 }
 
 void MainWindow::on_privateHeadersCheckBox_toggled(bool checked)
 {
     if (checked)
-        objDumper.setPrivateHeaderFlag("-p");
+        disassemblyCore.setPrivateHeaderFlag("-p");
     else
-        objDumper.setPrivateHeaderFlag("");
+        disassemblyCore.setPrivateHeaderFlag("");
 }
 
 void MainWindow::on_sectionHeadersCheckbox_toggled(bool checked)
 {
     if (checked)
-        objDumper.setSectionsHeaderFlag("-h");
+        disassemblyCore.setSectionsHeaderFlag("-h");
     else
-        objDumper.setSectionsHeaderFlag("");
+        disassemblyCore.setSectionsHeaderFlag("");
 }
 
 void MainWindow::on_demanlgeCheckBox_toggled(bool checked)
 {
     if (checked){
-        objDumper.setDemangleFlag("-C");
+        disassemblyCore.setDemangleFlag("-C");
         settings.setValue("demangle", true);
     } else {
-        objDumper.setDemangleFlag("");
+        disassemblyCore.setDemangleFlag("");
         settings.setValue("demangle", false);
     }
 }
@@ -1010,7 +975,7 @@ void MainWindow::on_customBinaryButton_clicked()
     QString objdumpBinary = QFileDialog::getOpenFileName(this, tr("Select Binary"), files.getCurrentDirectory(), tr("All (*)"));
     if (objdumpBinary != ""){
         ui->customBinaryLineEdit->setText(objdumpBinary);
-        objDumper.setobjdumpBinary(objdumpBinary);
+        disassemblyCore.setobjdumpBinary(objdumpBinary);
         settings.setValue("customBinary", objdumpBinary);
     }
 }
@@ -1020,11 +985,11 @@ void MainWindow::on_customBinaryCheckBox_toggled(bool checked)
     if (checked){
         ui->customBinaryButton->setEnabled(true);
         settings.setValue("useCustomBinary", true);
-        objDumper.setUseCustomBinary(true);
+        disassemblyCore.setUseCustomBinary(true);
     } else {
         ui->customBinaryButton->setEnabled(false);
         settings.setValue("useCustomBinary", false);
-        objDumper.setUseCustomBinary(false);
+        disassemblyCore.setUseCustomBinary(false);
     }
 }
 

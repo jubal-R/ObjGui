@@ -24,9 +24,10 @@ SOURCES += main.cpp\
     dataStructures/sectionnode.cpp \
     highlighters/disassemblyhighlighter.cpp \
     highlighters/headerhighlighter.cpp \
-    highlighters/sectionhighlighter.cpp \
     resultsdialog.cpp \
-    dataStructures/strings.cpp
+	dataStructures/strings.cpp \
+    stringsdumper.cpp \
+    disassemblycore.cpp
 
 HEADERS  += mainwindow.h \
     files.h \
@@ -39,9 +40,10 @@ HEADERS  += mainwindow.h \
     dataStructures/sectionnode.h \
     highlighters/disassemblyhighlighter.h \
     highlighters/headerhighlighter.h \
-    highlighters/sectionhighlighter.h \
     resultsdialog.h \
-    dataStructures/strings.h
+	dataStructures/strings.h \
+    stringsdumper.h \
+    disassemblycore.h
 
 FORMS    += mainwindow.ui \
     resultsdialog.ui
