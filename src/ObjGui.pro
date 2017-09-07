@@ -16,37 +16,30 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     files.cpp \
     objdumper.cpp \
-    dataStructures/function.cpp \
-    dataStructures/functionlist.cpp \
-    dataStructures/functionnode.cpp \
-    dataStructures/section.cpp \
-    dataStructures/sectionlist.cpp \
-    dataStructures/sectionnode.cpp \
     highlighters/disassemblyhighlighter.cpp \
     highlighters/headerhighlighter.cpp \
     resultsdialog.cpp \
-	dataStructures/strings.cpp \
     stringsdumper.cpp \
-    disassemblycore.cpp
+    disassemblycore.cpp \
+    model/function.cpp \
+    model/section.cpp \
+    model/strings.cpp
 
 HEADERS  += mainwindow.h \
     files.h \
     objdumper.h \
-    dataStructures/function.h \
-    dataStructures/functionlist.h \
-    dataStructures/functionnode.h \
-    dataStructures/section.h \
-    dataStructures/sectionlist.h \
-    dataStructures/sectionnode.h \
     highlighters/disassemblyhighlighter.h \
     highlighters/headerhighlighter.h \
     resultsdialog.h \
-	dataStructures/strings.h \
     stringsdumper.h \
-    disassemblycore.h
+    disassemblycore.h \
+    model/function.h \
+    model/section.h \
+    model/strings.h
 
 FORMS    += mainwindow.ui \
-    resultsdialog.ui
+    resultsdialog.ui \
+    optionsdialog.ui
 
 RESOURCES += \
     resources.qrc

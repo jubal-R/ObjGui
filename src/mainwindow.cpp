@@ -38,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->disTabWidget->setFont(sans);
     ui->syntaxLabel->setFont(sans);
     ui->disassemblyFlagLabel->setFont(sans);
-    ui->headersLabel->setFont(sans);
     ui->functionListLabel->setFont(sans);
     ui->functionList->setFont(sans);
     ui->customBinaryButton->setFont(sans);
@@ -57,7 +56,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->syntaxLabel->setFont(sansBold);
     ui->disassemblyFlagLabel->setFont(sansBold);
-    ui->headersLabel->setFont(sansBold);
     ui->functionLabel->setFont(sansBold);
     ui->addressLabel->setFont(sansBold);
     ui->fileOffsetLabel->setFont(sansBold);
@@ -121,20 +119,6 @@ MainWindow::MainWindow(QWidget *parent) :
         disassemblyCore.setDemangleFlag("-C");
     }
 
-    // Header flags
-    if (settings.value("archiveHeaderFlagChecked", true) == true){
-        ui->archiveHeadersCheckBox->setChecked(true);
-    }
-    if (settings.value("fileHeaderFlagChecked", true) == true){
-        ui->fileHeadersCheckBox->setChecked(true);
-    }
-    if (settings.value("privateHeaderFlagChecked", true) == true){
-        ui->privateHeadersCheckBox->setChecked(true);
-    }
-    if (settings.value("sectionHeaderFlagChecked", true) == true){
-        ui->sectionHeadersCheckbox->setChecked(true);
-    }
-
     // Custom binary
     if (settings.value("useCustomBinary", false).toBool()){
         ui->customBinaryCheckBox->setChecked(true);
@@ -183,10 +167,6 @@ MainWindow::~MainWindow()
     settings.setValue("windowWidth", windowRect.width());
     settings.setValue("windowHeight", windowRect.height());
     settings.setValue("splitterSizes", ui->splitter->saveState());
-    settings.setValue("archiveHeaderFlagChecked", ui->archiveHeadersCheckBox->isChecked());
-    settings.setValue("fileHeaderFlagChecked", ui->fileHeadersCheckBox->isChecked());
-    settings.setValue("privateHeaderFlagChecked", ui->privateHeadersCheckBox->isChecked());
-    settings.setValue("sectionHeaderFlagChecked", ui->sectionHeadersCheckbox->isChecked());
 
     delete ui;
 }
@@ -903,60 +883,6 @@ void MainWindow::on_disassemblyFlagcheckBox_toggled(bool checked)
         disassemblyCore.setDisassemblyFlag("-D");
     else
         disassemblyCore.setDisassemblyFlag("-d");
-}
-
-void MainWindow::on_allHeadersCheckBox_toggled(bool checked)
-{
-    if (checked){
-        // Check all boxes
-        ui->archiveHeadersCheckBox->setChecked(true);
-        ui->fileHeadersCheckBox->setChecked(true);
-        ui->privateHeadersCheckBox->setChecked(true);
-        ui->sectionHeadersCheckbox->setChecked(true);
-        // Disable other options
-        ui->archiveHeadersCheckBox->setEnabled(false);
-        ui->fileHeadersCheckBox->setEnabled(false);
-        ui->privateHeadersCheckBox->setEnabled(false);
-        ui->sectionHeadersCheckbox->setEnabled(false);
-    } else {
-        // Re-enble other options
-        ui->archiveHeadersCheckBox->setEnabled(true);
-        ui->fileHeadersCheckBox->setEnabled(true);
-        ui->privateHeadersCheckBox->setEnabled(true);
-        ui->sectionHeadersCheckbox->setEnabled(true);
-    }
-}
-
-void MainWindow::on_archiveHeadersCheckBox_toggled(bool checked)
-{
-    if (checked)
-        disassemblyCore.setArchiveHeaderFlag("-a");
-    else
-        disassemblyCore.setArchiveHeaderFlag("");
-}
-
-void MainWindow::on_fileHeadersCheckBox_toggled(bool checked)
-{
-    if (checked)
-        disassemblyCore.setFileHeaderFlag("-f");
-    else
-        disassemblyCore.setFileHeaderFlag("");
-}
-
-void MainWindow::on_privateHeadersCheckBox_toggled(bool checked)
-{
-    if (checked)
-        disassemblyCore.setPrivateHeaderFlag("-p");
-    else
-        disassemblyCore.setPrivateHeaderFlag("");
-}
-
-void MainWindow::on_sectionHeadersCheckbox_toggled(bool checked)
-{
-    if (checked)
-        disassemblyCore.setSectionsHeaderFlag("-h");
-    else
-        disassemblyCore.setSectionsHeaderFlag("");
 }
 
 void MainWindow::on_demanlgeCheckBox_toggled(bool checked)

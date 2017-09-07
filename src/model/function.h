@@ -10,6 +10,7 @@ public:
     Function();
     Function(QString functionName, QString addr, QString section, QString offset, QVector< QVector<QByteArray> > contents);
     int getMatrixLen();
+    bool isEmpty();
     QString getName();
     QString getAddress();
     QString getSection();

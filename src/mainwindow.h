@@ -78,19 +78,9 @@ private slots:
 
     void on_disassemblyFlagcheckBox_toggled(bool checked);
 
-    void on_allHeadersCheckBox_toggled(bool checked);
-
     void on_customBinaryButton_clicked();
 
     void on_customBinaryCheckBox_toggled(bool checked);
-
-    void on_archiveHeadersCheckBox_toggled(bool checked);
-
-    void on_fileHeadersCheckBox_toggled(bool checked);
-
-    void on_privateHeadersCheckBox_toggled(bool checked);
-
-    void on_sectionHeadersCheckbox_toggled(bool checked);
 
     void on_actionGo_To_Address_triggered();
 

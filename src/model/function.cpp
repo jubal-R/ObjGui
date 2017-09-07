@@ -11,7 +11,7 @@
  */
 
 Function::Function(){
-
+    matrixLen = 0;
 }
 
 Function::Function(QString functionName, QString addr, QString sect, QString offset, QVector< QVector<QByteArray> > contents)
@@ -54,6 +54,13 @@ QString Function::getAddressAt(int index){
         return functionMatrix.at(index)[0];
     else
         return "";
+}
+
+bool Function::isEmpty(){
+    if (matrixLen > 0)
+        return true;
+    else
+        return false;
 }
 
 int Function::getMatrixLen(){

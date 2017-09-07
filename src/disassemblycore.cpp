@@ -19,21 +19,21 @@ QVector<QString> DisassemblyCore::getBaseOffsets(){
 void DisassemblyCore::disassemble(QString file){
     baseOffsets = objDumper.getBaseOffset(file);
 
-    functionList.nukeList();
-    QFuture<FunctionList> futureFunctionList = QtConcurrent::run(&objDumper, &ObjDumper::getFunctionList, file, baseOffsets);
-    sectionList.nukeList();
-    QFuture<SectionList> futureSectionList = QtConcurrent::run(&objDumper, &ObjDumper::getSectionList, file);
+    functionData.clear();
+    QFuture< QVector<Function> > futureFunctionData = QtConcurrent::run(&objDumper, &ObjDumper::getFunctionData, file, baseOffsets);
+    sectionData.clear();
+    QFuture< QVector<Section> > futureSectionData = QtConcurrent::run(&objDumper, &ObjDumper::getSectionData, file);
     QFuture<QVector< QVector<QString> > > futureStrings = QtConcurrent::run(&stringsDumper, &StringsDumper::dumpStrings, file, baseOffsets);
 
-    functionList = futureFunctionList.result();
-    sectionList = futureSectionList.result();
+    functionData = futureFunctionData.result();
+    sectionData = futureSectionData.result();
     strings.setStringsData(futureStrings.result());
 
     fileLoaded = true;
 }
 
 bool DisassemblyCore::disassemblyIsLoaded(){
-    if (fileLoaded && !functionList.isEmpty() && !sectionList.isEmpty())
+    if (fileLoaded && !functionData.isEmpty() && !sectionData.isEmpty())
         return true;
     else
         return false;
@@ -91,44 +91,75 @@ void DisassemblyCore::setTarget(QString trgt){
     objDumper.setTarget(trgt);
 }
 
-void DisassemblyCore::setArchiveHeaderFlag(QString flag){
-    objDumper.setArchiveHeaderFlag(flag);
-}
-
-void DisassemblyCore::setFileHeaderFlag(QString flag){
-    objDumper.setFileHeaderFlag(flag);
-}
-
-void DisassemblyCore::setPrivateHeaderFlag(QString flag){
-    objDumper.setPrivateHeaderFlag(flag);
-}
-
-void DisassemblyCore::setSectionsHeaderFlag(QString flag){
-    objDumper.setSectionsHeaderFlag(flag);
-}
-
 /*
  * Function Data
 */
 
 QStringList DisassemblyCore::getFunctionNames(){
-    return functionList.getFunctionNames();
+    QStringList functionNames;
+    int numFunctions = functionData.length();
+
+    if (numFunctions > 0){
+        for (int i = 0; i < numFunctions; i++){
+            Function function = functionData.at(i);
+            QString name = function.getName();
+            functionNames.append(name);
+        }
+    }
+
+    return functionNames;
 }
 
 Function DisassemblyCore::getFunction(QString name){
-    return functionList.getFunction(name);
+    int numFunctions = functionData.length();
+
+    for (int i = 0; i < numFunctions; i++){
+        Function currentFunction = functionData.at(i);
+        QString currentName = currentFunction.getName();
+        if (currentName == name)
+            return currentFunction;
+    }
+
+    Function function;
+    return function;
 }
 
 Function DisassemblyCore::getFunction(int index){
-    return functionList.getFunction(index);
+    int numFunctions = functionData.length();
+
+    if (numFunctions > 0){
+        Function function = functionData.at(index);
+        return function;
+    }
+
+    Function function;
+    return function;
 }
 
 int DisassemblyCore::getFunctionIndex(QString functionName){
-    return functionList.getFunctionIndex(functionName);
+    int numFunctions = functionData.length();
+
+    for (int i = 0; i < numFunctions; i++){
+        Function currentFunction = functionData.at(i);
+        QString currentName = currentFunction.getName();
+        if (currentName == functionName)
+            return i;
+    }
+
+    return -1;
 }
 
 bool DisassemblyCore::functionExists(QString name){
-    return functionList.containsFunction(name);
+    int numFunctions = functionData.length();
+
+    for (int i = 0; i < numFunctions; i++){
+        Function currentFunction = functionData.at(i);
+        QString currentName = currentFunction.getName();
+        if (currentName == name)
+            return true;
+    }
+
+    return false;
 }
 
 // Find location of target address and return what function its in and its location within the function [functionIndex, functionMatrixIndex]
@@ -136,8 +167,8 @@ QVector<int> DisassemblyCore::getAddressLocation(QString targetAddress){
     QVector<int> location(2);
 
     // Search each function
-    for (int functionIndex = 0; functionIndex < functionList.getLength(); functionIndex++){
-        Function function = functionList.getFunction(functionIndex);
+    for (int functionIndex = 0; functionIndex < functionData.length(); functionIndex++){
+        Function function = functionData.at(functionIndex);
 
         // Check if matrix is empty
         if (function.getMatrixLen() > 0){
@@ -190,8 +221,8 @@ QVector< QVector<QString> > DisassemblyCore::findCallsToFunction(QString targetF
     targetFunction = "<" + targetFunction + ">";
 
     // Search each function
-    for (int functionIndex = 0; functionIndex < functionList.getLength(); functionIndex++){
-        Function function = functionList.getFunction(functionIndex);
+    for (int functionIndex = 0; functionIndex < functionData.length(); functionIndex++){
+        Function function = functionData.at(functionIndex);
 
         // Check if matrix is empty
         if (function.getMatrixLen() > 0){
@@ -219,8 +250,8 @@ QVector< QVector<QString> > DisassemblyCore::findReferences(QString target){
     QVector< QVector<QString> > results;
 
     // Search each function
-    for (int functionIndex = 0; functionIndex < functionList.getLength(); functionIndex++){
-        Function function = functionList.getFunction(functionIndex);
+    for (int functionIndex = 0; functionIndex < functionData.length(); functionIndex++){
+        Function function = functionData.at(functionIndex);
 
         // Check if matrix is empty
         if (function.getMatrixLen() > 0){
@@ -248,11 +279,11 @@ QVector< QVector<QString> > DisassemblyCore::findReferences(QString target){
 */
 
 QString DisassemblyCore::getSectionHexDump(){
-    int len = sectionList.getLength();
+    int len = sectionData.length();
     QString hexStr;
 
     for (int i = 1; i < len; i++){
-        Section section = sectionList.getSection(i);
+        Section section = sectionData.at(i);
         hexStr.append(section.getSectionName() + "\n" + section.getHexString() + "\n");
     }
 
@@ -260,11 +291,11 @@ QString DisassemblyCore::getSectionHexDump(){
 }
 
 QString DisassemblyCore::getSectionAddressDump(){
-    int len = sectionList.getLength();
+    int len = sectionData.length();
     QString addressStr;
 
     for (int i = 1; i < len; i++){
-        Section section = sectionList.getSection(i);
+        Section section = sectionData.at(i);
         addressStr.append("\n" + section.getAddressString() + "\n");
     }
 

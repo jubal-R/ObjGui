@@ -1,17 +1,18 @@
 #ifndef OBJDUMPER_H
 #define OBJDUMPER_H
 
-#include "dataStructures/functionlist.h"
-#include "dataStructures/sectionlist.h"
 #include "QRegularExpression"
+
+#include "model/function.h"
+#include "model/section.h"
 
 
 class ObjDumper
 {
 public:
     ObjDumper();
-    FunctionList getFunctionList(QString file, QVector<QString> baseOffsets);
-    SectionList getSectionList(QString file);
+    QVector<Function> getFunctionData(QString file, QVector<QString> baseOffsets);
+    QVector<Section> getSectionData(QString file);
     QString getSymbolsTable(QString file);
     QString getRelocationEntries(QString file);
     QString getHeaders(QString file);
@@ -26,10 +27,6 @@ public:
     void setDisassemblyFlag(QString flag);
     void setDemangleFlag(QString flag);
     void setTarget(QString trgt);
-    void setArchiveHeaderFlag(QString flag);
-    void setFileHeaderFlag(QString flag);
-    void setPrivateHeaderFlag(QString flag);
-    void setSectionsHeaderFlag(QString flag);
 
 private:
     QString getDump(QStringList argsList);

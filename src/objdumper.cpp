@@ -12,10 +12,6 @@ ObjDumper::ObjDumper()
     objdumpBinary = "objdump";
     outputSyntax = "intel";
     disassemblyFlag = "-d";
-    archiveHeaderFlag = "-a";
-    fileHeaderFlag = "-f";
-    privateHeaderFlag = "-p";
-    sectionsHeaderFlag = "-h";
     demangleFlag = "";
     target = "";
     insnwidth = 10;
@@ -49,8 +45,8 @@ QString ObjDumper::getDump(QStringList argsList){
 }
 
 // Parses disassembly and populates function list
-FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffsets){
-   FunctionList functionList;
+QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> baseOffsets){
+   QVector<Function> functionList;
    QString dump = getDisassembly(file);
 
     // Split dump into vector of string references to each function
@@ -109,7 +105,8 @@ FunctionList ObjDumper::getFunctionList(QString file, QVector<QString> baseOffse
             }
 
             // Add to functionList
-            functionList.insert(name, address, currentSection, fileOffest, functionMatrix);
+            Function function(name, address, currentSection, fileOffest, functionMatrix);
+            functionList.push_back(function);
         }
 
 
@@ -181,8 +178,8 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
 }
 
 // Parses result of all contents(objdump -s) and populates section list
-SectionList ObjDumper::getSectionList(QString file){
-    SectionList sectionList;
+QVector<Section> ObjDumper::getSectionData(QString file){
+    QVector<Section> sectionList;
     QString contents = getContents(file);
 
     QVector<QStringRef> contentsList = contents.splitRef("Contents of section ");
@@ -215,7 +212,8 @@ SectionList ObjDumper::getSectionList(QString file){
         }
 
         // Insert new section
-        sectionList.insert(sectionName, sectionMatrix);
+        Section section(sectionName, sectionMatrix);
+        sectionList.push_back(section);
 
     }
 
@@ -327,18 +325,14 @@ QString ObjDumper::getContents(QString file){
     return removeHeading(contents, 3);
 }
 
-// Get headers: objdump [-a -f -p -h]
+// Get archive, file and private headers: objdump -a -f -p
 QString ObjDumper::getHeaders(QString file){
-    if (!(archiveHeaderFlag.isEmpty() && fileHeaderFlag.isEmpty() && privateHeaderFlag.isEmpty() && sectionsHeaderFlag.isEmpty())){
-        QStringList argsList;
-        if (!target.isEmpty())
-            argsList << target;
-        argsList << archiveHeaderFlag << fileHeaderFlag << privateHeaderFlag << sectionsHeaderFlag << file;
-        QString headers = getDump(argsList);
-        return removeHeading(headers, 3);
-    } else {
-        return "";
-    }
+    QStringList argsList;
+    if (!target.isEmpty())
+        argsList << target;
+    argsList << "-a" << "-f" << "-p" << file;
+    QString headers = getDump(argsList);
+    return removeHeading(headers, 3);
 }
 
 // Try to dump a header with objdump and return any errors
@@ -451,22 +445,6 @@ void ObjDumper::setOutputSyntax(QString syntax){
 
 void ObjDumper::setDisassemblyFlag(QString flag){
     disassemblyFlag = flag;
-}
-
-void ObjDumper::setArchiveHeaderFlag(QString flag){
-    archiveHeaderFlag = flag;
-}
-
-void ObjDumper::setFileHeaderFlag(QString flag){
-    fileHeaderFlag = flag;
-}
-
-void ObjDumper::setPrivateHeaderFlag(QString flag){
-    privateHeaderFlag = flag;
-}
-
-void ObjDumper::setSectionsHeaderFlag(QString flag){
-    sectionsHeaderFlag = flag;
 }
 
 void ObjDumper::setDemangleFlag(QString flags){

@@ -3,9 +3,9 @@
 
 #include "QString"
 
-#include "dataStructures/functionlist.h"
-#include "dataStructures/sectionlist.h"
-#include "dataStructures/strings.h"
+#include "model/function.h"
+#include "model/section.h"
+#include "model/strings.h"
 
 #include "objdumper.h"
 #include "stringsdumper.h"
@@ -52,8 +52,8 @@ public:
     QString getStringAddressAt(int index);
 
 private:
-    FunctionList functionList;
-    SectionList sectionList;
+    QVector<Function> functionData;
+    QVector<Section> sectionData;
     Strings strings;
     QVector<QString> baseOffsets;
     bool fileLoaded;
