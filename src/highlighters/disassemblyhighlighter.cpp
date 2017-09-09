@@ -12,33 +12,50 @@ void DisassemblyHighlighter::setupHighlighter(QString theme){
 
     if (theme == "solarized"){
         registerColor = QColor(42, 161, 152);
-        instructionColor = QColor(181, 137, 0);
-        functionsColor = QColor(133, 153, 0);
+        jumpColor = QColor(181, 137, 0);
+        callColor = QColor(133, 153, 0);
         numColor = QColor(38, 139, 210);
+        logicColor = QColor(108,113,196);
     } else {
         registerColor = QColor(29, 160, 185);
-        instructionColor = QColor(249, 38, 114);
-        functionsColor = QColor(79, 153, 0);
+        jumpColor = QColor(249, 38, 114);
+        callColor = QColor(79, 153, 0);
         numColor = QColor(38, 139, 210);
+        logicColor = QColor(174,129,255);
     }
 
     // Addresses
     addressFormat.setForeground(numColor);
-    rule.pattern = QRegExp("\\b[0-9a-fx\\.]{3,}\\b");
+    rule.pattern = QRegExp("\\b0x[0-9a-f\\.]+\\b");
     rule.format = addressFormat;
     highlightingRules.append(rule);
 
-    // Instructions
-    instructionFormat.setForeground(instructionColor);
-    instructionFormat.setFontWeight(QFont::Bold);
-    rule.pattern = QRegExp("\\s\\s[a-z]+\\s\\s");
-    rule.format = instructionFormat;
+    // Logical operations
+    logicFormat.setForeground(logicColor);
+    QStringList logicPatterns;
+    logicPatterns << "\\bx?or\\b"
+                     << "\\bsh[lr]\\b"
+                     << "\\band\\b"
+                     << "\\bnot\\b"
+                     << "\\bcmp\\b";
+
+    foreach (const QString &pattern, logicPatterns) {
+        rule.pattern = QRegExp(pattern);
+        rule.format = logicFormat;
+        highlightingRules.append(rule);
+    }
+
+    // Jumps
+    jumpFormat.setForeground(jumpColor);
+    jumpFormat.setFontWeight(QFont::Bold);
+    rule.pattern = QRegExp("j[mpneglabsocz]+\\s(0x)?[0-9a-f\\.]+");
+    rule.format = jumpFormat;
     highlightingRules.append(rule);
 
-    // Functions
-    functionFormat.setForeground(functionsColor);
-    rule.pattern = QRegExp("<[a-zA-Z0-9@_-\\+]+>");
-    rule.format = functionFormat;
+    // Calls
+    callFormat.setForeground(callColor);
+    rule.pattern = QRegExp("call\\s[0-9a-z\\.]+(\\s[<>a-zA-Z0-9@_-\\+]+)?");
+    rule.format = callFormat;
     highlightingRules.append(rule);
 
     // x86_64 Registers

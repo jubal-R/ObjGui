@@ -146,7 +146,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QString menuStyle = "QMenu::item:selected {background-color: #3ba1a1; color: #fafafa;}"
             "QMenu::item::disabled {color: #aaaaaa}"
             "QMenu::item {background-color: #e0e0e0; color: #555555;}"
-            "QMenuBar::item {background-color: #e0e0e0; color: #555555;}"
+            "QMenuBar::item {background-color: #e0e0e0; color: #4c4c4c;}"
             "QMenuBar {background-color: #e0e0e0;}";
     ui->menuBar->setStyleSheet(menuStyle);
 
@@ -411,7 +411,9 @@ void MainWindow::enableMenuItems(){
 // Go to virtual memory address
 void MainWindow::goToAddress(QString targetAddress){
     if (targetAddress != ""){
-        // Search functions list
+        if (!targetAddress.startsWith("0x")){
+            targetAddress = "0x" + targetAddress;
+        }
 
         // Find address index
         QVector<int> location = disassemblyCore.getAddressLocation(targetAddress);
@@ -475,9 +477,6 @@ void MainWindow::on_actionGo_to_Address_at_Cursor_triggered()
     QTextCursor cursor = ui->codeBrowser->textCursor();
     cursor.select(QTextCursor::WordUnderCursor);
     QString targetAddress = cursor.selectedText();
-    if (targetAddress.startsWith("0x")){
-        targetAddress = targetAddress.mid(2);
-    }
 
     goToAddress(targetAddress);
 }
@@ -696,7 +695,7 @@ void MainWindow::on_actionFind_Calls_to_Current_Location_triggered(){
     if (disassemblyCore.disassemblyIsLoaded()){
         QTextCursor cursor = ui->codeBrowser->textCursor();
         int lineNum = cursor.blockNumber();
-        QString targetLocation = disassemblyCore.getFunction(currentFunctionIndex).getAddressAt(lineNum);
+        QString targetLocation = disassemblyCore.getFunction(currentFunctionIndex).getAddressAt(lineNum).mid(2);
 
         QVector< QVector<QString> > results = disassemblyCore.findReferences(targetLocation);
 
@@ -961,8 +960,8 @@ void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString backgrou
     ui->infoTabWidget->setStyleSheet(style);
 }
 
-void MainWindow::setSidebarStyle(QString backgroundColor){
-    QString sidebarStyle = "#functionList {background-color: " + backgroundColor + "; font-size: 10pt; border: 1px solid #c0c0c0;}";
+void MainWindow::setSidebarStyle(QString foregroundColor, QString backgroundColor){
+    QString sidebarStyle = "#functionList {background-color: " + backgroundColor + "; color: " + foregroundColor + "; font-size: 10pt; border: 1px solid #c0c0c0;}";
     ui->sidebar_2->setStyleSheet(sidebarStyle);
 }
 
@@ -971,16 +970,16 @@ void MainWindow::on_actionDefault_triggered()
 {
     settings.setValue("theme", "default");
 
-    QString fgc = "#555555";
-    QString bgc = "#fafafa";
-    QString fgc2 = "#555555";
+    QString fgc = "#4c4c4c";
+    QString bgc = "#f6f6f6";
+    QString fgc2 = "#4c4c4c";
     QString bgc2 = "#e0e0e0";
     QString addrc = "#268BD2";
 
     setCentralWidgetStyle(fgc2, bgc2);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
     setInfoTabWidgetStyle(fgc, bgc);
-    setSidebarStyle(bgc);
+    setSidebarStyle(fgc, bgc);
 
     disHighlighter->setTheme("Default");
 
@@ -995,14 +994,14 @@ void MainWindow::on_actionDark_triggered()
 
     QString fgc = "#fafafa";
     QString bgc = "#333333";
-    QString fgc2 = "#e0e0e0";
-    QString bgc2 = "#292929";
+    QString fgc2 = "#4c4c4c";
+    QString bgc2 = "#e0e0e0";
     QString addrc = "#268BD2";
 
     setCentralWidgetStyle(fgc2, bgc2);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
     setInfoTabWidgetStyle(fgc, bgc);
-    setSidebarStyle(bgc);
+    setSidebarStyle(fgc, bgc);
 
     disHighlighter->setTheme("Default");
 
@@ -1017,14 +1016,14 @@ void MainWindow::on_actionSolarized_triggered()
 
     QString fgc = "#839496";
     QString bgc = "#fdf6e3";
-    QString fgc2 = "586e75";
-    QString bgc2 = "#eee8d5";
+    QString fgc2 = "#4c4c4c";
+    QString bgc2 = "#e0e0e0";
     QString addrc = "#268BD2";
 
     setCentralWidgetStyle(fgc2, bgc2);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
     setInfoTabWidgetStyle(fgc, bgc);
-    setSidebarStyle(bgc);
+    setSidebarStyle(fgc, bgc);
 
     disHighlighter->setTheme("solarized");
 
@@ -1039,14 +1038,14 @@ void MainWindow::on_actionSolarized_Dark_triggered()
 
     QString fgc = "#839496";
     QString bgc = "#002b36";
-    QString fgc2 = "#93a1a1";
-    QString bgc2 = "#073642";
+    QString fgc2 = "#4c4c4c";
+    QString bgc2 = "#e0e0e0";
     QString addrc = "#268BD2";
 
     setCentralWidgetStyle(fgc2, bgc2);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
     setInfoTabWidgetStyle(fgc, bgc);
-    setSidebarStyle(bgc);
+    setSidebarStyle(fgc, bgc);
 
     disHighlighter->setTheme("solarized");
 

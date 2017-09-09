@@ -60,7 +60,7 @@ private slots:
 
     void setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor);
 
-    void setSidebarStyle(QString backgroundColor);
+    void setSidebarStyle(QString foregroundColor, QString backgroundColor);
 
     void on_actionProject_triggered();
 

@@ -133,7 +133,7 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
     QRegularExpressionMatch addressMatch = addressRegex.match(address);
 
     if (addressMatch.hasMatch() && addressMatch.capturedLength(0) == address.length()){
-        row[0] = address.trimmed();
+        row[0] = "0x" + address.trimmed();
 
         pos++;
 
@@ -143,6 +143,12 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
         }
 
         row[1] = line.mid(pos, insnwidth * 3).toLocal8Bit();
+        row[1].replace(" ", "");
+        int paddingLength = (insnwidth * 2) - row[1].length();
+        for (int i = 0; i < paddingLength; i++){
+            row[1].append(" ");
+        }
+
         pos += insnwidth * 3;
 
         // Get optcode
@@ -158,6 +164,10 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
         row[2] = opt;
 
         pos++;
+
+        while (pos < line.length() && line.at(pos) == QChar(' ')){
+            pos++;
+        }
 
         // Get args
         row[3] = line.mid(pos).toLocal8Bit();

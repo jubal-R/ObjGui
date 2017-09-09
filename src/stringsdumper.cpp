@@ -45,7 +45,7 @@ QVector< QVector<QString> > StringsDumper::dumpStrings(QString filename, QVector
             // Add built string to results if it meets length requirement
             if(str.length() >= 4){
                 QVector<QString> stringData(2);
-                stringData[0] = getAddressFromOffset(QString::number(pos - 1, 16), baseOffsets);
+                stringData[0] = "0x" + getAddressFromOffset(QString::number(pos - 1, 16), baseOffsets);
                 stringData[1] = str;
 
                 stringsData.append(stringData);

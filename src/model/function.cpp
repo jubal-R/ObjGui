@@ -41,7 +41,7 @@ QByteArray Function::getContents(){
         QVector<QByteArray> line = getLine(i);
         contents.append(line[0] + "  ");
         contents.append(line[1] + " ");
-        contents.append(line[2] + "  ");
+        contents.append(line[2] + " ");
         contents.append(line[3] + "\n");
     }
 

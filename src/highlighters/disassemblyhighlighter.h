@@ -27,14 +27,15 @@ private:
     QVector<HighlightingRule> highlightingRules;
 
     QTextCharFormat registerFormat;
-    QTextCharFormat instructionFormat;
+    QTextCharFormat jumpFormat;
     QTextCharFormat addressFormat;
-    QTextCharFormat functionFormat;
+    QTextCharFormat callFormat;
+    QTextCharFormat logicFormat;
 
     QColor registerColor;
-    QColor instructionColor;
-    QColor functionsColor;
-    QColor valueColor;
+    QColor jumpColor;
+    QColor callColor;
+    QColor logicColor;
     QColor numColor;
     QColor commentColor;
     QColor varColor;
