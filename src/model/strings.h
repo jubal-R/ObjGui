@@ -11,6 +11,7 @@ public:
     void setStringsData(QVector< QVector<QString> > stringsData);
     int getIndexByAddress(QString address);
     QString getAddressAt(int index);
+    QString getStringAt(int index);
     QString getStringsAddresses();
     QString getStrings();
 private:

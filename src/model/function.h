@@ -11,6 +11,7 @@ public:
     Function(QString functionName, QString addr, QString section, QString offset, QVector< QVector<QByteArray> > contents);
     int getMatrixLen();
     bool isEmpty();
+    void setXrefData(int index, QString xrefData);
     QString getName();
     QString getAddress();
     QString getSection();

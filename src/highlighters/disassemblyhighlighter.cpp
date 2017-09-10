@@ -16,12 +16,14 @@ void DisassemblyHighlighter::setupHighlighter(QString theme){
         callColor = QColor(133, 153, 0);
         numColor = QColor(38, 139, 210);
         logicColor = QColor(108,113,196);
+        stringColor = QColor(42, 161, 152);
     } else {
         registerColor = QColor(29, 160, 185);
         jumpColor = QColor(249, 38, 114);
         callColor = QColor(79, 153, 0);
         numColor = QColor(38, 139, 210);
         logicColor = QColor(174,129,255);
+        stringColor = QColor(230,219,116);
     }
 
     // Addresses
@@ -70,6 +72,13 @@ void DisassemblyHighlighter::setupHighlighter(QString theme){
         rule.format = registerFormat;
         highlightingRules.append(rule);
     }
+
+    // Calls
+    stringFormat.setForeground(stringColor);
+    rule.pattern = QRegExp("\".*\"");
+    rule.format = stringFormat;
+    highlightingRules.append(rule);
+
 }
 
 void DisassemblyHighlighter::setTheme(QString theme){

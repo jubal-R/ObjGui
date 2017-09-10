@@ -58,6 +58,15 @@ QString Strings::getAddressAt(int index){
         return "";
 }
 
+QString Strings::getStringAt(int index){
+    if(index >= 0 && index < matrixLen){
+        QString str = stringsMatrix[index][1].replace('\n', "\\n");
+        return str;
+    } else {
+        return "";
+    }
+}
+
 // Return strings formatted for display
 QString Strings::getStrings(){
     QString strings = "";

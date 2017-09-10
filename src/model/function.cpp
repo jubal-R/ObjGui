@@ -1,12 +1,14 @@
 #include "function.h"
 
+#include "QDebug"
+
 /*
  * Function contents stored in a matrix where each row is a line of output.
- * Colomns contain {address, hex, optcode, arguments}
+ * Colomns contain {address, hex, optcode, arguments, xref data}
  * Example:
- *      [000000]    [0b 0a 3c]    [push]    [rbp]
- *      [000010]    [0b 0a 3c]    [jmp]     [000050]
- *      [000020]    [12 c9 5d]    [call]    [00230b <printf@plt>]
+ *      [000010]    [0b 0a 3c]    [jmp]     [000050]                 []
+ *      [000000]    [0b 0a 3c]    [lea]     [400981]                 ["HelloWorld"]
+ *      [000020]    [12 c9 5d]    [call]    [00230b <printf@plt>]    []
  *      ...
  */
 
@@ -22,6 +24,10 @@ Function::Function(QString functionName, QString addr, QString sect, QString off
     fileOffset = offset;
     functionMatrix = contents;
     matrixLen = functionMatrix.length();
+}
+
+void Function::setXrefData(int index, QString xrefData){
+    functionMatrix[index][4] = "\"" + xrefData.toLatin1() + "\"";
 }
 
 // Return the line(row) from the matrix at given index/line number
@@ -42,7 +48,8 @@ QByteArray Function::getContents(){
         contents.append(line[0] + "  ");
         contents.append(line[1] + " ");
         contents.append(line[2] + " ");
-        contents.append(line[3] + "\n");
+        contents.append(line[3] + "    ");
+        contents.append(line[4] + "\n");
     }
 
     return contents;

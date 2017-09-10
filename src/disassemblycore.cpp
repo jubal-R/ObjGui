@@ -2,6 +2,9 @@
 
 #include "QtConcurrent/QtConcurrent"
 #include "QFuture"
+#include "QRegularExpression"
+
+#include "QDebug"
 
 DisassemblyCore::DisassemblyCore()
 {
@@ -29,6 +32,8 @@ void DisassemblyCore::disassemble(QString file){
     sectionData = futureSectionData.result();
     strings.setStringsData(futureStrings.result());
 
+    xrefStrings();
+
     fileLoaded = true;
 }
 
@@ -37,6 +42,44 @@ bool DisassemblyCore::disassemblyIsLoaded(){
         return true;
     else
         return false;
+}
+
+void DisassemblyCore::xrefStrings(){
+    for (QVector<Function>::iterator itr = functionData.begin(); itr != functionData.end(); itr++){
+        int functionLen = itr->getMatrixLen();
+
+        for (int lineNum = 0; lineNum < functionLen; lineNum++){
+            QString optStr = itr->getLine(lineNum)[3];
+
+            QString address = extractAddress(optStr);
+
+            if (address != ""){
+                int strIndex = strings.getIndexByAddress(address);
+
+                if (strIndex > 0){
+                    QString str = strings.getStringAt(strIndex);
+//                    qDebug() << str;
+
+                    if(str != ""){
+                        itr->setXrefData(lineNum, str);
+                    }
+                }
+            }
+        }
+    }
+}
+
+QString DisassemblyCore::extractAddress(QString s){
+    QRegularExpression addressRegex;
+    addressRegex.setPattern("(0x)?[0-9a-f]{4,}");
+    QRegularExpressionMatch regexMatch;
+
+    if (s.contains(addressRegex, &regexMatch)){
+        QString address = regexMatch.captured();
+        return address;
+    }
+
+    return "";
 }
 
 QString DisassemblyCore::getObjdumpErrorMsg(QString file){

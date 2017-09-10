@@ -31,6 +31,7 @@ private:
     QTextCharFormat addressFormat;
     QTextCharFormat callFormat;
     QTextCharFormat logicFormat;
+    QTextCharFormat stringFormat;
 
     QColor registerColor;
     QColor jumpColor;
@@ -38,7 +39,7 @@ private:
     QColor logicColor;
     QColor numColor;
     QColor commentColor;
-    QColor varColor;
+    QColor stringColor;
 };
 
 #endif // HIGHLIGHTER_H

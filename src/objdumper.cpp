@@ -116,7 +116,7 @@ QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> base
 }
 
 QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
-    QVector<QByteArray> row(4);
+    QVector<QByteArray> row(5);
 
     // Get address
     QByteArray address;
@@ -172,16 +172,21 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
         // Get args
         row[3] = line.mid(pos).toLocal8Bit();
 
+        // empty by default
+        row[4] = "";
+
         // Remove extra space from byte array
         row[0].squeeze();
         row[1].squeeze();
         row[2].squeeze();
         row[3].squeeze();
+        row[4].squeeze();
     } else {
         row[0] = "";
         row[1] = "";
         row[2] = "";
         row[3] = "";
+        row[4] = "";
     }
 
     return row;
