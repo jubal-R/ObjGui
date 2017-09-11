@@ -1,5 +1,5 @@
 # ObjGui
-ObjGui is a binary analysis tool and GUI frontend for objdump made for readability and easy analysis. ObjGui uses objdump to disassemble executables, then provides an easy way to navigate through the disassembly. ObjGui is meant to be a handy tool for debugging and reverse engineering.
+ObjGui is a GUI disassembler and binary analysis tool utilizing GNU binutils. ObjGui uses objdump to disassemble executables, analyzes the data, and then provides an easy way to navigate through the disassembly. ObjGui is meant to be a handy tool for debugging and reverse engineering.
 
 ## Screenshot
 ![ObjGui](https://github.com/jubal-R/ObjGui/blob/master/screenshots/objGui.png)
@@ -11,7 +11,12 @@ ObjGui is a binary analysis tool and GUI frontend for objdump made for readabili
 - Find all calls to any address or function
 - Search disassembly data
 - Support for custom objdump binaries
-- Support for many objdump flags(syntax, demangle, etc.)
+
+## TODO
+- Function renaming
+- Stripped binary analysis
+- Psuedo code
+- Patching of binaries
 
 ## Dependencies
 qt5-default qt5-qmake objdump
