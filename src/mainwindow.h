@@ -56,11 +56,11 @@ private slots:
 
     void setCentralWidgetStyle(QString foregroundColor, QString backgroundColor);
 
-    void setMainStyle(QString backgroundColor2, QString backgroundColor3);
+    void setMainStyle(QString foregroundColor, QString backgroundColor2, QString backgroundColor3);
 
     void setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor);
 
-    void setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor);
+    void setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2);
 
     void setSidebarStyle(QString foregroundColor, QString backgroundColor);
 

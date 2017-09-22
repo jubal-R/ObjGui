@@ -931,7 +931,7 @@ void MainWindow::setCentralWidgetStyle(QString foregroundColor2, QString backgro
     ui->centralWidget->setStyleSheet(centralWidgetStyle);
 }
 
-void MainWindow::setMainStyle(QString backgroundColor, QString backgroundColor3){
+void MainWindow::setMainStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor3){
     QString mainStyle = "QScrollBar:vertical {"
                         "background: "+ backgroundColor3 +";"
                         "width: 10px;"
@@ -958,7 +958,12 @@ void MainWindow::setMainStyle(QString backgroundColor, QString backgroundColor3)
                             "height: 0 px;"
                             "subcontrol-position: top;"
                             "subcontrol-origin: margin;"
-                      "}";
+                      "}"
+                                                                  "QPlainTextEdit {"
+                                                                      "background-color: "+ backgroundColor +";"
+                                                                      "color:"+ foregroundColor +";"
+                                                                      "border: 0px; selection-background-color: #404f4f;"
+                                                                  "}";
     ui->main->setStyleSheet(mainStyle);
 }
 
@@ -972,13 +977,14 @@ void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundCo
                 "color: " + addressColor + ";"
             "}"
             "QTabBar::tab:selected{"
-                "color: #fafafa;"
-                "background-color: #3ba1a1;"
-                "border-top: 1px solid #d4d4d4;"
+                "color: #3ba1a1;"
+                "border-bottom:2px solid #3ba1a1;"
             "}"
             "QTabBar::tab {"
                 "background-color: " + backgroundColor2 +";"
+                "border-bottom:2px solid " + backgroundColor2 +";"
                 "min-width: 102px;"
+                "height: 30px;"
             "}"
             "QTabWidget::tab-bar {"
                 "left: 5px;"
@@ -994,16 +1000,7 @@ void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundCo
                 "background-color: " + backgroundColor + ";"
                 "color: " + foregroundColor + ";"
             "}"
-            "QPlainTextEdit {"
-                "background-color: "+ backgroundColor +";"
-                "color:"+ foregroundColor +";"
-                "border: 0px; selection-background-color: #404f4f;"
-                "}"
             "QLabel {"
-                "background-color: " + backgroundColor + ";"
-                "color: " + foregroundColor + ";"
-            "}"
-            "QLineEdit {"
                 "background-color: " + backgroundColor + ";"
                 "color: " + foregroundColor + ";"
             "}";
@@ -1011,10 +1008,17 @@ void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundCo
 
 }
 
-void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor){
+void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2){
     QString style = "#symbolsTab, #relocationsTab, #stringsTab, #headersTab {"
                 "background-color: " + backgroundColor + ";"
                 "color: " + foregroundColor + ";"
+             "}"
+             "QTabBar::tab:selected {"
+                "border-bottom:2px solid #3ba1a1;"
+             "}"
+             "QTabBar::tab {"
+                "background-color: " + backgroundColor2 +";"
+                "min-width: 70px;"
              "}"
              "QTabWidget::pane {"
                 "border: 1px solid #c0c0c0;"
@@ -1063,9 +1067,9 @@ void MainWindow::on_actionDefault_triggered()
     QString bgc3 = "#d7d7d7";
 
     setCentralWidgetStyle(fgc2, bgc2);
-    setMainStyle(bgc, bgc3);
+    setMainStyle(fgc, bgc, bgc3);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc);
+    setInfoTabWidgetStyle(fgc, bgc, bgc2);
     setSidebarStyle(fgc, bgc);
 
     disHighlighter->setTheme("Default");
@@ -1087,9 +1091,9 @@ void MainWindow::on_actionDark_triggered()
     QString bgc3 = "#414141";
 
     setCentralWidgetStyle(fgc2, bgc2);
-    setMainStyle(bgc, bgc3);
+    setMainStyle(fgc, bgc, bgc3);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc);
+    setInfoTabWidgetStyle(fgc, bgc, bgc2);
     setSidebarStyle(fgc, bgc);
 
     disHighlighter->setTheme("Default");
@@ -1111,9 +1115,9 @@ void MainWindow::on_actionSolarized_triggered()
     QString bgc3 = "#eee8d5";
 
     setCentralWidgetStyle(fgc2, bgc2);
-    setMainStyle(bgc, bgc3);
+    setMainStyle(fgc, bgc, bgc3);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc);
+    setInfoTabWidgetStyle(fgc, bgc, bgc2);
     setSidebarStyle(fgc, bgc);
 
     disHighlighter->setTheme("solarized");
@@ -1135,9 +1139,9 @@ void MainWindow::on_actionSolarized_Dark_triggered()
     QString bgc3 = "#073638";
 
     setCentralWidgetStyle(fgc2, bgc2);
-    setMainStyle(bgc, bgc3);
+    setMainStyle(fgc, bgc, bgc3);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc);
+    setInfoTabWidgetStyle(fgc, bgc, bgc2);
     setSidebarStyle(fgc, bgc);
 
     disHighlighter->setTheme("solarized");

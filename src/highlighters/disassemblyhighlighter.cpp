@@ -73,7 +73,7 @@ void DisassemblyHighlighter::setupHighlighter(QString theme){
         highlightingRules.append(rule);
     }
 
-    // Calls
+    // Strings
     stringFormat.setForeground(stringColor);
     rule.pattern = QRegExp("\".*\"");
     rule.format = stringFormat;
