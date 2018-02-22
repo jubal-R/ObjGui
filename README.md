@@ -19,7 +19,11 @@ ObjGui is a GUI disassembler and binary analysis tool utilizing GNU binutils. Ob
 - Patching of binaries
 
 ## Dependencies
-qt5-default qt5-qmake objdump
+qt5-default qt5-qmake binutils
+
+#### Mac users will need to use gobjdump
+- `brew install binutils`
+- Set ObjGui to point to /usr/local/bin/gobjdump under options
 
 ## Building ObjGui
 `git clone https://github.com/jubal-R/ObjGui.git`  
