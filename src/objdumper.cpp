@@ -17,6 +17,7 @@ ObjDumper::ObjDumper()
     insnwidth = 10;
 
     addressRegex.setPattern("[0-9a-f]+");
+    hexBytesRegex.setPattern("[0-9a-f ]+");
 }
 
 // Runs objdump given arguments and returns outout
@@ -117,53 +118,45 @@ QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> base
 
 QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
     QVector<QByteArray> row(5);
+    if (line.length() > insnwidth * 3) {
+        int pos = 0;
 
-    // Get address
-    QByteArray address;
-    int pos = 0;
+        // Get address
+        QByteArray address;
 
-    while (pos < line.length() && line.at(pos) != QChar(':')){
-        address.append(line.at(pos));
-        pos++;
-    }
-    address = address.trimmed();
-
-    // Note: some lines may say skipping zeros rather than containing disassembly
-
-    QRegularExpressionMatch addressMatch = addressRegex.match(address);
-
-    if (addressMatch.hasMatch() && addressMatch.capturedLength(0) == address.length()){
-        row[0] = "0x" + address.trimmed();
-
+        while (pos < line.length() && line.at(pos) != QChar(':')){
+            address.append(line.at(pos));
+            pos++;
+        }
         pos++;
 
-        // Get hex
+        row[0] = parseAddress(address);
+
+        // Skip whitespace
         while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
             pos++;
         }
 
-        row[1] = line.mid(pos, insnwidth * 3).toLocal8Bit();
-        row[1].replace(" ", "");
-        int paddingLength = (insnwidth * 2) - row[1].length();
-        for (int i = 0; i < paddingLength; i++){
-            row[1].append(" ");
-        }
+        // Get hex
+        QByteArray hexBytes = line.mid(pos, insnwidth * 3).toLocal8Bit();
+        row[1] = parseHexBytes(hexBytes);
 
         pos += insnwidth * 3;
 
-        // Get optcode
+        // Skip whitespace
         while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
             pos++;
         }
+
+        // Get optcode
         QByteArray opt;
         while (pos < line.length() && line.at(pos) != QChar(' ')){
             opt.append(line.at(pos));
             pos++;
         }
+        pos++;
 
         row[2] = opt;
-
-        pos++;
 
         while (pos < line.length() && line.at(pos) == QChar(' ')){
             pos++;
@@ -172,7 +165,7 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
         // Get args
         row[3] = line.mid(pos).toLocal8Bit();
 
-        // empty by default
+        // empty by default, used for xref data
         row[4] = "";
 
         // Remove extra space from byte array
@@ -190,6 +183,36 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
     }
 
     return row;
+}
+
+QByteArray ObjDumper::parseAddress(QByteArray address){
+    address = address.trimmed();
+    QRegularExpressionMatch addressMatch = addressRegex.match(address);
+
+    if (addressMatch.hasMatch() && addressMatch.capturedLength(0) == address.length()){
+        address = "0x" + address;
+
+        return address;
+    } else {
+        return "";
+    }
+}
+
+QByteArray ObjDumper::parseHexBytes(QByteArray byteString){
+    QRegularExpressionMatch hexMatch = hexBytesRegex.match(byteString);
+
+    if (hexMatch.hasMatch() && hexMatch.capturedLength(0) == byteString.length()) {
+        byteString.replace(" ", "");
+        int paddingLength = (insnwidth * 2) - byteString.length();
+        QString padding = "";
+        padding.fill(' ', paddingLength);
+        byteString.append(padding);
+
+        return byteString;
+
+    } else {
+        return "";
+    }
 }
 
 // Parses result of all contents(objdump -s) and populates section list

@@ -34,6 +34,8 @@ private:
     QString getContents(QString file);
     QString removeHeading(QString dump, int numLines);
     QString getHeading(QString dump, int numLines);
+    QByteArray parseAddress(QByteArray address);
+    QByteArray parseHexBytes(QByteArray byteString);
     QString parseDumpForErrors(QString dump);
     QVector<QByteArray> parseFunctionLine(QStringRef line);
     QVector<QByteArray> parseSectionLine(QStringRef line);
@@ -50,6 +52,7 @@ private:
     QString target;
     int insnwidth;
     QRegularExpression addressRegex;
+    QRegularExpression hexBytesRegex;
 
 };
 
