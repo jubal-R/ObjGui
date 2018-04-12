@@ -404,17 +404,40 @@ QString ObjDumper::parseDumpForErrors(QString dump){
 QVector<QString> ObjDumper::getBaseOffset(QString file){
     QVector<QString> baseOffset(2);
     QStringList argsList;
+
     if (!target.isEmpty())
         argsList << target;
+
     argsList << "-h" << file;
     QString sectionHeader = getDump(argsList);
 
     if (!sectionHeader.isEmpty() && !sectionHeader.contains("File format not recognized")){
-        QStringRef firstSection = sectionHeader.splitRef('\n').at(5);
-        QVector<QStringRef> sectionVector = firstSection.split(' ', QString::SkipEmptyParts);
-        baseOffset[0] = sectionVector.at(3).toString();
-        baseOffset[1] = sectionVector.at(5).toString();
+        QVector<QStringRef> headerLines = sectionHeader.splitRef('\n');
+
+        if (headerLines.size() > 5) {
+            QStringRef firstSection = headerLines.at(5);
+
+            QVector<QStringRef> sectionVector = firstSection.split(' ', QString::SkipEmptyParts);
+
+            if (sectionVector.size() > 5){
+                QString baseAddress = sectionVector.at(3).toString();
+                QString baseFileOffset = sectionVector.at(5).toString();
+
+                QRegularExpressionMatch addressMatch = addressRegex.match(baseAddress);
+                QRegularExpressionMatch fileOffsetMatch = addressRegex.match(baseFileOffset);
+
+                if (addressMatch.hasMatch() && fileOffsetMatch.hasMatch()){
+                    baseOffset[0] = baseAddress;
+                    baseOffset[1] = baseFileOffset;
+
+                    return baseOffset;
+                }
+            }
+        }
     }
+
+    baseOffset[0] = "000000";
+    baseOffset[1] = "000000";
 
     return baseOffset;
 }
