@@ -669,7 +669,7 @@ font-size: 11pt;</string>
                   </size>
                  </property>
                  <property name="text">
-                  <string>Use custom binary</string>
+                  <string>Use objdump path</string>
                  </property>
                 </widget>
                </item>
@@ -1299,7 +1299,7 @@ color: rgb(85, 85, 85);</string>
      <x>0</x>
      <y>0</y>
      <width>1232</width>
-     <height>28</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="font">

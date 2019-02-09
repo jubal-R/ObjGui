@@ -143,15 +143,6 @@ MainWindow::MainWindow(QWidget *parent) :
         on_actionDefault_triggered();
     }
 
-    QString menuStyle = "QMenu::item:selected {background-color: #3ba1a1; color: #fafafa;}"
-            "QMenu::item::disabled {color: #aaaaaa}"
-            "QMenu::item {background-color: #e0e0e0; color: #555555;}"
-            "QMenuBar::item {background-color: #e0e0e0; color: #4c4c4c;}"
-            "QMenuBar {background-color: #e0e0e0;}";
-    ui->menuBar->setStyleSheet(menuStyle);
-    QString navBarStyle = "#navBar {border-bottom: 1px solid #d4d4d4;}";
-    ui->navBar->setStyleSheet(navBarStyle);
-
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
     currentFunctionIndex = 0;
@@ -959,26 +950,26 @@ void MainWindow::setMainStyle(QString foregroundColor, QString backgroundColor, 
                             "subcontrol-position: top;"
                             "subcontrol-origin: margin;"
                       "}"
-                                                                  "QPlainTextEdit {"
-                                                                      "background-color: "+ backgroundColor +";"
-                                                                      "color:"+ foregroundColor +";"
-                                                                      "border: 0px; selection-background-color: #404f4f;"
-                                                                  "}";
+                      "QPlainTextEdit {"
+                          "background-color: "+ backgroundColor +";"
+                          "color:"+ foregroundColor +";"
+                          "border: 0px; selection-background-color: #404f4f;"
+                      "}";
     ui->main->setStyleSheet(mainStyle);
 }
 
 // Style tab widget
-void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor){
+void MainWindow::setTabWidgetStyle(QString foregroundColor, QString foregroundColor2, QString backgroundColor, QString backgroundColor2){
     QString style = "#disTab, #hexTab, #optionsTab {"
                 "background-color: " + backgroundColor + ";"
                 "color: " + foregroundColor + ";"
             "}"
             "#hexAddressBrowser {"
-                "color: " + addressColor + ";"
+                "color: " + foregroundColor2 + ";"
             "}"
             "QTabBar::tab:selected{"
-                "color: #3ba1a1;"
-                "border-bottom:2px solid #3ba1a1;"
+                "color: " + foregroundColor2 +";"
+                "border-bottom:2px solid " + foregroundColor2 +";"
             "}"
             "QTabBar::tab {"
                 "background-color: " + backgroundColor2 +";"
@@ -1008,13 +999,13 @@ void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundCo
 
 }
 
-void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2){
+void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString foregroundColor2, QString backgroundColor, QString backgroundColor2){
     QString style = "#symbolsTab, #relocationsTab, #stringsTab, #headersTab {"
                 "background-color: " + backgroundColor + ";"
                 "color: " + foregroundColor + ";"
              "}"
              "QTabBar::tab:selected {"
-                "border-bottom:2px solid #3ba1a1;"
+                "border-bottom:2px solid " + foregroundColor2 +";"
              "}"
              "QTabBar::tab {"
                 "background-color: " + backgroundColor2 +";"
@@ -1054,6 +1045,23 @@ void MainWindow::setSidebarStyle(QString foregroundColor, QString backgroundColo
     ui->sidebar_2->setStyleSheet(sidebarStyle);
 }
 
+void MainWindow::setMenuStyle(QString foregroundColor, QString backgroundColor, QString selectedColor){
+    QString menuStyle = "QMenu::item:selected {background-color: " + selectedColor + "; color: #fafafa;}"
+            "QMenu::item::disabled {color: #aaaaaa}"
+            "QMenu::item {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
+            "QMenuBar::item {background-color: " + backgroundColor + "; color: " + foregroundColor + ";}"
+            "QMenuBar {background-color: " + backgroundColor + ";}";
+    ui->menuBar->setStyleSheet(menuStyle);
+}
+
+void MainWindow::setNavbarStyle(QString foregroundColor, QString backgroundColor){
+    QString navBarStyle = "#navBar {background-color: " + backgroundColor + "; border-bottom: 1px solid #d4d4d4;}";
+    ui->navBar->setStyleSheet(navBarStyle);
+
+//    QString disTabStyle = "QTabBar {background-color: " + backgroundColor + ";}";
+//    ui->disTabWidget->setStyleSheet(disTabStyle);
+}
+
 // Set theme default
 void MainWindow::on_actionDefault_triggered()
 {
@@ -1068,9 +1076,11 @@ void MainWindow::on_actionDefault_triggered()
 
     setCentralWidgetStyle(fgc2, bgc2);
     setMainStyle(fgc, bgc, bgc3);
-    setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc, bgc2);
+    setTabWidgetStyle(fgc, addrc, bgc, bgc2);
+    setInfoTabWidgetStyle(fgc, addrc, bgc, bgc2);
     setSidebarStyle(fgc, bgc);
+    setMenuStyle(fgc, bgc, bgc3);
+    setNavbarStyle(fgc, bgc);
 
     disHighlighter->setTheme("Default");
 
@@ -1090,11 +1100,13 @@ void MainWindow::on_actionDark_triggered()
     QString addrc = "#268BD2";
     QString bgc3 = "#414141";
 
-    setCentralWidgetStyle(fgc2, bgc2);
+    setCentralWidgetStyle(fgc, bgc3);
     setMainStyle(fgc, bgc, bgc3);
-    setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc, bgc2);
+    setTabWidgetStyle(fgc, addrc, bgc, bgc3);
+    setInfoTabWidgetStyle(fgc, addrc, bgc, bgc3);
     setSidebarStyle(fgc, bgc);
+    setMenuStyle(fgc, bgc, bgc3);
+    setNavbarStyle(fgc, bgc);
 
     disHighlighter->setTheme("Default");
 
@@ -1114,11 +1126,13 @@ void MainWindow::on_actionSolarized_triggered()
     QString addrc = "#268BD2";
     QString bgc3 = "#eee8d5";
 
-    setCentralWidgetStyle(fgc2, bgc2);
+    setCentralWidgetStyle(fgc, bgc3);
     setMainStyle(fgc, bgc, bgc3);
-    setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc, bgc2);
+    setTabWidgetStyle(fgc, addrc, bgc, bgc3);
+    setInfoTabWidgetStyle(fgc, addrc, bgc, bgc3);
     setSidebarStyle(fgc, bgc);
+    setMenuStyle(fgc, bgc, bgc3);
+    setNavbarStyle(fgc, bgc);
 
     disHighlighter->setTheme("solarized");
 
@@ -1134,15 +1148,17 @@ void MainWindow::on_actionSolarized_Dark_triggered()
     QString fgc = "#839496";
     QString bgc = "#002b36";
     QString fgc2 = "#4c4c4c";
-    QString bgc2 = "#e0e0e0";
+    QString bgc2 = "#073642";
     QString addrc = "#268BD2";
     QString bgc3 = "#073638";
 
-    setCentralWidgetStyle(fgc2, bgc2);
+    setCentralWidgetStyle(fgc, bgc3);
     setMainStyle(fgc, bgc, bgc3);
-    setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc, bgc2);
+    setTabWidgetStyle(fgc, addrc, bgc, bgc2);
+    setInfoTabWidgetStyle(fgc, addrc, bgc, bgc3);
     setSidebarStyle(fgc, bgc);
+    setMenuStyle(fgc, bgc, bgc3);
+    setNavbarStyle(fgc, bgc);
 
     disHighlighter->setTheme("solarized");
 
