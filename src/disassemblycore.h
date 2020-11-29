@@ -17,7 +17,7 @@ public:
     void disassemble(QString file);
     bool disassemblyIsLoaded();
     void xrefStrings();
-    QString extractAddress(QString s);
+    static QString extractAddress(const QByteArray& s);
     QVector<QString> getBaseOffsets();
     QString getObjdumpErrorMsg(QString file);
     QString getSymbolsTable(QString file);

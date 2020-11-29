@@ -49,18 +49,18 @@ void DisassemblyCore::xrefStrings(){
         int functionLen = itr->getMatrixLen();
 
         for (int lineNum = 0; lineNum < functionLen; lineNum++){
-            QString optStr = itr->getLine(lineNum)[3];
+            const QByteArray optStr = itr->getLine(lineNum)[3];
 
             QString address = extractAddress(optStr);
 
-            if (address != ""){
+            if (!address.isEmpty()){
                 int strIndex = strings.getIndexByAddress(address);
 
                 if (strIndex > 0){
                     QString str = strings.getStringAt(strIndex);
 //                    qDebug() << str;
 
-                    if(str != ""){
+                    if(!str.isEmpty()){
                         itr->setXrefData(lineNum, str);
                     }
                 }
@@ -69,17 +69,43 @@ void DisassemblyCore::xrefStrings(){
     }
 }
 
-QString DisassemblyCore::extractAddress(QString s){
-    QRegularExpression addressRegex;
-    addressRegex.setPattern("(0x)?[0-9a-f]{4,}");
-    QRegularExpressionMatch regexMatch;
+static inline bool ishex(char c) {
+    return isdigit(c) || (c >= 97 && c <= 102);
+}
 
-    if (s.contains(addressRegex, &regexMatch)){
-        QString address = regexMatch.captured();
-        return address;
+QString DisassemblyCore::extractAddress(const QByteArray& s){
+    for (int i = 0; i < s.length(); ++i) {
+        //keep moving forward till we find a digit
+        while (i < s.length() && !ishex(s.at(i)))
+            i++;
+
+        if (i >= s.length())
+            return QLatin1String("");
+
+        int start = i;
+        if (s.at(i) == '0')
+            if (i + 1 < s.length() && s.at(i + 1) == 'x') {
+                i += 2;
+            }
+
+        const char c = s.at(i);
+        if (!ishex(c))
+            return QLatin1String("");
+
+        int count = 0;
+        while (ishex(s.at(i))) {
+               count++;
+               i++;
+               if (i >= s.length())
+                   break;
+        }
+
+        if (count >= 4) {
+            QString ret = s.mid(start, i - start);
+            return ret;
+        }
     }
-
-    return "";
+    return QLatin1String("");
 }
 
 QString DisassemblyCore::getObjdumpErrorMsg(QString file){
