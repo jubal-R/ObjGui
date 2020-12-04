@@ -6,11 +6,10 @@
 class StringsDumper
 {
 public:
-    StringsDumper();
-    QVector< QVector<QString> > dumpStrings(QString file, QVector<QString> baseOffsets);
+    StringsDumper() = default;
+    QVector< QVector<QString> > dumpStrings(QString file, const QVector<QString>& baseOffsets);
 private:
-    bool isPrintableChar(char c);
-    QString getAddressFromOffset(QString offset, QVector<QString> baseOffsets);
+    QString getAddressFromOffset(QString offset, const QVector<QString>& baseOffsets);
 };
 
 #endif // STRINGSDUMPER_H

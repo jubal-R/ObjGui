@@ -3,69 +3,57 @@
 #include "QFile"
 #include "QVector"
 
-StringsDumper::StringsDumper()
-{
-
-}
+#include <QDataStream>
 
 // Extract strings from file along with their file offset and vma
-QVector< QVector<QString> > StringsDumper::dumpStrings(QString filename, QVector<QString> baseOffsets){
+QVector< QVector<QString> > StringsDumper::dumpStrings(QString filename, const QVector<QString> &baseOffsets){
     QVector< QVector<QString> > stringsData;
     QFile file(filename);
     if(!file.open(QIODevice::ReadOnly))
         return stringsData;
 
-    // Seek to start of first section
+//    // Seek to start of first section
     bool ok;
     qint64 startPos = baseOffsets[1].toLongLong(&ok, 16);
-    if (ok)
-        file.seek(startPos);
+    if (!ok)
+        startPos = 0;
 
-    // Read each byte
-    while (!file.atEnd()) {
-        QByteArray bytes = file.read(1);
-        char byte = bytes[0];
+    const auto bytes = file.readAll();
+    for (int i = startPos; i < bytes.length(); ++i) {
+        char c = bytes[i];
 
-        // If read byte is a printable character start builing string
-        if (isPrintableChar(byte)){
-            qint64 pos = file.pos();
-            QString str = bytes;
+        if (!isprint(c))
+            continue;
 
-            // Build string until running into a nonprintable character
-            while (!file.atEnd()){
-                bytes = file.read(1);
-                byte = bytes[0];
-                if (isPrintableChar(byte)){
-                    str.append(byte);
-                } else {
-                    break;
-                }
+        int pos = i;
+        QString str(c);
+
+        for (int j = pos; j < bytes.length(); j++) {
+            if (isprint(bytes[j])) {
+                char b = bytes[j];
+                str.append(b);
+                i++;
+            } else {
+                i = j;
+                break;
             }
+        }
 
-            // Add built string to results if it meets length requirement
-            if(str.length() >= 4){
-                QVector<QString> stringData(2);
-                stringData[0] = "0x" + getAddressFromOffset(QString::number(pos - 1, 16), baseOffsets);
-                stringData[1] = str;
+        if(str.length() >= 4){
+            QVector<QString> stringData(2);
+            stringData[0] = QStringLiteral("0x") + getAddressFromOffset(QString::number(pos - 1, 16), baseOffsets);
+            stringData[1] = str;
 
-                stringsData.append(stringData);
-            }
+            stringsData.append(stringData);
         }
     }
 
     return stringsData;
 }
 
-bool StringsDumper::isPrintableChar(char c){
-    if ((c >= 32 && c <= 126) || c == 9 || c== 10)
-        return true;
-    else
-        return false;
-}
-
 // Return virtual memory address of file offset given base offsets
-QString StringsDumper::getAddressFromOffset(QString offset, QVector<QString> baseOffsets){
-    QString address = "";
+QString StringsDumper::getAddressFromOffset(QString offset, const QVector<QString> &baseOffsets){
+    QString address;
     bool targetOffsetOk;
     bool baseAddrOk;
     bool baseOffsetOk;
