@@ -76,7 +76,7 @@ QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> base
             fileOffest = getFileOffset(address, baseOffsets)[0];
 
             // Get function name
-            i += 2;
+            i += 2 + address.size();
             int endlinePos = dump.indexOf('\n', i);
             QString name = dump.mid(i, endlinePos - i - 2);
             i = endlinePos;
