@@ -195,21 +195,27 @@ QByteArray ObjDumper::parseAddress(const QByteArray& address){
     return ret;
 }
 
-QByteArray ObjDumper::parseHexBytes(QByteArray byteString){
-    QRegularExpressionMatch hexMatch = hexBytesRegex.match(byteString);
-
-    if (hexMatch.hasMatch() && hexMatch.capturedLength(0) == byteString.length()) {
-        byteString.replace(" ", "");
-        int paddingLength = (insnwidth * 2) - byteString.length();
-        QString padding = "";
-        padding.fill(' ', paddingLength);
-        byteString.append(padding);
-
-        return byteString;
-
-    } else {
-        return "";
+QByteArray ObjDumper::parseHexBytes(const QByteArray &byteString){
+    QByteArray ret;
+    ret.reserve(byteString.size());
+    for (int i = 0; i < byteString.length(); ++i) {
+        if (byteString.at(i) == ' ')
+            continue;
+        char c = byteString.at(i);
+        if (isdigit(c) || (c >= 97 && c <= 102)) {
+            ret.append(c);
+            continue;
+        } else {
+            return QByteArrayLiteral("");
+        }
     }
+    //insert padding
+    int paddingLength = (insnwidth * 2) - ret.length();
+    QByteArray padding;
+    padding.reserve(paddingLength);
+    padding.fill(' ', paddingLength);
+    ret.append(std::move(padding));
+    return ret;
 }
 
 // Parses result of all contents(objdump -s) and populates section list

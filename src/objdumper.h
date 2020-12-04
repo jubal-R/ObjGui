@@ -35,7 +35,7 @@ private:
     QByteArray removeHeading(QByteArray dump, int numLines);
     QString getHeading(QString dump, int numLines);
     QByteArray parseAddress(const QByteArray& address);
-    QByteArray parseHexBytes(QByteArray byteString);
+    QByteArray parseHexBytes(const QByteArray& byteString);
     QString parseDumpForErrors(QString dump);
     QVector<QByteArray> parseFunctionLine(QByteArray line);
     QVector<QByteArray> parseSectionLine(QStringRef line);
