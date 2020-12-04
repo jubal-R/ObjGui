@@ -29,15 +29,15 @@ public:
     void setTarget(QString trgt);
 
 private:
-    QString getDump(QStringList argsList);
-    QString getDisassembly(QString file);
+    QByteArray getDump(QStringList argsList);
+    QByteArray getDisassembly(QString file);
     QString getContents(QString file);
-    QString removeHeading(QString dump, int numLines);
+    QByteArray removeHeading(QByteArray dump, int numLines);
     QString getHeading(QString dump, int numLines);
     QByteArray parseAddress(QByteArray address);
     QByteArray parseHexBytes(QByteArray byteString);
     QString parseDumpForErrors(QString dump);
-    QVector<QByteArray> parseFunctionLine(QStringRef line);
+    QVector<QByteArray> parseFunctionLine(QByteArray line);
     QVector<QByteArray> parseSectionLine(QStringRef line);
 
     bool useCustomBinary;
