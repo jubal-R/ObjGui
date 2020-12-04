@@ -60,7 +60,7 @@ QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> base
         QByteArray tmp = dump.mid(prev, p - prev);
 
         // Check if section or function
-        if (tmp == QStringLiteral("Disassembly")) {
+        if (tmp == "Disassembly") {
             currentSection = dump.mid(prev + 23, idx - (prev + 23));
 
         } else if (tmp.startsWith('0') /*tmp is address*/) {
@@ -96,8 +96,12 @@ QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> base
             }
 
             // Add to functionList
-            Function function(name, address, currentSection, fileOffest, functionMatrix);
-            functionList.push_back(function);
+            Function function(std::move(name),
+                              std::move(address),
+                              std::move(currentSection),
+                              std::move(fileOffest),
+                              std::move(functionMatrix));
+            functionList.push_back(std::move(function));
         }
         prev = idx + 2; // +2 to skip \n\n
         idx = dump.indexOf("\n\n", prev);
@@ -140,14 +144,15 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QByteArray line){
         }
 
         // Get optcode
-        int i = pos;
+        QByteArray opt;
+        opt.reserve(4);
         while (pos < line.length() && line.at(pos) != QChar(' ')){
+            opt.append(line.at(pos));
             pos++;
         }
-        QByteArray opt = line.mid(i, pos - i);
         pos++;
 
-        row[2] = opt;
+        row[2] = std::move(opt);
 
         while (pos < line.length() && line.at(pos) == QChar(' ')){
             pos++;
@@ -249,12 +254,12 @@ QVector<Section> ObjDumper::getSectionData(QString file){
             QStringRef line = lines.at(lineNum);
             QVector<QByteArray> row = parseSectionLine(line);
 
-            sectionMatrix.append(row);
+            sectionMatrix.append(std::move(row));
         }
 
         // Insert new section
-        Section section(sectionName, sectionMatrix);
-        sectionList.push_back(section);
+        Section section(std::move(sectionName), std::move(sectionMatrix));
+        sectionList.push_back(std::move(section));
 
     }
 
@@ -266,12 +271,14 @@ QVector<QByteArray> ObjDumper::parseSectionLine(QStringRef line){
 
     // Get Address
     QByteArray address;
+    address.reserve(5);
     int pos = 1;
     while (pos < line.length() && line.at(pos) != QChar(' ')){
-        address.append(line.at(pos));
+        address.append(line.at(pos).toLatin1());
         pos++;
     }
-    row[0] = address;
+
+    row[0] = std::move(address);
 
     pos++;
 
@@ -280,18 +287,12 @@ QVector<QByteArray> ObjDumper::parseSectionLine(QStringRef line){
 
     // Add space between each byte(default is space between 4 byte words)
     for (int i = 2; i < hexStr.length(); i+=3){
-        if (hexStr.at(i) != QChar(' ')){
+        if (hexStr.at(i) != ' '){
             hexStr.insert(i, ' ');
         }
     }
 
-    row[1] = hexStr;
-
-    // Ignore ascii
-
-    // Remove extra space from byte array
-    row[0].squeeze();
-    row[1].squeeze();
+    row[1] = std::move(hexStr);
 
     return row;
 }
