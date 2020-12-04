@@ -169,17 +169,30 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QByteArray line){
     return row;
 }
 
-QByteArray ObjDumper::parseAddress(QByteArray address){
-    address = address.trimmed();
-    QRegularExpressionMatch addressMatch = addressRegex.match(address);
+static inline bool ishex(char c) {
+    return isdigit(c) || (c >= 97 && c <= 102);
+}
 
-    if (addressMatch.hasMatch() && addressMatch.capturedLength(0) == address.length()){
-        address = "0x" + address;
+QByteArray ObjDumper::parseAddress(const QByteArray& address){
 
-        return address;
-    } else {
-        return "";
+    int i = 0;
+    for (; i < address.length(); ++i) {
+        if (!isspace(address.at(i)) ) {
+            break;
+        }
     }
+
+    QByteArray ret = QByteArrayLiteral("0x");
+    ret.reserve(2 + 6);
+    int start = i;
+    while (i < address.length() && ishex(address.at(i))) {
+        ret.append(address.at(i));
+        i++;
+    }
+
+    if (start == i)
+        return QByteArrayLiteral("");
+    return ret;
 }
 
 QByteArray ObjDumper::parseHexBytes(QByteArray byteString){
