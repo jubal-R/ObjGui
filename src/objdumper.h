@@ -19,7 +19,7 @@ public:
     QString getFileFormat(QString file);
     QVector<QString> getBaseOffset(QString file);
     QString checkForErrors(QString file);
-    static QVector<QString> getFileOffset(QString targetAddress, QVector<QString> baseOffsets);
+    static QVector<QString> getFileOffset(QString targetAddress, const QVector<QString>& baseOffsets);
 
     void setUseCustomBinary(bool useCustom);
     void setobjdumpBinary(QString binary);

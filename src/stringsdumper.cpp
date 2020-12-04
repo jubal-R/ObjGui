@@ -3,8 +3,6 @@
 #include "QFile"
 #include "QVector"
 
-#include <QDataStream>
-
 // Extract strings from file along with their file offset and vma
 QVector< QVector<QString> > StringsDumper::dumpStrings(QString filename, const QVector<QString> &baseOffsets){
     QVector< QVector<QString> > stringsData;
@@ -12,7 +10,7 @@ QVector< QVector<QString> > StringsDumper::dumpStrings(QString filename, const Q
     if(!file.open(QIODevice::ReadOnly))
         return stringsData;
 
-//    // Seek to start of first section
+    // Seek to start of first section
     bool ok;
     qint64 startPos = baseOffsets[1].toLongLong(&ok, 16);
     if (!ok)

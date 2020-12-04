@@ -24,10 +24,10 @@ ObjDumper::ObjDumper()
 QByteArray ObjDumper::getDump(QStringList argsList){
     QString objdumpStr;
 
-    if (useCustomBinary && objdumpBinary != "")
+    if (useCustomBinary && !objdumpBinary.isEmpty())
         objdumpStr = objdumpBinary;
     else
-        objdumpStr = "objdump";
+        objdumpStr = QStringLiteral("objdump");
 
     QProcess *process = new QProcess(0);
     process->start(objdumpStr, argsList);
@@ -39,6 +39,7 @@ QByteArray ObjDumper::getDump(QStringList argsList){
         return "";
 
     QByteArray output;
+    output.reserve(process->bytesAvailable());
     output.append(process->readAllStandardError());
     output.append(process->readAllStandardOutput());
 
@@ -447,7 +448,7 @@ QVector<QString> ObjDumper::getBaseOffset(QString file){
 }
 
 // Get file offset of virtual memory address as vecotor [hex value, decimal value]
-QVector<QString> ObjDumper::getFileOffset(QString targetAddress, QVector<QString> baseOffsets){
+QVector<QString> ObjDumper::getFileOffset(QString targetAddress, const QVector<QString> &baseOffsets){
     QVector<QString> fileOffset(2);
     fileOffset[0] = "";
     fileOffset[1] = "";
@@ -461,7 +462,7 @@ QVector<QString> ObjDumper::getFileOffset(QString targetAddress, QVector<QString
     if (targetAddrOk && baseAddrOk && baseOffsetOk){
         if (targetAddr >= baseAddr){
             qlonglong targetOffset = (targetAddr - baseAddr) + baseOffset;
-            fileOffset[0] = "0x" + QString::number(targetOffset, 16);
+            fileOffset[0] = QStringLiteral("0x") + QString::number(targetOffset, 16);
             fileOffset[1] = QString::number(targetOffset);
         }
     }
@@ -474,7 +475,7 @@ QByteArray ObjDumper::removeHeading(QByteArray dump, int numLines){
     int i = 0;
     int newlineCount = 0;
     while (i < dump.length() && newlineCount < numLines){
-        if (dump.at(i) == QChar('\n'))
+        if (dump.at(i) == '\n')
             newlineCount++;
         i++;
     }
