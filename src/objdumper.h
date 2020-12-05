@@ -37,7 +37,7 @@ private:
     QByteArray parseAddress(const QByteArray& address);
     QByteArray parseHexBytes(const QByteArray& byteString);
     QString parseDumpForErrors(QString dump);
-    QVector<QByteArray> parseFunctionLine(QByteArray line);
+    QVector<QByteArray> parseFunctionLine(const QByteArray& line, int posInDump, int lineSize);
     QVector<QByteArray> parseSectionLine(QStringRef line);
 
     bool useCustomBinary;

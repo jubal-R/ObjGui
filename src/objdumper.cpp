@@ -83,17 +83,17 @@ QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> base
             i = endlinePos;
 
             // Parse function contents
-            QByteArray contents = dump.mid(i, idx - i);
-            QList<QByteArray> lines = contents.split('\n');
 
-            for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
-                QByteArray line = lines.at(lineNum);
-                QVector<QByteArray> row = parseFunctionLine(line);
-
-                if (!row[0].isEmpty()){
+            //we have to move forward, going through all the \n till we reach idx
+            int npos = dump.indexOf('\n', i);
+            int nprev = i;
+            while (npos < idx) {
+                auto row = parseFunctionLine(dump, nprev, npos - nprev);
+                if (!row.at(0).isEmpty()){
                     functionMatrix.append(std::move(row));
                 }
-
+                nprev = npos + 1;
+                npos = dump.indexOf('\n', nprev);
             }
 
             // Add to functionList
@@ -111,15 +111,17 @@ QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> base
     return functionList;
 }
 
-QVector<QByteArray> ObjDumper::parseFunctionLine(QByteArray line){
+QVector<QByteArray> ObjDumper::parseFunctionLine(const QByteArray &line, int posInDump, int lineSize)
+{
     QVector<QByteArray> row(5);
-    if (line.length() > insnwidth * 3) {
-        int pos = 0;
+    if (lineSize > insnwidth * 3) {
+        int pos = posInDump;
+        int size = pos + lineSize;
 
         // Get address
         QByteArray address;
         address.reserve(8);
-        while (pos < line.length() && line.at(pos) != QChar(':')){
+        while (pos < size && line.at(pos) != QChar(':')){
             address.append(line.at(pos));
             pos++;
         }
@@ -129,7 +131,7 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QByteArray line){
         row[0] = parseAddress(address);
 
         // Skip whitespace
-        while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
+        while (pos < size && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
             pos++;
         }
 
@@ -140,14 +142,14 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QByteArray line){
         pos += insnwidth * 3;
 
         // Skip whitespace
-        while (pos < line.length() && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
+        while (pos < size && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
             pos++;
         }
 
         // Get optcode
         QByteArray opt;
         opt.reserve(4);
-        while (pos < line.length() && line.at(pos) != QChar(' ')){
+        while (pos < size && line.at(pos) != QChar(' ')){
             opt.append(line.at(pos));
             pos++;
         }
@@ -155,12 +157,14 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QByteArray line){
 
         row[2] = std::move(opt);
 
-        while (pos < line.length() && line.at(pos) == QChar(' ')){
+        while (pos < size && line.at(pos) == QChar(' ')){
             pos++;
         }
 
         // Get args
-        row[3] = line.mid(pos);
+        auto len = size - pos;
+        len = len == -1 ? 0 : len;
+        row[3] = line.mid(pos, len);
 
         // empty by default, used for xref data
         row[4] = "";
