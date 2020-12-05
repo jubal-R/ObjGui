@@ -49,19 +49,19 @@ void DisassemblyCore::xrefStrings(){
         int functionLen = itr->getMatrixLen();
 
         for (int lineNum = 0; lineNum < functionLen; lineNum++){
-            const QByteArray optStr = itr->getLine(lineNum)[3];
+            const QByteArray optStr = itr->getOptStr(lineNum);
 
             QString address = extractAddress(optStr);
 
             if (!address.isEmpty()){
-                int strIndex = strings.getIndexByAddress(address);
+                int strIndex = strings.getIndexByAddress(std::move(address));
 
                 if (strIndex > 0){
                     QString str = strings.getStringAt(strIndex);
 //                    qDebug() << str;
 
                     if(!str.isEmpty()){
-                        itr->setXrefData(lineNum, str);
+                        itr->setXrefData(lineNum, std::move(str));
                     }
                 }
             }

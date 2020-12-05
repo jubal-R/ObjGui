@@ -27,7 +27,7 @@ Function::Function(QString functionName, QString addr, QString sect, QString off
 }
 
 void Function::setXrefData(int index, QString xrefData){
-    functionMatrix[index][4] = "\"" + xrefData.toLatin1() + "\"";
+    functionMatrix[index][4] = QByteArrayLiteral("\"") + xrefData.toLatin1() + QByteArrayLiteral("\"");
 }
 
 // Return the line(row) from the matrix at given index/line number
@@ -37,6 +37,14 @@ std::array<QByteArray, 5> Function::getLine(int line){
     else {
         std::array<QByteArray, 5> empty;
         return empty;
+    }
+}
+
+QByteArray Function::getOptStr(int line) {
+    if (line >= 0 && line < matrixLen)
+        return functionMatrix.at(line).at(3);
+    else {
+        return {};
     }
 }
 

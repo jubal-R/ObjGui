@@ -18,6 +18,7 @@ public:
     QString getFileOffset();
     QString getAddressAt(int index);
     std::array<QByteArray, 5> getLine(int line);
+    QByteArray getOptStr(int line);
     QByteArray getContents();
 private:
     QString name;

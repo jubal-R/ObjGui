@@ -26,7 +26,7 @@ int Strings::getIndexByAddress(QString targetAddress){
         int currentIndex = upperLimit / 2;
 
         while (lowerLimit < upperLimit && currentIndex != 0){
-            QString currentAddress = stringsMatrix[currentIndex][0];
+            const QString& currentAddress = stringsMatrix.at(currentIndex).at(0);
 
             if (currentAddress == targetAddress){
                 return currentIndex;
@@ -40,9 +40,9 @@ int Strings::getIndexByAddress(QString targetAddress){
 
         }
         // Final checks
-        if (stringsMatrix[currentIndex][0] == targetAddress){
+        if (stringsMatrix.at(currentIndex).at(0) == targetAddress){
             return currentIndex;
-        } else if (matrixLen > 1 && stringsMatrix[1][0] == targetAddress){
+        } else if (matrixLen > 1 && stringsMatrix.at(1).at(0) == targetAddress){
             return 1;
         }
     }
@@ -63,7 +63,7 @@ QString Strings::getStringAt(int index){
         QString str = stringsMatrix[index][1].replace('\n', "\\n");
         return str;
     } else {
-        return "";
+        return QLatin1String("");
     }
 }
 
