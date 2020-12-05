@@ -119,16 +119,15 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(const QByteArray &line, int pos
         int size = pos + lineSize;
 
         // Get address
-        QByteArray address;
-        address.reserve(8);
+        int addressStart = pos;
         while (pos < size && line.at(pos) != QChar(':')){
-            address.append(line.at(pos));
             pos++;
         }
 
+        row[0] = parseAddress(line, addressStart, pos - addressStart);
+
         pos++;
 
-        row[0] = parseAddress(address);
 
         // Skip whitespace
         while (pos < size && (line.at(pos) == QChar(' ') || line.at(pos) == QChar('\t') )){
@@ -136,8 +135,7 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(const QByteArray &line, int pos
         }
 
         // Get hex
-        QByteArray hexBytes = line.mid(pos, insnwidth * 3);
-        row[1] = parseHexBytes(hexBytes);
+        row[1] = parseHexBytes(line, pos, insnwidth * 3);
 
         pos += insnwidth * 3;
 
@@ -183,10 +181,10 @@ static inline bool ishex(char c) {
     return isdigit(c) || (c >= 97 && c <= 102);
 }
 
-QByteArray ObjDumper::parseAddress(const QByteArray& address){
+QByteArray ObjDumper::parseAddress(const QByteArray& address, int pos, int size){
 
-    int i = 0;
-    for (; i < address.length(); ++i) {
+    int i = pos;
+    for (; i < (pos + size); ++i) {
         if (!isspace(address.at(i)) ) {
             break;
         }
@@ -195,7 +193,7 @@ QByteArray ObjDumper::parseAddress(const QByteArray& address){
     QByteArray ret = QByteArrayLiteral("0x");
     ret.reserve(2 + 6);
     int start = i;
-    while (i < address.length() && ishex(address.at(i))) {
+    while (i < (pos + size) && ishex(address.at(i))) {
         ret.append(address.at(i));
         i++;
     }
@@ -205,27 +203,26 @@ QByteArray ObjDumper::parseAddress(const QByteArray& address){
     return ret;
 }
 
-QByteArray ObjDumper::parseHexBytes(const QByteArray &byteString){
-    QByteArray ret;
-    ret.reserve(byteString.size());
-    for (int i = 0; i < byteString.length(); ++i) {
-        if (byteString.at(i) == ' ')
-            continue;
-        char c = byteString.at(i);
-        if (isdigit(c) || (c >= 97 && c <= 102)) {
-            ret.append(c);
-            continue;
-        } else {
-            return QByteArrayLiteral("");
+QByteArray ObjDumper::parseHexBytes(const QByteArray& byteString, int pos, int size) {
+    QByteArray r1;
+    //"e8 3c ed 03 00                "
+    r1.reserve(size - insnwidth);
+    for (int i = pos; i < (pos + size); i += 3) {
+        char hi = byteString.at(i);
+        char lo = byteString.at(i + 1);
+        if (ishex(hi) && ishex(lo)) {
+            r1.append(hi);
+            r1.append(lo);
+        } else if (isspace(hi)) {
+            break;
         }
+        //space skipped
     }
-    //insert padding
-    int paddingLength = (insnwidth * 2) - ret.length();
-    QByteArray padding;
-    padding.reserve(paddingLength);
-    padding.fill(' ', paddingLength);
-    ret.append(std::move(padding));
-    return ret;
+    //add padding
+    int paddingLength = (insnwidth * 2) - r1.length();
+    r1.append(paddingLength, ' ');
+
+    return r1;
 }
 
 // Parses result of all contents(objdump -s) and populates section list
