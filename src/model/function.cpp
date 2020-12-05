@@ -16,7 +16,7 @@ Function::Function(){
     matrixLen = 0;
 }
 
-Function::Function(QString functionName, QString addr, QString sect, QString offset, QVector< QVector<QByteArray> > contents)
+Function::Function(QString functionName, QString addr, QString sect, QString offset, QVector< std::array<QByteArray, 5> > contents)
 {
     name = functionName;
     address = addr;
@@ -31,11 +31,11 @@ void Function::setXrefData(int index, QString xrefData){
 }
 
 // Return the line(row) from the matrix at given index/line number
-QVector<QByteArray> Function::getLine(int line){
+std::array<QByteArray, 5> Function::getLine(int line){
     if (line >= 0 && line < matrixLen)
         return functionMatrix.at(line);
     else {
-        QVector<QByteArray> empty;
+        std::array<QByteArray, 5> empty;
         return empty;
     }
 }
@@ -44,7 +44,7 @@ QVector<QByteArray> Function::getLine(int line){
 QByteArray Function::getContents(){
     QByteArray contents;
     for (int i = 0; i < matrixLen; i++){
-        QVector<QByteArray> line = getLine(i);
+        std::array<QByteArray, 5> line = getLine(i);
         contents.append(line[0] + "  ");
         contents.append(line[1] + " ");
         contents.append(line[2] + " ");

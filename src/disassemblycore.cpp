@@ -298,7 +298,7 @@ QVector< QVector<QString> > DisassemblyCore::findCallsToFunction(QString targetF
             // Search function
             int matrixLen = function.getMatrixLen();
             for (int i = 0; i < matrixLen; i++){
-                QVector<QByteArray> line = function.getLine(i);
+                std::array<QByteArray, 5> line = function.getLine(i);
                 // Check for call to target function
                 if (line[2] == "call" && QString::fromLocal8Bit(line[3]).contains(targetFunction)){
                     QVector<QString> result(2);
@@ -327,7 +327,7 @@ QVector< QVector<QString> > DisassemblyCore::findReferences(QString target){
             // Search function
             int matrixLen = function.getMatrixLen();
             for (int i = 0; i < matrixLen; i++){
-                QVector<QByteArray> line = function.getLine(i);
+                std::array<QByteArray, 5> line = function.getLine(i);
                 // Check for call to target function
                 if (QString::fromLocal8Bit(line[3]).contains(target)){
                     QVector<QString> result(2);

@@ -68,7 +68,7 @@ QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> base
             int i = prev;
             QString address;
             QString fileOffest;
-            QVector< QVector<QByteArray> > functionMatrix;
+            QVector< std::array<QByteArray, 5> > functionMatrix;
 
             // Get function address
             address = std::move(tmp);
@@ -111,9 +111,9 @@ QVector<Function> ObjDumper::getFunctionData(QString file, QVector<QString> base
     return functionList;
 }
 
-QVector<QByteArray> ObjDumper::parseFunctionLine(const QByteArray &line, int posInDump, int lineSize)
+std::array<QByteArray, 5> ObjDumper::parseFunctionLine(const QByteArray &line, int posInDump, int lineSize)
 {
-    QVector<QByteArray> row(5);
+    std::array<QByteArray, 5> row;
     if (lineSize > insnwidth * 3) {
         int pos = posInDump;
         int size = pos + lineSize;

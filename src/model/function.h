@@ -8,7 +8,7 @@ class Function
 {
 public:
     Function();
-    Function(QString functionName, QString addr, QString section, QString offset, QVector< QVector<QByteArray> > contents);
+    Function(QString functionName, QString addr, QString section, QString offset, QVector< std::array<QByteArray, 5> > contents);
     int getMatrixLen();
     bool isEmpty();
     void setXrefData(int index, QString xrefData);
@@ -17,14 +17,14 @@ public:
     QString getSection();
     QString getFileOffset();
     QString getAddressAt(int index);
-    QVector<QByteArray> getLine(int line);
+    std::array<QByteArray, 5> getLine(int line);
     QByteArray getContents();
 private:
     QString name;
     QString address;
     QString section;
     QString fileOffset;
-    QVector< QVector<QByteArray> > functionMatrix;
+    QVector< std::array<QByteArray, 5> > functionMatrix;
     int matrixLen;
 
 };
