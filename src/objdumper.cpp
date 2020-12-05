@@ -235,7 +235,7 @@ QVector<Section> ObjDumper::getSectionData(QString file){
     // Parse contents list
     for (int listIndex = 0; listIndex < contentsList.length(); listIndex++){
         QString sectionName;
-        QVector< QVector<QByteArray> > sectionMatrix;
+        QVector< std::array<QByteArray, 2> > sectionMatrix;
 
         QStringRef contentsStr = contentsList.at(listIndex);
 
@@ -254,7 +254,7 @@ QVector<Section> ObjDumper::getSectionData(QString file){
         // Parse each line and add data to lists
         for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
             QStringRef line = lines.at(lineNum);
-            QVector<QByteArray> row = parseSectionLine(line);
+            std::array<QByteArray, 2> row = parseSectionLine(line);
 
             sectionMatrix.append(std::move(row));
         }
@@ -268,8 +268,8 @@ QVector<Section> ObjDumper::getSectionData(QString file){
     return sectionList;
 }
 
-QVector<QByteArray> ObjDumper::parseSectionLine(QStringRef line){
-    QVector<QByteArray> row(2);
+std::array<QByteArray, 2> ObjDumper::parseSectionLine(QStringRef line){
+    std::array<QByteArray, 2> row;
 
     // Get Address
     QByteArray address;

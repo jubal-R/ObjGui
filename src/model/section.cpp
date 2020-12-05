@@ -15,7 +15,7 @@ Section::Section()
 
 }
 
-Section::Section(QString section, QVector< QVector<QByteArray> > contents){
+Section::Section(QString section, QVector< std::array<QByteArray, 2> > contents){
     sectionName = section;
     sectionMatrix = contents;
     matrixLen = sectionMatrix.length();
@@ -26,16 +26,15 @@ QString Section::getAddressAt(int index){
     if (index >= 0 && index < matrixLen)
         return sectionMatrix.at(index)[0];
     else
-        return "";
+        return QLatin1String("");
 }
 
 // Return the line(row) from the matrix at the given index/line number
-QVector<QByteArray> Section::getLine(int line){
+std::array<QByteArray, 2> Section::getLine(int line){
     if (line > 0 && line < matrixLen)
         return sectionMatrix.at(line);
     else {
-        QVector<QByteArray> empty;
-        return empty;
+        return {};
     }
 }
 

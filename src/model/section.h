@@ -8,17 +8,17 @@ class Section
 {
 public:
     Section();
-    Section(QString section, QVector< QVector<QByteArray> > contents);
+    Section(QString section, QVector< std::array<QByteArray, 2> > contents);
     QString getSectionName();
     QString getAddressAt(int index);
     int getMatrixLen();
-    QVector<QByteArray> getLine(int line);
+    std::array<QByteArray, 2> getLine(int line);
     QByteArray getHexString();
     QByteArray getAddressString();
 
 private:
     QString sectionName;
-    QVector< QVector<QByteArray> > sectionMatrix;
+    QVector< std::array<QByteArray, 2> > sectionMatrix;
     int matrixLen;
 };
 
