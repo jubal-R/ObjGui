@@ -9,15 +9,15 @@ ObjDumper::ObjDumper()
 {
     // Set default options
     useCustomBinary = false;
-    objdumpBinary = "objdump";
-    outputSyntax = "intel";
-    disassemblyFlag = "-d";
-    demangleFlag = "";
-    target = "";
+    objdumpBinary = QStringLiteral("objdump");
+    outputSyntax = QStringLiteral("intel");
+    disassemblyFlag = QStringLiteral("-d");
+    demangleFlag = QLatin1String("");
+    target = QLatin1String("");
     insnwidth = 10;
 
-    addressRegex.setPattern("[0-9a-f]+");
-    hexBytesRegex.setPattern("[0-9a-f ]+");
+    addressRegex.setPattern(QStringLiteral("[0-9a-f]+"));
+    hexBytesRegex.setPattern(QStringLiteral("[0-9a-f ]+"));
 }
 
 // Runs objdump given arguments and returns outout
@@ -165,7 +165,7 @@ std::array<QByteArray, 5> ObjDumper::parseFunctionLine(const QByteArray &line, i
         row[3] = line.mid(pos, len);
 
         // empty by default, used for xref data
-        row[4] = "";
+        row[4] = QByteArrayLiteral("");
     } else {
         row[0] = "";
         row[1] = "";
