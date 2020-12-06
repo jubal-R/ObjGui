@@ -228,55 +228,53 @@ QByteArray ObjDumper::parseHexBytes(const QByteArray& byteString, int pos, int s
 // Parses result of all contents(objdump -s) and populates section list
 QVector<Section> ObjDumper::getSectionData(QString file){
     QVector<Section> sectionList;
-    QString contents = getContents(file);
 
-    QVector<QStringRef> contentsList = contents.splitRef("Contents of section ");
+    const QByteArray contents = getContents(file);
+    int sectionPos = contents.indexOf("Contents of section ");
+    int prevSection = 0;
+    while (sectionPos != -1) {
+        int i = sectionPos + 20;
+        int colonPos = contents.indexOf(':', i);
+        QString sectionName = contents.mid(i, colonPos - i);
 
-    // Parse contents list
-    for (int listIndex = 0; listIndex < contentsList.length(); listIndex++){
-        QString sectionName;
         QVector< std::array<QByteArray, 2> > sectionMatrix;
 
-        QStringRef contentsStr = contentsList.at(listIndex);
-
-        // Get section name
-        int i = 0;
-        while (i < contentsStr.length()-1 && contentsStr.at(i) != QChar(':')){
-            sectionName.append(contentsStr.at(i));
-            i++;
-        }
-
-        QStringRef sectionContents = contentsStr.mid(i+2);
-
-        // Split content into lines
-        QVector<QStringRef> lines = sectionContents.split("\n");
-
-        // Parse each line and add data to lists
-        for (int lineNum = 0; lineNum < lines.length()-1; lineNum++){
-            QStringRef line = lines.at(lineNum);
-            std::array<QByteArray, 2> row = parseSectionLine(line);
-
-            sectionMatrix.append(std::move(row));
+        i = colonPos + 2;
+        //move forward iterating over each line '\n'
+        int npos = contents.indexOf('\n', i);
+        int prevN = i;
+        int nextSectionPos = contents.indexOf("Contents of section ", sectionPos + 20);
+        nextSectionPos = nextSectionPos == -1 ? contents.length() : nextSectionPos;
+        while (npos < nextSectionPos && npos != -1) {
+            auto row = parseSectionLine(contents, prevN, npos - prevN);
+            if (!row.at(0).isEmpty()){
+                sectionMatrix.append(std::move(row));
+            }
+            prevN = npos + 1;
+            npos = contents.indexOf('\n', prevN);
         }
 
         // Insert new section
         Section section(std::move(sectionName), std::move(sectionMatrix));
         sectionList.push_back(std::move(section));
 
+        prevSection = sectionPos + 21;
+        sectionPos = contents.indexOf("Contents of section ", prevSection);
     }
-
     return sectionList;
 }
 
-std::array<QByteArray, 2> ObjDumper::parseSectionLine(QStringRef line){
+std::array<QByteArray, 2> ObjDumper::parseSectionLine(const QByteArray &line, int posInLine, int lineSize)
+{
     std::array<QByteArray, 2> row;
 
     // Get Address
     QByteArray address;
-    address.reserve(5);
-    int pos = 1;
-    while (pos < line.length() && line.at(pos) != QChar(' ')){
-        address.append(line.at(pos).toLatin1());
+    address.reserve(6);
+    int pos = posInLine + 1;
+    int len = posInLine + lineSize;
+    while (pos < len && line.at(pos) != QChar(' ')){
+        address.append(line.at(pos));
         pos++;
     }
 
@@ -284,15 +282,28 @@ std::array<QByteArray, 2> ObjDumper::parseSectionLine(QStringRef line){
 
     pos++;
 
-    // Next 35 chars are hex followed by 2 spaces
-    QByteArray hexStr = line.mid(pos, 35).toLocal8Bit();
+    char hexCStr[48];
+    int j = 0;
+    for (int i = pos; i < pos + 35; i+=8) {
+        hexCStr[j++] = line[i];
+        hexCStr[j++] = line[i + 1];
+        hexCStr[j++] = ' ';
 
-    // Add space between each byte(default is space between 4 byte words)
-    for (int i = 2; i < hexStr.length(); i+=3){
-        if (hexStr.at(i) != ' '){
-            hexStr.insert(i, ' ');
-        }
+        hexCStr[j++] = line[i + 2];
+        hexCStr[j++] = line[i + 3];
+        hexCStr[j++] = ' ';
+
+        hexCStr[j++] = line[i + 4];
+        hexCStr[j++] = line[i + 5];
+        hexCStr[j++] = ' ';
+
+        hexCStr[j++] = line[i + 6];
+        hexCStr[j++] = line[i + 7];
+        hexCStr[j++] = ' ';
+        i++;
     }
+
+    QByteArray hexStr(hexCStr, 47);
 
     row[1] = std::move(hexStr);
 
@@ -360,7 +371,7 @@ QString ObjDumper::getRelocationEntries(QString file){
 }
 
 // Get all contents(hexdump of sections): objdump -s
-QString ObjDumper::getContents(QString file){
+QByteArray ObjDumper::getContents(QString file){
     QStringList argsList;
     if (!target.isEmpty())
         argsList << target;

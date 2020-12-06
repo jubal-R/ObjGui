@@ -31,14 +31,14 @@ public:
 private:
     QByteArray getDump(QStringList argsList);
     QByteArray getDisassembly(QString file);
-    QString getContents(QString file);
+    QByteArray getContents(QString file);
     QByteArray removeHeading(QByteArray dump, int numLines);
     QString getHeading(QString dump, int numLines);
     QByteArray parseAddress(const QByteArray& address, int pos, int size);
     QByteArray parseHexBytes(const QByteArray& byteString, int pos, int size);
     QString parseDumpForErrors(QString dump);
     std::array<QByteArray, 5> parseFunctionLine(const QByteArray& line, int posInDump, int lineSize);
-    std::array<QByteArray, 2> parseSectionLine(QStringRef line);
+    std::array<QByteArray, 2> parseSectionLine(const QByteArray& line, int posInLine, int lineSize);
 
     bool useCustomBinary;
     QString objdumpBinary;
