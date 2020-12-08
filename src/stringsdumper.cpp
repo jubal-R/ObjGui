@@ -3,6 +3,8 @@
 #include "QFile"
 #include "QVector"
 
+#include <QDebug>
+
 // Extract strings from file along with their file offset and vma
 QVector< QVector<QString> > StringsDumper::dumpStrings(QString filename, const QVector<QString> &baseOffsets){
     QVector< QVector<QString> > stringsData;
@@ -11,7 +13,8 @@ QVector< QVector<QString> > StringsDumper::dumpStrings(QString filename, const Q
         return stringsData;
 
     // Seek to start of first section
-    bool ok;
+    bool ok{};
+    const qint64 startAddr = baseOffsets[0].toLongLong(&ok, 16);
     qint64 startPos = baseOffsets[1].toLongLong(&ok, 16);
     if (!ok)
         startPos = 0;
@@ -39,7 +42,7 @@ QVector< QVector<QString> > StringsDumper::dumpStrings(QString filename, const Q
 
         if(str.length() >= 4){
             QVector<QString> stringData(2);
-            stringData[0] = QStringLiteral("0x") + getAddressFromOffset(QString::number(pos - 1, 16), baseOffsets);
+            stringData[0] = QStringLiteral("0x") + getAddressFromOffset(pos - 1, startAddr, startPos);
             stringData[1] = str;
 
             stringsData.append(stringData);
@@ -50,22 +53,13 @@ QVector< QVector<QString> > StringsDumper::dumpStrings(QString filename, const Q
 }
 
 // Return virtual memory address of file offset given base offsets
-QString StringsDumper::getAddressFromOffset(QString offset, const QVector<QString> &baseOffsets){
-    QString address;
-    bool targetOffsetOk;
-    bool baseAddrOk;
-    bool baseOffsetOk;
-    qlonglong targetOffset = offset.toLongLong(&targetOffsetOk, 16);
-    qlonglong baseAddr = baseOffsets[0].toLongLong(&baseAddrOk, 16);
-    qlonglong baseOffset = baseOffsets[1].toLongLong(&baseOffsetOk, 16);
+QString StringsDumper::getAddressFromOffset(qint64 offset, qint64 baseAddr, qint64 baseOffset){
 
-    if(targetOffsetOk && baseAddrOk && baseOffsetOk){
-        qlonglong offsetFromBase = targetOffset - baseOffset;
-        if(offsetFromBase >= 0){
-            qlonglong targetAddress = baseAddr + offsetFromBase;
-            address = QString::number(targetAddress, 16);
-        }
+    qlonglong offsetFromBase = offset - baseOffset;
+    if (offsetFromBase >= 0) {
+        qlonglong targetAddress = baseAddr + offsetFromBase;
+        return QString::number(targetAddress, 16);
     }
 
-    return address;
+    return QString();
 }
