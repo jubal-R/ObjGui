@@ -330,6 +330,15 @@ void MainWindow::displayFunctionData(){
         // Populate function list in sidebar
         ui->functionList->addItems(disassemblyCore.getFunctionNames());
 
+        //List the number of functions ObjGui picked up
+        int num = 0;
+    	for(const auto& i : disassemblyCore.getFunctionNames()) {
+    		num = num + 1;
+    	}
+    	std::string s = ("Functions ["+std::to_string(num)+"]");
+    	QString arg = QString::fromLocal8Bit(s.c_str());
+    	ui->functionListLabel->setText(arg);
+        
         // Display main function by default if it exists
         if (disassemblyCore.functionExists("main"))
             displayFunctionText("main");
