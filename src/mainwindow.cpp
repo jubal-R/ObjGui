@@ -196,9 +196,32 @@ void MainWindow::loadBinary(QString file){
                 ui->codeBrowser->setPlainText("File format not recognized.");
                 ui->addressLabel->setText("");
                 ui->functionLabel->setText("");
+		int num1 = 0;
+	   	std::string s1 = ("Instruction count: "+std::to_string(num1));
+	    	QString arg1 = QString::fromLocal8Bit(s1.c_str());
+	    	ui->fileInstructionCountlabel->setText(arg1);
             } else {
                 // If all good, display disassembly data
                 displayFunctionData();
+		
+		//Display number of instructions detected
+		int num1 = 0;
+		for(const auto& i : disassemblyCore.getFunctionNames()) {
+			Function func = disassemblyCore.getFunction(i);
+			QByteArray functionData = func.getContents();
+			QByteArray::iterator iteratorByte;
+			int count = 0;
+			for (iteratorByte = functionData.begin(); iteratorByte != functionData.end() ; iteratorByte++ ) {
+				QByteArray test1Byte(1,0);
+				test1Byte[0] = functionData.at(count++);
+				if(test1Byte.toHex() == "0a") {
+					num1 = num1 + 1;
+				}
+			}
+		}
+	   	std::string s1 = ("Instruction count: "+std::to_string(num1));
+	    	QString arg1 = QString::fromLocal8Bit(s1.c_str());
+	    	ui->fileInstructionCountlabel->setText(arg1);
 
                 // Add initial location to history
                 addToHistory(currentFunctionIndex, 0);
@@ -215,6 +238,7 @@ void MainWindow::loadBinary(QString file){
             setUpdatesEnabled(false);
 
             ui->fileFormatlabel->setText(disassemblyCore.getFileFormat(file));
+
             ui->symbolsBrowser->setPlainText(disassemblyCore.getSymbolsTable(file));
             ui->relocationsBrowser->setPlainText(disassemblyCore.getRelocationEntries(file));
             ui->headersBrowser->setPlainText(disassemblyCore.getHeaders(file));
@@ -323,22 +347,20 @@ void MainWindow::displayFunctionText(int functionIndex){
         }
     }
 }
-
 // Setup functionlist and display function data
 void MainWindow::displayFunctionData(){
     if (disassemblyCore.disassemblyIsLoaded()){
         // Populate function list in sidebar
         ui->functionList->addItems(disassemblyCore.getFunctionNames());
 
-        //List the number of functions ObjGui picked up
-        int num = 0;
-    	for(const auto& i : disassemblyCore.getFunctionNames()) {
-    		num = num + 1;
-    	}
-    	std::string s = ("Functions ["+std::to_string(num)+"]");
-    	QString arg = QString::fromLocal8Bit(s.c_str());
-    	ui->functionListLabel->setText(arg);
-        
+	int num = 0;
+	for(const auto& i : disassemblyCore.getFunctionNames()) {
+		num = num + 1;
+	}
+	std::string s = ("Functions ["+std::to_string(num)+"]");
+	QString arg = QString::fromLocal8Bit(s.c_str());
+	ui->functionListLabel->setText(arg);
+
         // Display main function by default if it exists
         if (disassemblyCore.functionExists("main"))
             displayFunctionText("main");
@@ -1220,4 +1242,3 @@ void MainWindow::on_actionFullscreen_triggered()
             MainWindow::showFullScreen();
         }
 }
-
