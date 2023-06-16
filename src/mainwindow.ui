@@ -94,6 +94,28 @@ font-size: 11pt;</string>
          </property>
         </widget>
        </item>
+	<item>
+        <widget class="QLabel" name="fileInstructionCountlabel">
+         <property name="font">
+          <font/>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeft|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="indent">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QLabel" name="fileFormatlabel">
          <property name="font">
