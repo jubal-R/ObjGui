@@ -206,19 +206,21 @@ void MainWindow::loadBinary(QString file){
 		
 		//Display number of instructions detected
 		int num1 = 0;
-		for(const auto& i : disassemblyCore.getFunctionNames()) {
-			Function func = disassemblyCore.getFunction(i);
-			QByteArray functionData = func.getContents();
-			QByteArray::iterator iteratorByte;
-			int count = 0;
-			for (iteratorByte = functionData.begin(); iteratorByte != functionData.end() ; iteratorByte++ ) {
-				QByteArray test1Byte(1,0);
-				test1Byte[0] = functionData.at(count++);
-				if(test1Byte.toHex() == "0a") {
-					num1 = num1 + 1;
-				}
-			}
+		ObjDumper dmp;
+		QStringList arg;
+		arg << "-d" << file;
+		QProcess *proc = new QProcess();
+		proc->start(ui->customBinaryLineEdit->text(), arg);
+		proc->waitForFinished();
+		QString result=proc->readAllStandardOutput();
+		QRegularExpression re("[0-9a-fA-F]+:\t");
+		QRegularExpressionMatchIterator i = re.globalMatch(result);
+		while(i.hasNext()) {
+			QRegularExpressionMatch match = i.next();
+			(void)match; //Suppress -Wunused-parameter
+			num1=num1+1;
 		}
+		//stops here
 	   	std::string s1 = ("Instruction count: "+std::to_string(num1));
 	    	QString arg1 = QString::fromLocal8Bit(s1.c_str());
 	    	ui->fileInstructionCountlabel->setText(arg1);
@@ -355,6 +357,7 @@ void MainWindow::displayFunctionData(){
 
 	int num = 0;
 	for(const auto& i : disassemblyCore.getFunctionNames()) {
+		(void)i; //Suppress -Wunused-parameter
 		num = num + 1;
 	}
 	std::string s = ("Functions ["+std::to_string(num)+"]");
@@ -1086,6 +1089,8 @@ void MainWindow::setMenuStyle(QString foregroundColor, QString backgroundColor, 
 }
 
 void MainWindow::setNavbarStyle(QString foregroundColor, QString backgroundColor){
+    (void)foregroundColor; //Suppress -Wunused-parameter
+
     QString navBarStyle = "#navBar {background-color: " + backgroundColor + "; border-bottom: 1px solid #d4d4d4;}";
     ui->navBar->setStyleSheet(navBarStyle);
 
