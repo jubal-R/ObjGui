@@ -6,11 +6,14 @@
 #include "QInputDialog"
 #include "QProgressDialog"
 #include "QFuture"
+#include "QFile"
+#include "QTextStream"
 #include "QtConcurrent/QtConcurrent"
 
 #include "QDebug"
 
 #include "resultsdialog.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -206,7 +209,6 @@ void MainWindow::loadBinary(QString file){
 		
 		//Display number of instructions detected
 		int num1 = 0;
-		ObjDumper dmp;
 		QStringList arg;
 		arg << "-d" << file;
 		QProcess *proc = new QProcess();
@@ -274,6 +276,25 @@ void MainWindow::on_actionOpen_triggered()
     }
 
 }
+
+//Dump File
+void MainWindow::on_actionDumpFile_triggered()
+{
+	QString filename = "objdumpOutput.txt";
+	QFile file2(filename);
+	if(file2.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
+		QTextStream stream(&file2);
+		QStringList funcs = disassemblyCore.getFunctionNames();
+		QVector<QString> baseOffsets = disassemblyCore.getBaseOffsets();
+		for(const auto& func : funcs) {
+			Function currFunc = disassemblyCore.getFunction(func);
+			stream << "F|"+currFunc.getName()+"|"+currFunc.getAddress()<<endl;
+			//write here using stream << "something" << endl;
+		}
+	}
+	file2.close();
+}
+
 
 bool MainWindow::canDisassemble(QString file){
     // Check for errors or invalid file
