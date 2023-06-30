@@ -28,6 +28,8 @@ private slots:
 
     void on_actionOpen_triggered();
 
+    void on_actionDumpFile_triggered();
+
     void loadBinary(QString file);
 
     bool canDisassemble(QString file);
