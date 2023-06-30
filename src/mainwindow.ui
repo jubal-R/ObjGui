@@ -1379,6 +1379,8 @@ color: rgb(85, 85, 85);</string>
     </property>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
+    <addaction name="actionDumpFile"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuTools">
@@ -1411,6 +1413,11 @@ color: rgb(85, 85, 85);</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionDumpFile">
+   <property name="text">
+    <string>Dump Info File</string>
    </property>
   </action>
   <action name="actionProject">
