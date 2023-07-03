@@ -35,6 +35,15 @@ void DisassemblyCore::disassemble(QString file){
     xrefStrings();
 
     fileLoaded = true;
+    fileName = file;
+}
+
+QString DisassemblyCore::getFileName() {
+        if(fileLoaded == true) {
+                return fileName;
+        } else {
+                return "NaN";
+        }
 }
 
 bool DisassemblyCore::disassemblyIsLoaded(){
