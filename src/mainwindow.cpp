@@ -284,6 +284,8 @@ void MainWindow::on_actionDumpFile_triggered()
 	QFile file2(filename);
 	if(file2.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
 		QTextStream stream(&file2);
+
+		//dump functions
 		QStringList funcs = disassemblyCore.getFunctionNames();
 		QVector<QString> baseOffsets = disassemblyCore.getBaseOffsets();
 		for(const auto& func : funcs) {
@@ -291,6 +293,60 @@ void MainWindow::on_actionDumpFile_triggered()
 			stream << "F|"+currFunc.getName()+"|"+currFunc.getAddress()<<endl;
 			//write here using stream << "something" << endl;
 		}
+
+		// dump instructions
+		// regex for parsing instruction nmeumonics: [\s]+\t(...)[.]*[a-z]*
+		// after regexing for those, regex for: (...)[.]*[a-z]*
+		// use [\s][a-fA-F0-9]+[:] regex to grab address
+		// out of those regex matches to grab JUST the instruction mnemonic
+		// TO-DO AFTER IMPLEMENTING ABOVE: Make a regex to grab the instruction address on the first column of objdump output
+		
+		QStringList arg;
+		arg << "-d" << disassemblyCore.getFileName();
+		QProcess *proc = new QProcess();
+		proc->start(ui->customBinaryLineEdit->text(), arg);
+		proc->waitForFinished();
+		QString result=proc->readAllStandardOutput();
+		QString line;
+		QTextStream stream2(&result);
+		while (stream2.readLineInto(&line)) {
+			QString address;
+			QString nmeumonic;
+			QRegularExpression addressRegex("[\\s][a-fA-F0-9]+[:]");
+
+			QRegularExpressionMatch match = addressRegex.match(line);
+			if(match.hasMatch()) {
+				QString matched = match.captured(0);
+				address = matched.mid(1, (matched.length()-2));
+ 			} else {
+				continue;
+			}
+
+
+			QRegularExpression nmeumonicRegex("[\\s]+\t(...)[.]*[a-z]*");
+			QRegularExpressionMatch match2 = nmeumonicRegex.match(line);
+			if(match2.hasMatch()) {
+				nmeumonic = match2.captured(0).simplified();
+				nmeumonic.remove("\t");
+				/*
+				QRegularExpression nmeumonicRegex2("(...)[.]*[a-z]*");
+				QRegularExpressionMatch match3 = nmeumonicRegex2.match(line2);
+				if(match3.hasMatch()) {
+					qDebug() << "MATCH 3 BEFORE: "<<match3.captured(0)<<endl;
+					nmeumonic = match3.captured(0).simplified();
+					nmeumonic.remove('\t');
+					qDebug() << "MATCH 3 AFTER: "<<nmeumonic<<endl;
+				} else {
+					continue;
+				}
+				*/
+			} else {
+				continue;
+			}
+			stream << "I|"+nmeumonic<<"|"<<address<<endl;
+		}
+
+
 	}
 	file2.close();
 }
