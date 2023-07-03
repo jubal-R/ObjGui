@@ -18,6 +18,7 @@ public:
     bool disassemblyIsLoaded();
     void xrefStrings();
     static QString extractAddress(const QByteArray& s);
+    QString getFileName();
     QVector<QString> getBaseOffsets();
     QString getObjdumpErrorMsg(QString file);
     QString getSymbolsTable(QString file);
@@ -59,6 +60,7 @@ private:
     Strings strings;
     QVector<QString> baseOffsets;
     bool fileLoaded;
+    QString fileName;
 
 
     ObjDumper objDumper;
