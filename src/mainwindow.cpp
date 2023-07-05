@@ -290,7 +290,7 @@ void MainWindow::on_actionDumpFile_triggered()
 		QVector<QString> baseOffsets = disassemblyCore.getBaseOffsets();
 		for(const auto& func : funcs) {
 			Function currFunc = disassemblyCore.getFunction(func);
-			stream << "F|"+currFunc.getName()+"|"+currFunc.getAddress()<<endl;
+			stream << "F|"+currFunc.getName().remove("@plt")+"|"+currFunc.getAddress()<<endl;
 			//write here using stream << "something" << endl;
 		}
 
@@ -328,6 +328,9 @@ void MainWindow::on_actionDumpFile_triggered()
 			if(match2.hasMatch()) {
 				nmeumonic = match2.captured(0).simplified();
 				nmeumonic.remove("\t");
+				if(nmeumonic.contains(" ")) {
+					nmeumonic = nmeumonic.split(" ").at(0);
+				}
 				/*
 				QRegularExpression nmeumonicRegex2("(...)[.]*[a-z]*");
 				QRegularExpressionMatch match3 = nmeumonicRegex2.match(line2);
@@ -343,6 +346,9 @@ void MainWindow::on_actionDumpFile_triggered()
 			} else {
 				continue;
 			}
+			while(address.size() < 8) {
+                                address = "0"+address;
+                        }
 			stream << "I|"+nmeumonic<<"|"<<address<<endl;
 		}
 
