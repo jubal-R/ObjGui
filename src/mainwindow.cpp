@@ -6,11 +6,14 @@
 #include "QInputDialog"
 #include "QProgressDialog"
 #include "QFuture"
+#include "QFile"
+#include "QTextStream"
 #include "QtConcurrent/QtConcurrent"
 
 #include "QDebug"
 
 #include "resultsdialog.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -196,9 +199,33 @@ void MainWindow::loadBinary(QString file){
                 ui->codeBrowser->setPlainText("File format not recognized.");
                 ui->addressLabel->setText("");
                 ui->functionLabel->setText("");
+		int num1 = 0;
+	   	std::string s1 = ("Instruction count: "+std::to_string(num1));
+	    	QString arg1 = QString::fromLocal8Bit(s1.c_str());
+	    	ui->fileInstructionCountlabel->setText(arg1);
             } else {
                 // If all good, display disassembly data
                 displayFunctionData();
+		
+		//Display number of instructions detected
+		int num1 = 0;
+		QStringList arg;
+		arg << "-d" << file;
+		QProcess *proc = new QProcess();
+		proc->start(ui->customBinaryLineEdit->text(), arg);
+		proc->waitForFinished();
+		QString result=proc->readAllStandardOutput();
+		QRegularExpression re("[0-9a-fA-F]+:\t");
+		QRegularExpressionMatchIterator i = re.globalMatch(result);
+		while(i.hasNext()) {
+			QRegularExpressionMatch match = i.next();
+			(void)match; //Suppress -Wunused-parameter
+			num1=num1+1;
+		}
+		//stops here
+	   	std::string s1 = ("Instruction count: "+std::to_string(num1));
+	    	QString arg1 = QString::fromLocal8Bit(s1.c_str());
+	    	ui->fileInstructionCountlabel->setText(arg1);
 
                 // Add initial location to history
                 addToHistory(currentFunctionIndex, 0);
@@ -215,6 +242,7 @@ void MainWindow::loadBinary(QString file){
             setUpdatesEnabled(false);
 
             ui->fileFormatlabel->setText(disassemblyCore.getFileFormat(file));
+
             ui->symbolsBrowser->setPlainText(disassemblyCore.getSymbolsTable(file));
             ui->relocationsBrowser->setPlainText(disassemblyCore.getRelocationEntries(file));
             ui->headersBrowser->setPlainText(disassemblyCore.getHeaders(file));
@@ -248,6 +276,87 @@ void MainWindow::on_actionOpen_triggered()
     }
 
 }
+
+//Dump File
+void MainWindow::on_actionDumpFile_triggered()
+{
+	QString filename = "objdumpOutput.txt";
+	QFile file2(filename);
+	if(file2.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
+		QTextStream stream(&file2);
+
+		//dump functions
+		QStringList funcs = disassemblyCore.getFunctionNames();
+		QVector<QString> baseOffsets = disassemblyCore.getBaseOffsets();
+		for(const auto& func : funcs) {
+			Function currFunc = disassemblyCore.getFunction(func);
+			stream << "F|"+currFunc.getName().remove("@plt")+"|"+currFunc.getAddress()<<endl;
+			//write here using stream << "something" << endl;
+		}
+
+		// dump instructions
+		// regex for parsing instruction nmeumonics: [\s]+\t(...)[.]*[a-z]*
+		// after regexing for those, regex for: (...)[.]*[a-z]*
+		// use [\s][a-fA-F0-9]+[:] regex to grab address
+		// out of those regex matches to grab JUST the instruction mnemonic
+		// TO-DO AFTER IMPLEMENTING ABOVE: Make a regex to grab the instruction address on the first column of objdump output
+		
+		QStringList arg;
+		arg << "-d" << disassemblyCore.getFileName();
+		QProcess *proc = new QProcess();
+		proc->start(ui->customBinaryLineEdit->text(), arg);
+		proc->waitForFinished();
+		QString result=proc->readAllStandardOutput();
+		QString line;
+		QTextStream stream2(&result);
+		while (stream2.readLineInto(&line)) {
+			QString address;
+			QString nmeumonic;
+			QRegularExpression addressRegex("[\\s][a-fA-F0-9]+[:]");
+
+			QRegularExpressionMatch match = addressRegex.match(line);
+			if(match.hasMatch()) {
+				QString matched = match.captured(0);
+				address = matched.mid(1, (matched.length()-2));
+ 			} else {
+				continue;
+			}
+
+
+			QRegularExpression nmeumonicRegex("[\\s]+\t(...)[.]*[a-z]*");
+			QRegularExpressionMatch match2 = nmeumonicRegex.match(line);
+			if(match2.hasMatch()) {
+				nmeumonic = match2.captured(0).simplified();
+				nmeumonic.remove("\t");
+				if(nmeumonic.contains(" ")) {
+					nmeumonic = nmeumonic.split(" ").at(0);
+				}
+				/*
+				QRegularExpression nmeumonicRegex2("(...)[.]*[a-z]*");
+				QRegularExpressionMatch match3 = nmeumonicRegex2.match(line2);
+				if(match3.hasMatch()) {
+					qDebug() << "MATCH 3 BEFORE: "<<match3.captured(0)<<endl;
+					nmeumonic = match3.captured(0).simplified();
+					nmeumonic.remove('\t');
+					qDebug() << "MATCH 3 AFTER: "<<nmeumonic<<endl;
+				} else {
+					continue;
+				}
+				*/
+			} else {
+				continue;
+			}
+			while(address.size() < 8) {
+                                address = "0"+address;
+                        }
+			stream << "I|"+nmeumonic<<"|"<<address<<endl;
+		}
+
+
+	}
+	file2.close();
+}
+
 
 bool MainWindow::canDisassemble(QString file){
     // Check for errors or invalid file
@@ -323,12 +432,20 @@ void MainWindow::displayFunctionText(int functionIndex){
         }
     }
 }
-
 // Setup functionlist and display function data
 void MainWindow::displayFunctionData(){
     if (disassemblyCore.disassemblyIsLoaded()){
         // Populate function list in sidebar
         ui->functionList->addItems(disassemblyCore.getFunctionNames());
+
+	int num = 0;
+	for(const auto& i : disassemblyCore.getFunctionNames()) {
+		(void)i; //Suppress -Wunused-parameter
+		num = num + 1;
+	}
+	std::string s = ("Functions ["+std::to_string(num)+"]");
+	QString arg = QString::fromLocal8Bit(s.c_str());
+	ui->functionListLabel->setText(arg);
 
         // Display main function by default if it exists
         if (disassemblyCore.functionExists("main"))
@@ -1055,6 +1172,8 @@ void MainWindow::setMenuStyle(QString foregroundColor, QString backgroundColor, 
 }
 
 void MainWindow::setNavbarStyle(QString foregroundColor, QString backgroundColor){
+    (void)foregroundColor; //Suppress -Wunused-parameter
+
     QString navBarStyle = "#navBar {background-color: " + backgroundColor + "; border-bottom: 1px solid #d4d4d4;}";
     ui->navBar->setStyleSheet(navBarStyle);
 
@@ -1211,4 +1330,3 @@ void MainWindow::on_actionFullscreen_triggered()
             MainWindow::showFullScreen();
         }
 }
-

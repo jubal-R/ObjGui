@@ -17,6 +17,7 @@ ObjDumper::ObjDumper()
     insnwidth = 10;
 
     addressRegex.setPattern("[0-9a-f]+");
+
     hexBytesRegex.setPattern("[0-9a-f ]+");
 }
 
@@ -138,9 +139,8 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
         }
 
         // Get hex
-        QByteArray hexBytes = line.mid(pos, insnwidth * 3).toLocal8Bit();
+        QByteArray hexBytes = line.mid(pos, insnwidth * 4).toLocal8Bit();
         row[1] = parseHexBytes(hexBytes);
-
         pos += insnwidth * 3;
 
         // Skip whitespace
@@ -157,6 +157,16 @@ QVector<QByteArray> ObjDumper::parseFunctionLine(QStringRef line){
         pos++;
 
         row[2] = opt;
+	QString temp2 = QString(row[2]);
+        if(temp2.contains("\t")) {
+		QByteArray temp3;
+		temp3 += temp2.split("\t")[1];
+		row[2] = temp3;
+	}
+	if(temp2.size() == 1) {
+		QByteArray temp3;
+		row[2] = temp3;
+	}
 
         while (pos < line.length() && line.at(pos) == QChar(' ')){
             pos++;
@@ -199,16 +209,12 @@ QByteArray ObjDumper::parseAddress(QByteArray address){
 }
 
 QByteArray ObjDumper::parseHexBytes(QByteArray byteString){
-    QRegularExpressionMatch hexMatch = hexBytesRegex.match(byteString);
-
-    if (hexMatch.hasMatch() && hexMatch.capturedLength(0) == byteString.length()) {
-        byteString.replace(" ", "");
-        int paddingLength = (insnwidth * 2) - byteString.length();
-        QString padding = "";
-        padding.fill(' ', paddingLength);
-        byteString.append(padding);
-
-        return byteString;
+    QString temp(byteString);
+    if (temp.contains("\t")) {
+	QStringList lst = temp.split("\t");
+        QByteArray ba;
+        ba += lst[1];
+        return ba;
 
     } else {
         return "";
